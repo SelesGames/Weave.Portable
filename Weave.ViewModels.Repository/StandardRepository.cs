@@ -60,6 +60,17 @@ namespace Weave.ViewModels.Repository
             return innerClient.UpdateFeed(userId, ConvertToUpdatedFeed(feed));
         }
 
+        public Task BatchChange(List<Feed> added = null, List<Feed> removed = null, List<Feed> updated = null)
+        {
+            return innerClient.BatchChange(userId,
+                new Incoming.BatchFeedChange
+                {
+                    Added = added == null ? null : added.Select(ConvertToNewFeed).ToList(),
+                    Removed = removed == null ? null : removed.Select(o => o.Id).ToList(),
+                    Updated = updated == null ? null : updated.Select(ConvertToUpdatedFeed).ToList(),
+                });
+        }
+
         public Task MarkArticleRead(NewsItem newsItem)
         {
             return innerClient.MarkArticleRead(userId, newsItem.Feed.Id, newsItem.Id);
