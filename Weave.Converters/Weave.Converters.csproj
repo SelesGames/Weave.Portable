@@ -42,6 +42,10 @@
       <Project>{51994b9d-3c44-47a5-96ad-550b4f74401f}</Project>
       <Name>Common.Portable</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Weave.ViewModels\Weave.ViewModels.csproj">
+      <Project>{0f188fc9-d10c-48db-917a-ff1cb9c8e795}</Project>
+      <Name>Weave.ViewModels</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ViewModelToDTOConverters.cs" />
