@@ -20,6 +20,8 @@ namespace Weave.UserFeedAggregator.Contracts
         Task AddFeed(Guid userId, Incoming.NewFeed feed);
         Task RemoveFeed(Guid userId, Guid feedId);
         Task UpdateFeed(Guid userId, Incoming.UpdatedFeed feed);
+        Task BatchChange(Guid userId, Incoming.BatchFeedChange changeSet);
+
 
         Task MarkArticleRead(Guid userId, Guid feedId, Guid newsItemId);
         Task MarkArticleUnread(Guid userId, Guid feedId, Guid newsItemId);
