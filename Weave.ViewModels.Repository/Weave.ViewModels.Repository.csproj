@@ -34,15 +34,15 @@
   </PropertyGroup>
   <ItemGroup>
     <!-- A reference to the entire .NET Framework is automatically included -->
-    <ProjectReference Include="..\..\..\Weave.Portable\Weave.UserFeedAggregator.Contracts\Weave.UserFeedAggregator.Contracts.csproj">
+    <ProjectReference Include="..\Weave.UserFeedAggregator.Contracts\Weave.UserFeedAggregator.Contracts.csproj">
       <Project>{02f3363f-7b0f-4c5f-9123-b388f2870c35}</Project>
       <Name>Weave.UserFeedAggregator.Contracts</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\..\Weave.Portable\Weave.UserFeedAggregator.DTOs\Weave.UserFeedAggregator.DTOs.csproj">
+    <ProjectReference Include="..\Weave.UserFeedAggregator.DTOs\Weave.UserFeedAggregator.DTOs.csproj">
       <Project>{75f2f4b1-beb2-4ac6-a935-5a795c5a79a0}</Project>
       <Name>Weave.UserFeedAggregator.DTOs</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\..\Weave.Portable\Weave.ViewModels\Weave.ViewModels.csproj">
+    <ProjectReference Include="..\Weave.ViewModels\Weave.ViewModels.csproj">
       <Project>{0f188fc9-d10c-48db-917a-ff1cb9c8e795}</Project>
       <Name>Weave.ViewModels</Name>
     </ProjectReference>
@@ -54,13 +54,13 @@
   </ItemGroup>
   <ItemGroup>
     <Reference Include="Microsoft.Threading.Tasks">
-      <HintPath>..\..\..\Weave.Portable\lib\Microsoft.Threading.Tasks.dll</HintPath>
+      <HintPath>..\lib\Microsoft.Threading.Tasks.dll</HintPath>
     </Reference>
     <Reference Include="System.Runtime">
-      <HintPath>..\packages\Microsoft.Bcl.1.0.16-rc\lib\portable-net40+sl4+win8+wp71\System.Runtime.dll</HintPath>
+      <HintPath>..\lib\System.Runtime.dll</HintPath>
     </Reference>
     <Reference Include="System.Threading.Tasks">
-      <HintPath>..\packages\Microsoft.Bcl.1.0.16-rc\lib\portable-net40+sl4+win8+wp71\System.Threading.Tasks.dll</HintPath>
+      <HintPath>..\lib\System.Threading.Tasks.dll</HintPath>
     </Reference>
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\Portable\$(TargetFrameworkVersion)\Microsoft.Portable.CSharp.targets" />
