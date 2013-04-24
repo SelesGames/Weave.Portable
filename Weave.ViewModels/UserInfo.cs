@@ -36,6 +36,11 @@ namespace Weave.ViewModels
             await repo.UpdateFeed(feed);
         }
 
+        public async Task BatchChange(List<Feed> added = null, List<Feed> removed = null, List<Feed> updated = null)
+        {
+            await repo.BatchChange(added, removed, updated);
+        }
+
         #endregion
 
 

@@ -17,6 +17,7 @@ namespace Weave.ViewModels.Contracts.Client
         Task AddFeed(Feed feed);
         Task RemoveFeed(Feed feed);
         Task UpdateFeed(Feed feed);
+        Task BatchChange(List<Feed> added = null, List<Feed> removed = null, List<Feed> updated = null);
         
         Task MarkArticleRead(NewsItem newsItem);
         Task MarkArticleUnread(NewsItem newsItem);
