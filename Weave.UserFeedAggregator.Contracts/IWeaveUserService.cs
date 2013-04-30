@@ -11,8 +11,8 @@ namespace Weave.UserFeedAggregator.Contracts
         Task<Outgoing.UserInfo> AddUserAndReturnUserInfo(Incoming.UserInfo incomingUser);
         Task<Outgoing.UserInfo> GetUserInfo(Guid userId, bool refresh = false);
         
-        Task<Outgoing.UserNews> GetNews(Guid userId, string category, bool refresh = false, int skip = 0, int take = 10);
-        Task<Outgoing.UserNews> GetNews(Guid userId, Guid feedId, bool refresh = false, int skip = 0, int take = 10);
+        Task<Outgoing.NewsList> GetNews(Guid userId, string category, bool refresh = false, int skip = 0, int take = 10);
+        Task<Outgoing.NewsList> GetNews(Guid userId, Guid feedId, bool refresh = false, int skip = 0, int take = 10);
 
         Task<Outgoing.LiveTileNewsList> GetFeaturedNews(Guid userId, string category, int? take, bool refresh = false);
         Task<Outgoing.LiveTileNewsList> GetFeaturedNews(Guid userId, Guid feedId, int? take, bool refresh = false);

@@ -34,6 +34,14 @@
   </PropertyGroup>
   <ItemGroup>
     <!-- A reference to the entire .NET Framework is automatically included -->
+    <ProjectReference Include="..\..\Weave\Windows Phone 8\Common.Portable\Common.Portable.csproj">
+      <Project>{51994b9d-3c44-47a5-96ad-550b4f74401f}</Project>
+      <Name>Common.Portable</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Weave.Converters\Weave.Converters.csproj">
+      <Project>{f9c67977-6ae2-4866-9aa0-f1d855b278e5}</Project>
+      <Name>Weave.Converters</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Weave.UserFeedAggregator.Contracts\Weave.UserFeedAggregator.Contracts.csproj">
       <Project>{02f3363f-7b0f-4c5f-9123-b388f2870c35}</Project>
       <Name>Weave.UserFeedAggregator.Contracts</Name>

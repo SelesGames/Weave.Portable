@@ -42,14 +42,13 @@
     <Compile Include="ServerIncoming\NewFeed.cs" />
     <Compile Include="ServerIncoming\UpdatedFeed.cs" />
     <Compile Include="ServerOutgoing\CategoryOrFeedTeaserImage.cs" />
-    <Compile Include="ServerOutgoing\FeedInfo.cs" />
     <Compile Include="ServerOutgoing\Feed.cs" />
     <Compile Include="ServerOutgoing\Image.cs" />
     <Compile Include="ServerOutgoing\LiveTileNewsList.cs" />
     <Compile Include="ServerOutgoing\NewsItem.cs" />
     <Compile Include="ServerIncoming\UserInfo.cs" />
     <Compile Include="ServerOutgoing\UserInfo.cs" />
-    <Compile Include="ServerOutgoing\UserNews.cs" />
+    <Compile Include="ServerOutgoing\NewsList.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\Portable\$(TargetFrameworkVersion)\Microsoft.Portable.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

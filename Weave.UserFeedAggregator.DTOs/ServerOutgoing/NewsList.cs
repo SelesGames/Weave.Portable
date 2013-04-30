@@ -8,7 +8,7 @@ namespace Weave.UserFeedAggregator.DTOs.ServerOutgoing
     /// DTO representing what is shown in the article list screen
     /// </summary>
     [DataContract]
-    public class UserNews
+    public class NewsList
     {
         [DataMember(Order= 1)]  public Guid Id { get; set; }
         [DataMember(Order= 2)]  public int FeedCount { get; set; }
