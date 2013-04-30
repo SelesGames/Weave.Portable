@@ -34,7 +34,7 @@
   </PropertyGroup>
   <ItemGroup>
     <!-- A reference to the entire .NET Framework is automatically included -->
-    <ProjectReference Include="..\..\Weave\Windows Phone 8\Common.Portable\Common.Portable.csproj">
+    <ProjectReference Include="..\Common.Portable\Common.Portable.csproj">
       <Project>{51994b9d-3c44-47a5-96ad-550b4f74401f}</Project>
       <Name>Common.Portable</Name>
     </ProjectReference>

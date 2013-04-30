@@ -1,12 +1,13 @@
-﻿using System;
+﻿using SelesGames.Common;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Weave.Converters;
 using Weave.UserFeedAggregator.Contracts;
 using Weave.ViewModels.Contracts.Client;
 using Incoming = Weave.UserFeedAggregator.DTOs.ServerIncoming;
 using Outgoing = Weave.UserFeedAggregator.DTOs.ServerOutgoing;
-
 
 namespace Weave.ViewModels.Repository
 {
@@ -19,6 +20,20 @@ namespace Weave.ViewModels.Repository
         {
             this.userId = userId;
             this.innerClient = innerClient;
+        }
+
+        public async Task<UserInfo> GetUserInfo(bool refresh = false)
+        {
+            var user = await innerClient.GetUserInfo(userId, refresh);
+            return new UserInfo
+            {
+                Id = user.Id,
+                Feeds = user.Feeds == null ? null : user.Feeds.Select(o => o.Convert<Outgoing.Feed, Feed>(DTOsToViewModelsConverters.Current)).ToList(),
+                PreviousLoginTime = user.PreviousLoginTime,
+                CurrentLoginTime = user.CurrentLoginTime,
+                LatestNews = user.LatestNews == null ? null : user.LatestNews.Select(o => o.Convert<Outgoing.NewsItem, NewsItem>(DTOsToViewModelsConverters.Current)).ToList(),
+                TeaserImages = user.TeaserImages == null ? null : user.TeaserImages.Select(o => o.Convert<Outgoing.CategoryOrFeedTeaserImage, CategoryOrFeedTeaserImage>(DTOsToViewModelsConverters.Current)).ToList(),
+            };
         }
 
         public async Task<IList<NewsItem>> GetNews(string category, bool refresh = false, int skip = 0, int take = 10)
@@ -86,25 +101,37 @@ namespace Weave.ViewModels.Repository
 
         #region Helper methods
 
-        IList<NewsItem> CreateDistinctAndOrdered(Outgoing.UserNews userNews)
+        IList<NewsItem> CreateDistinctAndOrdered(Outgoing.NewsList newsList)
         {
-            var allNews = userNews.Feeds
-                .SelectMany(o => o.News
-                    .Select(n => Convert(n, o)))
-                .OrderBy(o => o.LocalDateTime)
-                .Distinct(NewsItemComparer.Instance)
-                .ToList();
+            var allNews = (from n in newsList.News
+                          join f in newsList.Feeds on n.FeedId equals f.Id
+                          select Convert(n, f))
+                          .OrderBy(o => o.LocalDateTime)
+                          .Distinct(NewsItemComparer.Instance)
+                          .ToList(); 
+            //var allNews = userNews.Feeds
+            //    .SelectMany(o => o.News
+            //        .Select(n => Convert(n, o)))
+            //    .OrderBy(o => o.LocalDateTime)
+            //    .Distinct(NewsItemComparer.Instance)
+            //    .ToList();
 
             return allNews;
         }
 
         IList<NewsItem> CreateOrdered(Outgoing.LiveTileNewsList liveTileNewsList)
         {
-            var allNews = liveTileNewsList.Feeds
-                .SelectMany(o => o.News
-                    .Select(n => Convert(n, o)))
-                .OrderBy(o => o.LocalDateTime)
-                .ToList();
+            var allNews = (from n in liveTileNewsList.News
+                           join f in liveTileNewsList.Feeds on n.FeedId equals f.Id
+                           select Convert(n, f))
+                          .OrderBy(o => o.LocalDateTime)
+                          .ToList(); 
+
+            //var allNews = liveTileNewsList.Feeds
+            //    .SelectMany(o => o.News
+            //        .Select(n => Convert(n, o)))
+            //    .OrderBy(o => o.LocalDateTime)
+            //    .ToList();
 
             return allNews;
         }

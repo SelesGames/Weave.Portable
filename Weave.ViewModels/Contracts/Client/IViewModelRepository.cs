@@ -7,7 +7,7 @@ namespace Weave.ViewModels.Contracts.Client
     public interface IViewModelRepository
     {
         //Task<UserInfo> AddUserAndReturnUserInfo(UserInfo incomingUser);
-        Task<UserInfo> GetUserInfo(Guid userId, bool refresh = false);
+        Task<UserInfo> GetUserInfo(bool refresh = false);
         Task<IList<NewsItem>> GetNews(string category, bool refresh = false, int skip = 0, int take = 10);
         Task<IList<NewsItem>> GetNews(Guid feedId, bool refresh = false, int skip = 0, int take = 10);
 

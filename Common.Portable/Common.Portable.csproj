@@ -5,11 +5,11 @@
     <MinimumVisualStudioVersion>10.0</MinimumVisualStudioVersion>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{F9C67977-6AE2-4866-9AA0-F1D855B278E5}</ProjectGuid>
+    <ProjectGuid>{51994B9D-3C44-47A5-96AD-550B4F74401F}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Weave.Converters</RootNamespace>
-    <AssemblyName>Weave.Converters</AssemblyName>
+    <RootNamespace>Common.Portable</RootNamespace>
+    <AssemblyName>Common.Portable</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <TargetFrameworkProfile>Profile104</TargetFrameworkProfile>
     <FileAlignment>512</FileAlignment>
@@ -34,21 +34,10 @@
   </PropertyGroup>
   <ItemGroup>
     <!-- A reference to the entire .NET Framework is automatically included -->
-    <ProjectReference Include="..\Common.Portable\Common.Portable.csproj">
-      <Project>{51994b9d-3c44-47a5-96ad-550b4f74401f}</Project>
-      <Name>Common.Portable</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Weave.UserFeedAggregator.DTOs\Weave.UserFeedAggregator.DTOs.csproj">
-      <Project>{75f2f4b1-beb2-4ac6-a935-5a795c5a79a0}</Project>
-      <Name>Weave.UserFeedAggregator.DTOs</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Weave.ViewModels\Weave.ViewModels.csproj">
-      <Project>{0f188fc9-d10c-48db-917a-ff1cb9c8e795}</Project>
-      <Name>Weave.ViewModels</Name>
-    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="DTOsToViewModelsConverters.cs" />
+    <Compile Include="ConvertExtension.cs" />
+    <Compile Include="IConverter.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\Portable\$(TargetFrameworkVersion)\Microsoft.Portable.CSharp.targets" />
