@@ -14,5 +14,6 @@ namespace Weave.UserFeedAggregator.DTOs.ServerOutgoing
         [DataMember(Order=6)]   public int NewArticleCount { get; set; }
         [DataMember(Order=7)]   public int UnreadCount { get; set; }
         [DataMember(Order=8)]   public int TotalArticleCount { get; set; }
+        [DataMember(Order=9)]   public string TeaserImageUrl { get; set; }
     }
 }

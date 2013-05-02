@@ -41,7 +41,6 @@
     <Compile Include="ServerIncoming\BatchFeedChange.cs" />
     <Compile Include="ServerIncoming\NewFeed.cs" />
     <Compile Include="ServerIncoming\UpdatedFeed.cs" />
-    <Compile Include="ServerOutgoing\CategoryOrFeedTeaserImage.cs" />
     <Compile Include="ServerOutgoing\Feed.cs" />
     <Compile Include="ServerOutgoing\Image.cs" />
     <Compile Include="ServerOutgoing\LiveTileNewsList.cs" />

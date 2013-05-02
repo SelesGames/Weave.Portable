@@ -16,8 +16,6 @@ namespace Weave.UserFeedAggregator.DTOs.ServerOutgoing
 
         [DataMember(Order= 6)]  public List<NewsItem> LatestNews { get; set; }
 
-        [DataMember(Order= 7)]  public List<CategoryOrFeedTeaserImage> TeaserImages { get; set; }
-
 
         [DataMember(Order=98)]  public TimeSpan DataStoreReadTime { get; set; }
         [DataMember(Order=99)]  public TimeSpan DataStoreWriteTime { get; set; }
