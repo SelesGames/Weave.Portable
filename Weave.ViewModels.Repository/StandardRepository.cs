@@ -32,7 +32,6 @@ namespace Weave.ViewModels.Repository
                 PreviousLoginTime = user.PreviousLoginTime,
                 CurrentLoginTime = user.CurrentLoginTime,
                 LatestNews = user.LatestNews == null ? null : user.LatestNews.Select(o => o.Convert<Outgoing.NewsItem, NewsItem>(DTOsToViewModelsConverters.Current)).ToList(),
-                TeaserImages = user.TeaserImages == null ? null : user.TeaserImages.Select(o => o.Convert<Outgoing.CategoryOrFeedTeaserImage, CategoryOrFeedTeaserImage>(DTOsToViewModelsConverters.Current)).ToList(),
             };
         }
 

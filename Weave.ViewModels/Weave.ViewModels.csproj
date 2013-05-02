@@ -34,7 +34,6 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="ArticleViewingType.cs" />
-    <Compile Include="CategoryOrFeedTeaserImage.cs" />
     <Compile Include="Contracts\Client\IUserCache.cs" />
     <Compile Include="Extensions\DateTimeDisplayFormattingExtensions.cs" />
     <Compile Include="Extensions\FeedExtensions.cs" />

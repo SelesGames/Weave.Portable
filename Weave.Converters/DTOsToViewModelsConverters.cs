@@ -1,16 +1,11 @@
 ﻿using SelesGames.Common;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using Outgoing = Weave.UserFeedAggregator.DTOs.ServerOutgoing;
 
 namespace Weave.Converters
 {
     public class DTOsToViewModelsConverters : 
         IConverter<Outgoing.Feed, ViewModels.Feed>,
-        IConverter<Outgoing.NewsItem, ViewModels.NewsItem>,
-        IConverter<Outgoing.CategoryOrFeedTeaserImage, ViewModels.CategoryOrFeedTeaserImage>
+        IConverter<Outgoing.NewsItem, ViewModels.NewsItem>
     {
         public static readonly DTOsToViewModelsConverters Current = new DTOsToViewModelsConverters();
 
@@ -23,17 +18,29 @@ namespace Weave.Converters
                 Uri = o.Uri,
                 Category = o.Category,
                 ArticleViewingType = (ViewModels.ArticleViewingType)o.ArticleViewingType,
+                TeaserImageUrl = o.TeaserImageUrl,
             };
         }
 
-        public ViewModels.NewsItem Convert(Outgoing.NewsItem input)
+        public ViewModels.NewsItem Convert(Outgoing.NewsItem o)
         {
-            throw new NotImplementedException();
-        }
-
-        public ViewModels.CategoryOrFeedTeaserImage Convert(Outgoing.CategoryOrFeedTeaserImage input)
-        {
-            throw new NotImplementedException();
+            return new ViewModels.NewsItem
+            {
+                Id = o.Id,
+                Feed = new ViewModels.Feed { Id = o.FeedId },
+                Title = o.Title,
+                Link = o.Link,
+                UtcPublishDateTime = o.UtcPublishDateTime,
+                ImageUrl = o.ImageUrl,
+                YoutubeId = o.YoutubeId,
+                VideoUri = o.VideoUri,
+                PodcastUri = o.PodcastUri,
+                ZuneAppId = o.ZuneAppId,
+                OriginalDownloadDateTime = o.OriginalDownloadDateTime,
+                Image = new ViewModels.Image(),
+                HasBeenViewed = o.HasBeenViewed,
+                IsFavorite = o.IsFavorite,
+            };
         }
     }
 }

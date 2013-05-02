@@ -14,7 +14,6 @@ namespace Weave.ViewModels
         public DateTime PreviousLoginTime { get; set; }
         public DateTime CurrentLoginTime { get; set; }
         public List<NewsItem> LatestNews { get; set; }
-        public List<CategoryOrFeedTeaserImage> TeaserImages { get; set; }
 
 
 
