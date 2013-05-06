@@ -15,6 +15,22 @@ namespace Weave.ViewModels
         public DateTime CurrentLoginTime { get; set; }
         public List<NewsItem> LatestNews { get; set; }
 
+        public UserInfo(IViewModelRepository repo)
+        {
+            this.repo = repo;
+        }
+
+
+        public async Task<IList<NewsItem>> GetNewsForCategory(string category, bool refresh = false, int skip = 0, int take = 10)
+        {
+            return await repo.GetNews(category, refresh, skip, take);
+        }
+
+        public async Task<IList<NewsItem>> GetNewsForFeed(Guid feedId, bool refresh = false, int skip = 0, int take = 10)
+        {
+            return await repo.GetNews(feedId, refresh, skip, take);
+        }
+
 
 
 
@@ -55,6 +71,16 @@ namespace Weave.ViewModels
         public async Task MarkArticleUnread(NewsItem newsItem)
         {
             await repo.MarkArticleUnread(newsItem);
+        }
+
+        public async Task AddFavorite(NewsItem newsItem)
+        {
+            await repo.AddFavorite(newsItem);
+        }
+
+        public async Task RemoveFavorite(NewsItem newsItem)
+        {
+            await repo.RemoveFavorite(newsItem);
         }
 
         #endregion

@@ -25,7 +25,7 @@ namespace Weave.ViewModels.Repository
         public async Task<UserInfo> GetUserInfo(bool refresh = false)
         {
             var user = await innerClient.GetUserInfo(userId, refresh);
-            return new UserInfo
+            return new UserInfo(this)
             {
                 Id = user.Id,
                 Feeds = user.Feeds == null ? null : user.Feeds.Select(o => o.Convert<Outgoing.Feed, Feed>(DTOsToViewModelsConverters.Current)).ToList(),
@@ -93,6 +93,16 @@ namespace Weave.ViewModels.Repository
         public Task MarkArticleUnread(NewsItem newsItem)
         {
             return innerClient.MarkArticleUnread(userId, newsItem.Feed.Id, newsItem.Id);
+        }
+
+        public Task AddFavorite(NewsItem newsItem)
+        {
+            return innerClient.AddFavorite(userId, newsItem.Feed.Id, newsItem.Id);
+        }
+
+        public Task RemoveFavorite(NewsItem newsItem)
+        {
+            return innerClient.RemoveFavorite(userId, newsItem.Feed.Id, newsItem.Id);
         }
 
 
