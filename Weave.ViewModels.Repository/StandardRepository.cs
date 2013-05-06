@@ -166,7 +166,7 @@ namespace Weave.ViewModels.Repository
                 PodcastUri = n.PodcastUri,
                 ZuneAppId = n.ZuneAppId,
                 OriginalDownloadDateTime = n.OriginalDownloadDateTime,
-                Image = Convert(n.Image),
+                Image =  n.Image == null ? null : Convert(n.Image),
                 Feed = Convert(f),
             };
         }
