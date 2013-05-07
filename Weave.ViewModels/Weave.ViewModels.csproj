@@ -41,7 +41,9 @@
     <Compile Include="Image.cs" />
     <Compile Include="Contracts\INewsItem.cs" />
     <Compile Include="Contracts\Client\IViewModelRepository.cs" />
+    <Compile Include="LiveTileNewsList.cs" />
     <Compile Include="NewsItem.cs" />
+    <Compile Include="NewsList.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="UserInfo.cs" />
   </ItemGroup>

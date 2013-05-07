@@ -1,9 +1,7 @@
-﻿using SelesGames.Common;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Weave.Converters;
 using Weave.UserFeedAggregator.Contracts;
 using Weave.ViewModels.Contracts.Client;
 using Incoming = Weave.UserFeedAggregator.DTOs.ServerIncoming;
@@ -25,38 +23,31 @@ namespace Weave.ViewModels.Repository
         public async Task<UserInfo> GetUserInfo(bool refresh = false)
         {
             var user = await innerClient.GetUserInfo(userId, refresh);
-            return new UserInfo(this)
-            {
-                Id = user.Id,
-                Feeds = user.Feeds == null ? null : user.Feeds.Select(o => o.Convert<Outgoing.Feed, Feed>(DTOsToViewModelsConverters.Current)).ToList(),
-                PreviousLoginTime = user.PreviousLoginTime,
-                CurrentLoginTime = user.CurrentLoginTime,
-                LatestNews = user.LatestNews == null ? null : user.LatestNews.Select(o => o.Convert<Outgoing.NewsItem, NewsItem>(DTOsToViewModelsConverters.Current)).ToList(),
-            };
+            return Convert(user);
         }
 
-        public async Task<IList<NewsItem>> GetNews(string category, bool refresh = false, int skip = 0, int take = 10)
+        public async Task<NewsList> GetNews(string category, bool refresh = false, int skip = 0, int take = 10)
         {
             var userNews = await innerClient.GetNews(userId, category, refresh, skip, take);
-            return CreateDistinctAndOrdered(userNews);
+            return Convert(userNews);
         }
 
-        public async Task<IList<NewsItem>> GetNews(Guid feedId, bool refresh = false, int skip = 0, int take = 10)
+        public async Task<NewsList> GetNews(Guid feedId, bool refresh = false, int skip = 0, int take = 10)
         {
             var userNews = await innerClient.GetNews(userId, feedId, refresh, skip, take);
-            return CreateDistinctAndOrdered(userNews);
+            return Convert(userNews);
         }
 
-        public async Task<IList<NewsItem>> GetFeaturedNews(string category, int take, bool refresh = false)
+        public async Task<LiveTileNewsList> GetFeaturedNews(string category, int take, bool refresh = false)
         {
             var featuredNews = await innerClient.GetFeaturedNews(userId, category, take, refresh);
-            return CreateOrdered(featuredNews);
+            return Convert(featuredNews);
         }
 
-        public async Task<IList<NewsItem>> GetFeaturedNews(Guid feedId, int take, bool refresh = false)
+        public async Task<LiveTileNewsList> GetFeaturedNews(Guid feedId, int take, bool refresh = false)
         {
             var featuredNews = await innerClient.GetFeaturedNews(userId, feedId, take, refresh);
-            return CreateOrdered(featuredNews);
+            return Convert(featuredNews);
         }
 
         public Task AddFeed(Feed feed)
@@ -110,40 +101,40 @@ namespace Weave.ViewModels.Repository
 
         #region Helper methods
 
-        IList<NewsItem> CreateDistinctAndOrdered(Outgoing.NewsList newsList)
-        {
-            var allNews = (from n in newsList.News
-                          join f in newsList.Feeds on n.FeedId equals f.Id
-                          select Convert(n, f))
-                          .OrderBy(o => o.LocalDateTime)
-                          .Distinct(NewsItemComparer.Instance)
-                          .ToList(); 
-            //var allNews = userNews.Feeds
-            //    .SelectMany(o => o.News
-            //        .Select(n => Convert(n, o)))
-            //    .OrderBy(o => o.LocalDateTime)
-            //    .Distinct(NewsItemComparer.Instance)
-            //    .ToList();
+        //IList<NewsItem> CreateDistinctAndOrdered(Outgoing.NewsList newsList)
+        //{
+        //    var allNews = (from n in newsList.News
+        //                  join f in newsList.Feeds on n.FeedId equals f.Id
+        //                  select Convert(n, f))
+        //                  .OrderBy(o => o.LocalDateTime)
+        //                  .Distinct(NewsItemComparer.Instance)
+        //                  .ToList(); 
+        //    //var allNews = userNews.Feeds
+        //    //    .SelectMany(o => o.News
+        //    //        .Select(n => Convert(n, o)))
+        //    //    .OrderBy(o => o.LocalDateTime)
+        //    //    .Distinct(NewsItemComparer.Instance)
+        //    //    .ToList();
 
-            return allNews;
-        }
+        //    return allNews;
+        //}
 
-        IList<NewsItem> CreateOrdered(Outgoing.LiveTileNewsList liveTileNewsList)
-        {
-            var allNews = (from n in liveTileNewsList.News
-                           join f in liveTileNewsList.Feeds on n.FeedId equals f.Id
-                           select Convert(n, f))
-                          .OrderBy(o => o.LocalDateTime)
-                          .ToList(); 
+        //IList<NewsItem> CreateOrdered(Outgoing.LiveTileNewsList liveTileNewsList)
+        //{
+        //    var allNews = (from n in liveTileNewsList.News
+        //                   join f in liveTileNewsList.Feeds on n.FeedId equals f.Id
+        //                   select Convert(n, f))
+        //                  .OrderBy(o => o.LocalDateTime)
+        //                  .ToList(); 
 
-            //var allNews = liveTileNewsList.Feeds
-            //    .SelectMany(o => o.News
-            //        .Select(n => Convert(n, o)))
-            //    .OrderBy(o => o.LocalDateTime)
-            //    .ToList();
+        //    //var allNews = liveTileNewsList.Feeds
+        //    //    .SelectMany(o => o.News
+        //    //        .Select(n => Convert(n, o)))
+        //    //    .OrderBy(o => o.LocalDateTime)
+        //    //    .ToList();
 
-            return allNews;
-        }
+        //    return allNews;
+        //}
 
         #endregion
 
@@ -152,45 +143,98 @@ namespace Weave.ViewModels.Repository
 
         #region Conversion helpers
 
-        protected NewsItem Convert(Outgoing.NewsItem n, Outgoing.Feed f)
+        ViewModels.UserInfo Convert(Outgoing.UserInfo o)
         {
-            return new NewsItem
+            return new UserInfo(this)
             {
-                Id = n.Id,
-                Title = n.Title,
-                Link = n.Link,
-                UtcPublishDateTime = n.UtcPublishDateTime,
-                ImageUrl = n.ImageUrl,
-                YoutubeId = n.YoutubeId,
-                VideoUri = n.VideoUri,
-                PodcastUri = n.PodcastUri,
-                ZuneAppId = n.ZuneAppId,
-                OriginalDownloadDateTime = n.OriginalDownloadDateTime,
-                Image =  n.Image == null ? null : Convert(n.Image),
-                Feed = Convert(f),
+                Id = o.Id,
+                Feeds = o.Feeds == null ? null : o.Feeds.Select(Convert).ToList(),
+                PreviousLoginTime = o.PreviousLoginTime,
+                CurrentLoginTime = o.CurrentLoginTime,
+                LatestNews = o.LatestNews == null ? null : GetJoinedNews(o.Feeds.Select(Convert).ToList(), o.LatestNews.Select(Convert).ToList()).ToList(),
             };
         }
 
-        Feed Convert(Outgoing.Feed o)
+        ViewModels.LiveTileNewsList Convert(Outgoing.LiveTileNewsList o)
         {
-            return new Feed
+            return new ViewModels.LiveTileNewsList
+            {
+                FeedCount = o.FeedCount,
+                NewNewsCount = o.NewNewsCount,
+                FeaturedNewsCount = o.FeaturedNewsCount,
+                News = o.News == null ? null : GetJoinedNews(o.Feeds.Select(Convert).ToList(), o.News.Select(Convert).ToList()).ToList(),
+            };
+        }
+
+        ViewModels.NewsList Convert(Outgoing.NewsList o)
+        {
+            return new ViewModels.NewsList
+            {
+                FeedCount = o.FeedCount,
+                TotalNewsCount = o.TotalNewsCount,
+                PageNewsCount = o.PageNewsCount,
+                Skip = o.Skip,
+                Take = o.Take,
+                //News = o.News == null ? null : GetJoinedNews(o.Feeds, o.News).ToList(),
+                News = o.News == null ? null : GetJoinedNews(o.Feeds.Select(Convert).ToList(), o.News.Select(Convert).ToList()).ToList(),
+            };
+        }
+
+        IEnumerable<ViewModels.NewsItem> GetJoinedNews(IEnumerable<ViewModels.Feed> feeds, IEnumerable<ViewModels.NewsItem> news)
+        {
+            return from n in news
+                   join f in feeds on n.Feed.Id equals f.Id
+                   select Convert(n, f);
+        }
+        
+        ViewModels.NewsItem Convert(ViewModels.NewsItem n, ViewModels.Feed f)
+        {
+            n.Feed = f;
+            return n;
+        }
+
+        ViewModels.Feed Convert(Outgoing.Feed o)
+        {
+            return new ViewModels.Feed
             {
                 Id = o.Id,
                 Name = o.Name,
                 Uri = o.Uri,
                 Category = o.Category,
-                ArticleViewingType = (ArticleViewingType)o.ArticleViewingType,
+                ArticleViewingType = (ViewModels.ArticleViewingType)o.ArticleViewingType,
+                TeaserImageUrl = o.TeaserImageUrl,
             };
         }
 
-        Image Convert(Outgoing.Image o)
+        ViewModels.NewsItem Convert(Outgoing.NewsItem o)
         {
-            return new Image
+            return new ViewModels.NewsItem
             {
+                Id = o.Id,
+                Feed = new ViewModels.Feed { Id = o.FeedId },
+                Title = o.Title,
+                Link = o.Link,
+                UtcPublishDateTime = o.UtcPublishDateTime,
+                ImageUrl = o.ImageUrl,
+                YoutubeId = o.YoutubeId,
+                VideoUri = o.VideoUri,
+                PodcastUri = o.PodcastUri,
+                ZuneAppId = o.ZuneAppId,
+                OriginalDownloadDateTime = o.OriginalDownloadDateTime,
+                Image = o.Image == null ? null : Convert(o.Image),
+                HasBeenViewed = o.HasBeenViewed,
+                IsFavorite = o.IsFavorite,
+            };
+        }
+
+        ViewModels.Image Convert(Outgoing.Image o)
+        {
+            return new ViewModels.Image
+            {
+                BaseImageUrl = o.BaseImageUrl,
                 Width = o.Width,
                 Height = o.Height,
                 OriginalUrl = o.OriginalUrl,
-                BaseImageUrl = o.BaseImageUrl,
                 SupportedFormats = o.SupportedFormats,
             };
         }
