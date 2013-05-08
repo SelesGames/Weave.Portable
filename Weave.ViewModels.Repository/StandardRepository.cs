@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Weave.UserFeedAggregator.Contracts;
 using Weave.ViewModels.Contracts.Client;
+using DTOs = Weave.UserFeedAggregator.DTOs;
 using Incoming = Weave.UserFeedAggregator.DTOs.ServerIncoming;
 using Outgoing = Weave.UserFeedAggregator.DTOs.ServerOutgoing;
 
@@ -26,28 +27,16 @@ namespace Weave.ViewModels.Repository
             return Convert(user);
         }
 
-        public async Task<NewsList> GetNews(string category, bool refresh = false, int skip = 0, int take = 10)
+        public async Task<NewsList> GetNews(string category, bool refresh = false, int skip = 0, int take = 10, NewsItemType type = NewsItemType.Any, bool requireImage = false)
         {
-            var userNews = await innerClient.GetNews(userId, category, refresh, skip, take);
+            var userNews = await innerClient.GetNews(userId, category, refresh, skip, take, (DTOs.NewsItemType)type, requireImage);
             return Convert(userNews);
         }
 
-        public async Task<NewsList> GetNews(Guid feedId, bool refresh = false, int skip = 0, int take = 10)
+        public async Task<NewsList> GetNews(Guid feedId, bool refresh = false, int skip = 0, int take = 10, NewsItemType type = NewsItemType.Any, bool requireImage = false)
         {
-            var userNews = await innerClient.GetNews(userId, feedId, refresh, skip, take);
+            var userNews = await innerClient.GetNews(userId, feedId, refresh, skip, take, (DTOs.NewsItemType)type, requireImage);
             return Convert(userNews);
-        }
-
-        public async Task<LiveTileNewsList> GetFeaturedNews(string category, int take, bool refresh = false)
-        {
-            var featuredNews = await innerClient.GetFeaturedNews(userId, category, take, refresh);
-            return Convert(featuredNews);
-        }
-
-        public async Task<LiveTileNewsList> GetFeaturedNews(Guid feedId, int take, bool refresh = false)
-        {
-            var featuredNews = await innerClient.GetFeaturedNews(userId, feedId, take, refresh);
-            return Convert(featuredNews);
         }
 
         public Task AddFeed(Feed feed)
@@ -155,24 +144,14 @@ namespace Weave.ViewModels.Repository
             };
         }
 
-        ViewModels.LiveTileNewsList Convert(Outgoing.LiveTileNewsList o)
-        {
-            return new ViewModels.LiveTileNewsList
-            {
-                FeedCount = o.FeedCount,
-                NewNewsCount = o.NewNewsCount,
-                FeaturedNewsCount = o.FeaturedNewsCount,
-                News = o.News == null ? null : GetJoinedNews(o.Feeds.Select(Convert).ToList(), o.News.Select(Convert).ToList()).ToList(),
-            };
-        }
-
         ViewModels.NewsList Convert(Outgoing.NewsList o)
         {
             return new ViewModels.NewsList
             {
                 FeedCount = o.FeedCount,
                 TotalNewsCount = o.TotalNewsCount,
-                PageNewsCount = o.PageNewsCount,
+                NewNewsCount = o.NewNewsCount,
+                NewsCount = o.NewsCount,
                 Skip = o.Skip,
                 Take = o.Take,
                 //News = o.News == null ? null : GetJoinedNews(o.Feeds, o.News).ToList(),

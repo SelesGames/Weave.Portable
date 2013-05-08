@@ -7,7 +7,8 @@ namespace Weave.ViewModels
     {
         public int FeedCount { get; set; }
         public int TotalNewsCount { get; set; }
-        public int PageNewsCount { get; set; }
+        public int NewNewsCount { get; set; }
+        public int NewsCount { get; set; }
         public int Skip { get; set; }
         public int Take { get; set; }
         public IEnumerable<NewsItem> News { get; set; }
