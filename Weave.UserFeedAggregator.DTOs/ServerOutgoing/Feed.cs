@@ -3,6 +3,9 @@ using System.Runtime.Serialization;
 
 namespace Weave.UserFeedAggregator.DTOs.ServerOutgoing
 {
+    /// <summary>
+    /// DTO representing a single Feed object
+    /// </summary>
     [DataContract]
     public class Feed
     {

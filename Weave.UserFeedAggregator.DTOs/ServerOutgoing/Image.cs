@@ -2,6 +2,9 @@
 
 namespace Weave.UserFeedAggregator.DTOs.ServerOutgoing
 {
+    /// <summary>
+    /// DTO for an Image object, providing a URL and supported formats of cached images
+    /// </summary>
     [DataContract]
     public class Image
     {
