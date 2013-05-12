@@ -16,9 +16,10 @@ namespace Weave.UserFeedAggregator.DTOs.ServerOutgoing
         [DataMember(Order= 8)]  public string VideoUri { get; set; } 
         [DataMember(Order= 9)]  public string PodcastUri { get; set; }
         [DataMember(Order=10)]  public string ZuneAppId { get; set; }
-        [DataMember(Order=11)]  public bool IsFavorite { get; set; }
-        [DataMember(Order=12)]  public bool HasBeenViewed { get; set; }
-        [DataMember(Order=13)]  public DateTime OriginalDownloadDateTime { get; set; }
-        [DataMember(Order=14)]  public Image Image { get; set; }
+        [DataMember(Order=11)]  public bool IsNew { get; set; }
+        [DataMember(Order=12)]  public bool IsFavorite { get; set; }
+        [DataMember(Order=13)]  public bool HasBeenViewed { get; set; }
+        [DataMember(Order=14)]  public DateTime OriginalDownloadDateTime { get; set; }
+        [DataMember(Order=15)]  public Image Image { get; set; }
     }
 }

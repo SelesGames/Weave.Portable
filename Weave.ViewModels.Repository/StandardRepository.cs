@@ -27,15 +27,15 @@ namespace Weave.ViewModels.Repository
             return Convert(user);
         }
 
-        public async Task<NewsList> GetNews(string category, bool refresh = false, int skip = 0, int take = 10, NewsItemType type = NewsItemType.Any, bool requireImage = false)
+        public async Task<NewsList> GetNews(string category, bool refresh = false, bool markEntry = false, int skip = 0, int take = 10, NewsItemType type = NewsItemType.Any, bool requireImage = false)
         {
-            var userNews = await innerClient.GetNews(userId, category, refresh, skip, take, (DTOs.NewsItemType)type, requireImage);
+            var userNews = await innerClient.GetNews(userId, category, refresh, markEntry, skip, take, (DTOs.NewsItemType)type, requireImage);
             return Convert(userNews);
         }
 
-        public async Task<NewsList> GetNews(Guid feedId, bool refresh = false, int skip = 0, int take = 10, NewsItemType type = NewsItemType.Any, bool requireImage = false)
+        public async Task<NewsList> GetNews(Guid feedId, bool refresh = false, bool markEntry = false, int skip = 0, int take = 10, NewsItemType type = NewsItemType.Any, bool requireImage = false)
         {
-            var userNews = await innerClient.GetNews(userId, feedId, refresh, skip, take, (DTOs.NewsItemType)type, requireImage);
+            var userNews = await innerClient.GetNews(userId, feedId, refresh, markEntry, skip, take, (DTOs.NewsItemType)type, requireImage);
             return Convert(userNews);
         }
 
@@ -201,6 +201,7 @@ namespace Weave.ViewModels.Repository
                 ZuneAppId = o.ZuneAppId,
                 OriginalDownloadDateTime = o.OriginalDownloadDateTime,
                 Image = o.Image == null ? null : Convert(o.Image),
+                IsNew = o.IsNew,
                 HasBeenViewed = o.HasBeenViewed,
                 IsFavorite = o.IsFavorite,
             };

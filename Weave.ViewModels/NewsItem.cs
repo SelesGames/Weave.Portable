@@ -34,7 +34,7 @@ namespace Weave.ViewModels
         public DateTime LocalDateTime { get; private set; }
         public DateTime UniversalDateTime { get; private set; }
 
-
+        public bool IsNew { get; set; }
         public bool IsFavorite
         {
             get { return isFavorite; }
@@ -58,6 +58,11 @@ namespace Weave.ViewModels
             }
         }
         bool hasBeenViewed;
+
+        public bool IsDisplayedAsNew
+        {
+            get { return !HasBeenViewed && IsNew; }
+        }
 
         public enum ColoringDisplayState
         {
