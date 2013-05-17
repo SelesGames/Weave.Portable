@@ -38,6 +38,7 @@
     <Compile Include="Extensions\DateTimeDisplayFormattingExtensions.cs" />
     <Compile Include="Extensions\FeedExtensions.cs" />
     <Compile Include="Feed.cs" />
+    <Compile Include="Helpers\ViewModelLocator.cs" />
     <Compile Include="Image.cs" />
     <Compile Include="Contracts\INewsItem.cs" />
     <Compile Include="Contracts\Client\IViewModelRepository.cs" />
