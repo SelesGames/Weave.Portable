@@ -39,6 +39,15 @@ namespace Weave.ViewModels.Repository
             return Convert(userNews);
         }
 
+        public async Task<IEnumerable<Feed>> GetFeeds()
+        {
+            var feedInfoList = await innerClient.GetFeeds(userId);
+            if (feedInfoList.Feeds == null)
+                return null;
+
+            return feedInfoList.Feeds.Select(Convert).ToList();
+        }
+
         public Task AddFeed(Feed feed)
         {
             return innerClient.AddFeed(userId, ConvertToNewFeed(feed));
