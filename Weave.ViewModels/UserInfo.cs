@@ -1,15 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Linq;
+using System.ComponentModel;
 using System.Threading.Tasks;
 using Weave.ViewModels.Contracts.Client;
 
 namespace Weave.ViewModels
 {
-    public class UserInfo
+    public class UserInfo : INotifyPropertyChanged
     {
         IViewModelRepository repo;
+        bool shouldRefreshFeeds = false;
+        DateTime lastFeedsInfoRefresh = DateTime.UtcNow;
 
         public Guid Id { get; set; }
         public ObservableCollection<Feed> Feeds { get; set; }
@@ -38,22 +40,26 @@ namespace Weave.ViewModels
 
         #region Feed management
 
-        public async Task UpdateFeeds()
+        public bool ShouldRefreshFeedsInfo()
+        {
+            return shouldRefreshFeeds || DateTime.UtcNow - lastFeedsInfoRefresh > TimeSpan.FromMinutes(1);
+        }
+
+        public async Task RefreshFeedsInfo()
         {
             var feeds = await repo.GetFeeds();
-            bool areItemsNew = !Enumerable.SequenceEqual(Feeds, feeds);
-            if (areItemsNew)
-            {
-                Feeds.Clear();
-                foreach (var feed in feeds)
-                    Feeds.Add(feed);
-            }
+
+            Feeds = new ObservableCollection<Feed>(feeds);
+            if (PropertyChanged != null)
+                PropertyChanged(this, new PropertyChangedEventArgs("Feeds"));
+
+            shouldRefreshFeeds = false;
         }
 
         public async Task AddFeed(Feed feed)
         {
-            await repo.AddFeed(feed);
-            Feeds.Add(feed);
+            var returnedFeed = await repo.AddFeed(feed);
+            Feeds.Add(returnedFeed);
         }
 
         public async Task RemoveFeed(Feed feed)
@@ -80,6 +86,7 @@ namespace Weave.ViewModels
                 foreach (var feed in removed)
                     Feeds.Remove(feed);
             }
+            shouldRefreshFeeds = true;
         }
 
         #endregion
@@ -114,5 +121,10 @@ namespace Weave.ViewModels
         }
 
         #endregion
+
+
+
+
+        public event PropertyChangedEventHandler PropertyChanged;
     }
 }

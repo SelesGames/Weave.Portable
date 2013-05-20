@@ -49,9 +49,10 @@ namespace Weave.ViewModels.Repository
             return feedInfoList.Feeds.Select(Convert).ToList();
         }
 
-        public Task AddFeed(Feed feed)
+        public async Task<Feed> AddFeed(Feed feed)
         {
-            return innerClient.AddFeed(userId, ConvertToNewFeed(feed));
+            var returnedFeed = await innerClient.AddFeed(userId, ConvertToNewFeed(feed));
+            return Convert(returnedFeed);
         }
 
         public Task RemoveFeed(Feed feed)
@@ -159,12 +160,12 @@ namespace Weave.ViewModels.Repository
             return new NewsList
             {
                 FeedCount = o.FeedCount,
-                TotalNewsCount = o.TotalNewsCount,
-                NewNewsCount = o.NewNewsCount,
-                NewsCount = o.NewsCount,
-                Skip = o.Skip,
-                Take = o.Take,
-                //News = o.News == null ? null : GetJoinedNews(o.Feeds, o.News).ToList(),
+                NewArticleCount = o.NewArticleCount,
+                UnreadArticleCount = o.UnreadArticleCount,
+                TotalArticleCount = o.TotalArticleCount,
+                IncludedArticleCount = o.Page == null ? 0 : o.Page.IncludedArticleCount,
+                Skip = o.Page == null ? 0 : o.Page.Skip,
+                Take = o.Page == null ? 0 : o.Page.Take,
                 News = o.News == null ? null : GetJoinedNews(o.Feeds.Select(Convert).ToList(), o.News.Select(Convert).ToList()).ToList(),
             };
         }

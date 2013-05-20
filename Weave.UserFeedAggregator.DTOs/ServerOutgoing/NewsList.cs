@@ -12,16 +12,24 @@ namespace Weave.UserFeedAggregator.DTOs.ServerOutgoing
     {
         [DataMember(Order= 1)]  public Guid UserId { get; set; }
         [DataMember(Order= 2)]  public int FeedCount { get; set; }
-        [DataMember(Order= 3)]  public int TotalNewsCount { get; set; }
-        [DataMember(Order= 4)]  public int NewNewsCount { get; set; }
-        [DataMember(Order= 5)]  public int NewsCount { get; set; }
-        [DataMember(Order= 6)]  public int Skip { get; set; }
-        [DataMember(Order= 7)]  public int Take { get; set; }
+        [DataMember(Order= 3)]  public int NewArticleCount { get; set; }
+        [DataMember(Order= 4)]  public int UnreadArticleCount { get; set; }
+        [DataMember(Order= 5)]  public int TotalArticleCount { get; set; }
 
-        [DataMember(Order= 8)]  public List<Feed> Feeds { get; set; }
-        [DataMember(Order= 9)]  public List<NewsItem> News { get; set; }
+        [DataMember(Order= 6)]  public List<Feed> Feeds { get; set; }
+        [DataMember(Order= 7)]  public List<NewsItem> News { get; set; }
+
+        [DataMember(Order= 8)]  public PageInfo Page { get; set; }
 
         [DataMember(Order=98)]  public TimeSpan DataStoreReadTime { get; set; }
         [DataMember(Order=99)]  public TimeSpan DataStoreWriteTime { get; set; }
+    }
+
+    [DataContract]
+    public class PageInfo
+    {
+        [DataMember(Order= 1)]  public int Skip { get; set; }
+        [DataMember(Order= 2)]  public int Take { get; set; }
+        [DataMember(Order= 3)]  public int IncludedArticleCount { get; set; }
     }
 }

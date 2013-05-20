@@ -12,7 +12,7 @@ namespace Weave.ViewModels.Contracts.Client
         Task<NewsList> GetNews(Guid feedId, bool refresh = false, bool markEntry = false, int skip = 0, int take = 10, NewsItemType type = NewsItemType.Any, bool requireImage = false);
 
         Task<IEnumerable<Feed>> GetFeeds();
-        Task AddFeed(Feed feed);
+        Task<Feed> AddFeed(Feed feed);
         Task RemoveFeed(Feed feed);
         Task UpdateFeed(Feed feed);
         Task BatchChange(List<Feed> added = null, List<Feed> removed = null, List<Feed> updated = null);
