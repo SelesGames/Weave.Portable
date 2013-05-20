@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Linq;
 using System.Threading.Tasks;
 using Weave.ViewModels.Contracts.Client;
 
@@ -10,7 +12,7 @@ namespace Weave.ViewModels
         IViewModelRepository repo;
 
         public Guid Id { get; set; }
-        public List<Feed> Feeds { get; set; }
+        public ObservableCollection<Feed> Feeds { get; set; }
         public DateTime PreviousLoginTime { get; set; }
         public DateTime CurrentLoginTime { get; set; }
         public List<NewsItem> LatestNews { get; set; }
@@ -36,14 +38,28 @@ namespace Weave.ViewModels
 
         #region Feed management
 
+        public async Task UpdateFeeds()
+        {
+            var feeds = await repo.GetFeeds();
+            bool areItemsNew = !Enumerable.SequenceEqual(Feeds, feeds);
+            if (areItemsNew)
+            {
+                Feeds.Clear();
+                foreach (var feed in feeds)
+                    Feeds.Add(feed);
+            }
+        }
+
         public async Task AddFeed(Feed feed)
         {
             await repo.AddFeed(feed);
+            Feeds.Add(feed);
         }
 
         public async Task RemoveFeed(Feed feed)
         {
             await repo.RemoveFeed(feed);
+            Feeds.Remove(feed);
         }
 
         public async Task UpdateFeed(Feed feed)
@@ -54,6 +70,16 @@ namespace Weave.ViewModels
         public async Task BatchChange(List<Feed> added = null, List<Feed> removed = null, List<Feed> updated = null)
         {
             await repo.BatchChange(added, removed, updated);
+            if (added != null)
+            {
+                foreach (var feed in added)
+                    Feeds.Add(feed);
+            }
+            if (removed != null)
+            {
+                foreach (var feed in removed)
+                    Feeds.Remove(feed);
+            }
         }
 
         #endregion
@@ -66,21 +92,25 @@ namespace Weave.ViewModels
         public async Task MarkArticleRead(NewsItem newsItem)
         {
             await repo.MarkArticleRead(newsItem);
+            newsItem.HasBeenViewed = true;
         }
 
         public async Task MarkArticleUnread(NewsItem newsItem)
         {
             await repo.MarkArticleUnread(newsItem);
+            newsItem.HasBeenViewed = false;
         }
 
         public async Task AddFavorite(NewsItem newsItem)
         {
             await repo.AddFavorite(newsItem);
+            newsItem.IsFavorite = true;
         }
 
         public async Task RemoveFavorite(NewsItem newsItem)
         {
             await repo.RemoveFavorite(newsItem);
+            newsItem.IsFavorite = false;
         }
 
         #endregion

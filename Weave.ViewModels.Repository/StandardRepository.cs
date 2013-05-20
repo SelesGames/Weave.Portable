@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading.Tasks;
 using Weave.UserFeedAggregator.Contracts;
@@ -141,21 +142,21 @@ namespace Weave.ViewModels.Repository
 
         #region Conversion helpers
 
-        ViewModels.UserInfo Convert(Outgoing.UserInfo o)
+        UserInfo Convert(Outgoing.UserInfo o)
         {
             return new UserInfo(this)
             {
                 Id = o.Id,
-                Feeds = o.Feeds == null ? null : o.Feeds.Select(Convert).ToList(),
+                Feeds = o.Feeds == null ? null : new ObservableCollection<Feed>(o.Feeds.Select(Convert)),
                 PreviousLoginTime = o.PreviousLoginTime,
                 CurrentLoginTime = o.CurrentLoginTime,
                 LatestNews = o.LatestNews == null ? null : GetJoinedNews(o.Feeds.Select(Convert).ToList(), o.LatestNews.Select(Convert).ToList()).ToList(),
             };
         }
 
-        ViewModels.NewsList Convert(Outgoing.NewsList o)
+        NewsList Convert(Outgoing.NewsList o)
         {
-            return new ViewModels.NewsList
+            return new NewsList
             {
                 FeedCount = o.FeedCount,
                 TotalNewsCount = o.TotalNewsCount,
@@ -168,38 +169,38 @@ namespace Weave.ViewModels.Repository
             };
         }
 
-        IEnumerable<ViewModels.NewsItem> GetJoinedNews(IEnumerable<ViewModels.Feed> feeds, IEnumerable<ViewModels.NewsItem> news)
+        IEnumerable<NewsItem> GetJoinedNews(IEnumerable<Feed> feeds, IEnumerable<NewsItem> news)
         {
             return from n in news
                    join f in feeds on n.Feed.Id equals f.Id
                    select Convert(n, f);
         }
         
-        ViewModels.NewsItem Convert(ViewModels.NewsItem n, ViewModels.Feed f)
+        NewsItem Convert(NewsItem n, Feed f)
         {
             n.Feed = f;
             return n;
         }
 
-        ViewModels.Feed Convert(Outgoing.Feed o)
+        Feed Convert(Outgoing.Feed o)
         {
-            return new ViewModels.Feed
+            return new Feed
             {
                 Id = o.Id,
                 Name = o.Name,
                 Uri = o.Uri,
                 Category = o.Category,
-                ArticleViewingType = (ViewModels.ArticleViewingType)o.ArticleViewingType,
+                ArticleViewingType = (ArticleViewingType)o.ArticleViewingType,
                 TeaserImageUrl = o.TeaserImageUrl,
             };
         }
 
-        ViewModels.NewsItem Convert(Outgoing.NewsItem o)
+        NewsItem Convert(Outgoing.NewsItem o)
         {
-            return new ViewModels.NewsItem
+            return new NewsItem
             {
                 Id = o.Id,
-                Feed = new ViewModels.Feed { Id = o.FeedId },
+                Feed = new Feed { Id = o.FeedId },
                 Title = o.Title,
                 Link = o.Link,
                 UtcPublishDateTime = o.UtcPublishDateTime,
@@ -216,9 +217,9 @@ namespace Weave.ViewModels.Repository
             };
         }
 
-        ViewModels.Image Convert(Outgoing.Image o)
+        Image Convert(Outgoing.Image o)
         {
-            return new ViewModels.Image
+            return new Image
             {
                 BaseImageUrl = o.BaseImageUrl,
                 Width = o.Width,
