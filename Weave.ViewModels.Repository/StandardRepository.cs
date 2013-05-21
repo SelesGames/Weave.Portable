@@ -40,13 +40,22 @@ namespace Weave.ViewModels.Repository
             return Convert(userNews);
         }
 
-        public async Task<IEnumerable<Feed>> GetFeeds()
+        public async Task<FeedsInfoList> GetFeeds(bool refresh = false)
         {
-            var feedInfoList = await innerClient.GetFeeds(userId);
-            if (feedInfoList.Feeds == null)
-                return null;
+            var feedsInfoList = await innerClient.GetFeeds(userId, refresh);
+            return Convert(feedsInfoList);
+        }
 
-            return feedInfoList.Feeds.Select(Convert).ToList();
+        public async Task<FeedsInfoList> GetFeeds(string category, bool refresh = false)
+        {
+            var feedsInfoList = await innerClient.GetFeeds(userId, category, refresh);
+            return Convert(feedsInfoList);
+        }
+
+        public async Task<FeedsInfoList> GetFeeds(Guid feedId, bool refresh = false)
+        {
+            var feedsInfoList = await innerClient.GetFeeds(userId, feedId, refresh);
+            return Convert(feedsInfoList);
         }
 
         public async Task<Feed> AddFeed(Feed feed)
@@ -172,6 +181,18 @@ namespace Weave.ViewModels.Repository
                 Skip = o.Page == null ? 0 : o.Page.Skip,
                 Take = o.Page == null ? 0 : o.Page.Take,
                 News = o.News == null ? null : GetJoinedNews(o.Feeds.Select(Convert).ToList(), o.News.Select(Convert).ToList()).ToList(),
+            };
+        }
+
+        FeedsInfoList Convert(Outgoing.FeedsInfoList o)
+        {
+            return new FeedsInfoList
+            {
+                TotalFeedCount = o.TotalFeedCount,
+                Feeds = o.Feeds == null ? null : o.Feeds.Select(Convert).ToList(),
+                NewArticleCount = o.NewArticleCount,
+                UnreadArticleCount = o.UnreadArticleCount,
+                TotalArticleCount = o.TotalArticleCount,
             };
         }
 

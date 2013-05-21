@@ -47,7 +47,8 @@ namespace Weave.ViewModels
 
         public async Task RefreshFeedsInfo()
         {
-            var feeds = await repo.GetFeeds();
+            var feedsInfo = await repo.GetFeeds();
+            var feeds = feedsInfo.Feeds;
 
             Feeds = new ObservableCollection<Feed>(feeds);
             if (PropertyChanged != null)

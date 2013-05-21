@@ -11,7 +11,9 @@ namespace Weave.ViewModels.Contracts.Client
         Task<NewsList> GetNews(string category, bool refresh = false, bool markEntry = false, int skip = 0, int take = 10, NewsItemType type = NewsItemType.Any, bool requireImage = false);
         Task<NewsList> GetNews(Guid feedId, bool refresh = false, bool markEntry = false, int skip = 0, int take = 10, NewsItemType type = NewsItemType.Any, bool requireImage = false);
 
-        Task<IEnumerable<Feed>> GetFeeds();
+        Task<FeedsInfoList> GetFeeds(bool refresh = false);
+        Task<FeedsInfoList> GetFeeds(string category, bool refresh = false);
+        Task<FeedsInfoList> GetFeeds(Guid feedId, bool refresh = false);
         Task<Feed> AddFeed(Feed feed);
         Task RemoveFeed(Feed feed);
         Task UpdateFeed(Feed feed);
