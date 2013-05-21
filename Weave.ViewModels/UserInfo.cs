@@ -108,6 +108,12 @@ namespace Weave.ViewModels
             newsItem.HasBeenViewed = false;
         }
 
+        public Task MarkArticlesSoftRead(List<NewsItem> newsItems)
+        {
+            return repo.MarkArticlesSoftRead(newsItems);
+        }
+
+
         public async Task AddFavorite(NewsItem newsItem)
         {
             await repo.AddFavorite(newsItem);

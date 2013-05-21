@@ -86,6 +86,11 @@ namespace Weave.ViewModels.Repository
             return innerClient.MarkArticleUnread(userId, newsItem.Feed.Id, newsItem.Id);
         }
 
+        public Task MarkArticlesSoftRead(List<NewsItem> newsItems)
+        {
+            return innerClient.MarkArticlesSoftRead(userId, newsItems == null ? null : newsItems.Select(o => o.Id).ToList());
+        }
+
         public Task AddFavorite(NewsItem newsItem)
         {
             return innerClient.AddFavorite(userId, newsItem.Feed.Id, newsItem.Id);
