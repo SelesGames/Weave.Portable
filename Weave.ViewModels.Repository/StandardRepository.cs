@@ -219,6 +219,9 @@ namespace Weave.ViewModels.Repository
                 Category = o.Category,
                 ArticleViewingType = (ArticleViewingType)o.ArticleViewingType,
                 TeaserImageUrl = o.TeaserImageUrl,
+                NewArticleCount = o.NewArticleCount,
+                UnreadArticleCount = o.UnreadArticleCount,
+                TotalArticleCount = o.TotalArticleCount,
             };
         }
 

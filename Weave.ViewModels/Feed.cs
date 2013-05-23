@@ -10,5 +10,9 @@ namespace Weave.ViewModels
         public string Category { get; set; }
         public ArticleViewingType ArticleViewingType { get; set; }
         public string TeaserImageUrl { get; set; }
+
+        public int NewArticleCount { get; set; }
+        public int UnreadArticleCount { get; set; }
+        public int TotalArticleCount { get; set; }
     }
 }
