@@ -42,6 +42,7 @@
     <Compile Include="ServerIncoming\NewFeed.cs" />
     <Compile Include="NewsItemType.cs" />
     <Compile Include="ServerIncoming\UpdatedFeed.cs" />
+    <Compile Include="ServerOutgoing\CategoryInfo.cs" />
     <Compile Include="ServerOutgoing\Feed.cs" />
     <Compile Include="ServerOutgoing\FeedsInfoList.cs" />
     <Compile Include="ServerOutgoing\Image.cs" />

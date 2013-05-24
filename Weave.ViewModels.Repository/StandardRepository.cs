@@ -40,21 +40,21 @@ namespace Weave.ViewModels.Repository
             return Convert(userNews);
         }
 
-        public async Task<FeedsInfoList> GetFeeds(bool refresh = false)
+        public async Task<FeedsInfoList> GetFeeds(bool refresh = false, bool nested = false)
         {
-            var feedsInfoList = await innerClient.GetFeeds(userId, refresh);
+            var feedsInfoList = await innerClient.GetFeeds(userId, refresh, nested);
             return Convert(feedsInfoList);
         }
 
-        public async Task<FeedsInfoList> GetFeeds(string category, bool refresh = false)
+        public async Task<FeedsInfoList> GetFeeds(string category, bool refresh = false, bool nested = false)
         {
-            var feedsInfoList = await innerClient.GetFeeds(userId, category, refresh);
+            var feedsInfoList = await innerClient.GetFeeds(userId, category, refresh, nested);
             return Convert(feedsInfoList);
         }
 
-        public async Task<FeedsInfoList> GetFeeds(Guid feedId, bool refresh = false)
+        public async Task<FeedsInfoList> GetFeeds(Guid feedId, bool refresh = false, bool nested = false)
         {
-            var feedsInfoList = await innerClient.GetFeeds(userId, feedId, refresh);
+            var feedsInfoList = await innerClient.GetFeeds(userId, feedId, refresh, nested);
             return Convert(feedsInfoList);
         }
 
@@ -189,6 +189,7 @@ namespace Weave.ViewModels.Repository
             return new FeedsInfoList
             {
                 TotalFeedCount = o.TotalFeedCount,
+                Categories = o.Categories == null ? null : o.Categories.Select(Convert).ToList(),
                 Feeds = o.Feeds == null ? null : o.Feeds.Select(Convert).ToList(),
                 NewArticleCount = o.NewArticleCount,
                 UnreadArticleCount = o.UnreadArticleCount,
@@ -207,6 +208,19 @@ namespace Weave.ViewModels.Repository
         {
             n.Feed = f;
             return n;
+        }
+
+        CategoryInfo Convert(Outgoing.CategoryInfo o)
+        {
+            return new CategoryInfo
+            {
+                Category = o.Category,
+                TotalFeedCount = o.TotalFeedCount,
+                Feeds = o.Feeds == null ? null : o.Feeds.Select(Convert).ToList(),
+                NewArticleCount = o.NewArticleCount,
+                UnreadArticleCount = o.UnreadArticleCount,
+                TotalArticleCount = o.TotalArticleCount,
+            };
         }
 
         Feed Convert(Outgoing.Feed o)

@@ -16,9 +16,9 @@ namespace Weave.UserFeedAggregator.Contracts
         Task<Outgoing.NewsList> GetNews(Guid userId, Guid feedId, bool refresh = false, bool markEntry = false, int skip = 0, int take = 10, NewsItemType type = NewsItemType.Any, bool requireImage = false);
 
 
-        Task<Outgoing.FeedsInfoList> GetFeeds(Guid userId, bool refresh = false);
-        Task<Outgoing.FeedsInfoList> GetFeeds(Guid userId, string category, bool refresh = false);
-        Task<Outgoing.FeedsInfoList> GetFeeds(Guid userId, Guid feedId, bool refresh = false);
+        Task<Outgoing.FeedsInfoList> GetFeeds(Guid userId, bool refresh = false, bool nested = false);
+        Task<Outgoing.FeedsInfoList> GetFeeds(Guid userId, string category, bool refresh = false, bool nested = false);
+        Task<Outgoing.FeedsInfoList> GetFeeds(Guid userId, Guid feedId, bool refresh = false, bool nested = false);
         Task<Outgoing.Feed> AddFeed(Guid userId, Incoming.NewFeed feed);
         Task RemoveFeed(Guid userId, Guid feedId);
         Task UpdateFeed(Guid userId, Incoming.UpdatedFeed feed);

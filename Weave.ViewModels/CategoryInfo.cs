@@ -2,10 +2,10 @@
 
 namespace Weave.ViewModels
 {
-    public class FeedsInfoList
+    public class CategoryInfo
     {
+        public string Category { get; set; }
         public int TotalFeedCount { get; set; }
-        public List<CategoryInfo> Categories { get; set; }
         public List<Feed> Feeds { get; set; }
         public int NewArticleCount { get; set; }
         public int UnreadArticleCount { get; set; }
