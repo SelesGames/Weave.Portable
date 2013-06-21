@@ -5,11 +5,11 @@
     <MinimumVisualStudioVersion>10.0</MinimumVisualStudioVersion>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{6FA5AC47-653A-4634-8BCA-CF68BA33F884}</ProjectGuid>
+    <ProjectGuid>{CCE98720-6054-4EF8-BA8C-14821B35EC1D}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Weave.Identity.DTOs</RootNamespace>
-    <AssemblyName>Weave.Identity.DTOs</AssemblyName>
+    <RootNamespace>Weave.Identity.Service.Contracts</RootNamespace>
+    <AssemblyName>Weave.Identity.Service.Contracts</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <TargetFrameworkProfile>Profile4</TargetFrameworkProfile>
     <FileAlignment>512</FileAlignment>
@@ -33,11 +33,19 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <!-- A reference to the entire .NET Framework is automatically included -->
+    <Compile Include="IIdentityService.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="IdentityInfo.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Reference Include="System.Threading.Tasks">
+      <HintPath>..\lib\System.Threading.Tasks.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Weave.Identity.DTOs\Weave.Identity.Service.DTOs.csproj">
+      <Project>{6fa5ac47-653a-4634-8bca-cf68ba33f884}</Project>
+      <Name>Weave.Identity.Service.DTOs</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\Portable\$(TargetFrameworkVersion)\Microsoft.Portable.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

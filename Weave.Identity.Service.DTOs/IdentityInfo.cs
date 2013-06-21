@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Weave.Identity.DTOs
+namespace Weave.Identity.Service.DTOs
 {
     public class IdentityInfo
     {
