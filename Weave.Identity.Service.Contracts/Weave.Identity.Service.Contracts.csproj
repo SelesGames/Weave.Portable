@@ -42,7 +42,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Weave.Identity.DTOs\Weave.Identity.Service.DTOs.csproj">
+    <ProjectReference Include="..\Weave.Identity.Service.DTOs\Weave.Identity.Service.DTOs.csproj">
       <Project>{6fa5ac47-653a-4634-8bca-cf68ba33f884}</Project>
       <Name>Weave.Identity.Service.DTOs</Name>
     </ProjectReference>
