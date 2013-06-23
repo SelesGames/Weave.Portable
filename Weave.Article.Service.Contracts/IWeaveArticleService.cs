@@ -10,10 +10,10 @@ namespace Weave.Article.Service.Contracts
     {
         Task<bool> MarkRead(Guid userId, Incoming.SavedNewsItem newsItem);
         Task RemoveRead(Guid userId, Guid newsItemId);
-        Task<List<Outgoing.SavedNewsItem>> GetRead(Guid userId, int take, int skip = 0);
+        Task<List<Outgoing.SavedNewsItem>> GetRead(Guid userId, int take, int skip);
 
         Task<bool> AddFavorite(Guid userId, Incoming.SavedNewsItem newsItem);
         Task RemoveFavorite(Guid userId, Guid newsItemId);
-        Task<List<Outgoing.SavedNewsItem>> GetFavorites(Guid userId, int take, int skip = 0);
+        Task<List<Outgoing.SavedNewsItem>> GetFavorites(Guid userId, int take, int skip);
     }
 }
