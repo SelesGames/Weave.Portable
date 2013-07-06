@@ -1,5 +1,5 @@
 ﻿
-namespace Weave.UserFeedAggregator.DTOs
+namespace Weave.User.Service.DTOs
 {
     public enum NewsItemType
     {

@@ -1,6 +1,6 @@
 ﻿using System.Runtime.Serialization;
 
-namespace Weave.UserFeedAggregator.DTOs.ServerOutgoing
+namespace Weave.User.Service.DTOs.ServerOutgoing
 {
     /// <summary>
     /// DTO for an Image object, providing a URL and supported formats of cached images

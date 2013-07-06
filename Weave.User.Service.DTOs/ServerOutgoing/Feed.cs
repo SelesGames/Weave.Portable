@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Runtime.Serialization;
 
-namespace Weave.UserFeedAggregator.DTOs.ServerOutgoing
+namespace Weave.User.Service.DTOs.ServerOutgoing
 {
     /// <summary>
     /// DTO representing a single Feed object

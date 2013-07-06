@@ -3,11 +3,11 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading.Tasks;
-using Weave.UserFeedAggregator.Contracts;
+using Weave.User.Service.Contracts;
 using Weave.ViewModels.Contracts.Client;
-using DTOs = Weave.UserFeedAggregator.DTOs;
-using Incoming = Weave.UserFeedAggregator.DTOs.ServerIncoming;
-using Outgoing = Weave.UserFeedAggregator.DTOs.ServerOutgoing;
+using DTOs = Weave.User.Service.DTOs;
+using Incoming = Weave.User.Service.DTOs.ServerIncoming;
+using Outgoing = Weave.User.Service.DTOs.ServerOutgoing;
 
 namespace Weave.ViewModels.Repository
 {
@@ -280,7 +280,7 @@ namespace Weave.ViewModels.Repository
                 Uri = o.Uri,
                 Name = o.Name,
                 Category = o.Category,
-                ArticleViewingType = (Weave.UserFeedAggregator.DTOs.ArticleViewingType)o.ArticleViewingType,
+                ArticleViewingType = (Weave.User.Service.DTOs.ArticleViewingType)o.ArticleViewingType,
             };
         }
 
@@ -291,7 +291,7 @@ namespace Weave.ViewModels.Repository
                 Id = o.Id,
                 Name = o.Name,
                 Category = o.Category,
-                ArticleViewingType = (Weave.UserFeedAggregator.DTOs.ArticleViewingType)o.ArticleViewingType, 
+                ArticleViewingType = (Weave.User.Service.DTOs.ArticleViewingType)o.ArticleViewingType, 
             };
         }
 

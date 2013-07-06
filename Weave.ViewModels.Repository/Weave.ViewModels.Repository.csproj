@@ -34,13 +34,13 @@
   </PropertyGroup>
   <ItemGroup>
     <!-- A reference to the entire .NET Framework is automatically included -->
-    <ProjectReference Include="..\Weave.UserFeedAggregator.Contracts\Weave.UserFeedAggregator.Contracts.csproj">
+    <ProjectReference Include="..\Weave.UserFeedAggregator.Contracts\Weave.User.Service.Contracts.csproj">
       <Project>{02f3363f-7b0f-4c5f-9123-b388f2870c35}</Project>
-      <Name>Weave.UserFeedAggregator.Contracts</Name>
+      <Name>Weave.User.Service.Contracts</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Weave.UserFeedAggregator.DTOs\Weave.UserFeedAggregator.DTOs.csproj">
+    <ProjectReference Include="..\Weave.UserFeedAggregator.DTOs\Weave.User.Service.DTOs.csproj">
       <Project>{75f2f4b1-beb2-4ac6-a935-5a795c5a79a0}</Project>
-      <Name>Weave.UserFeedAggregator.DTOs</Name>
+      <Name>Weave.User.Service.DTOs</Name>
     </ProjectReference>
     <ProjectReference Include="..\Weave.ViewModels\Weave.ViewModels.csproj">
       <Project>{0f188fc9-d10c-48db-917a-ff1cb9c8e795}</Project>

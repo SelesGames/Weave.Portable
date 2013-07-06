@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Runtime.Serialization;
 
-namespace Weave.UserFeedAggregator.DTOs.ServerIncoming
+namespace Weave.User.Service.DTOs.ServerIncoming
 {
     [DataContract]
     public class UserInfo

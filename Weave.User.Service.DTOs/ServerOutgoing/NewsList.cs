@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Runtime.Serialization;
 
-namespace Weave.UserFeedAggregator.DTOs.ServerOutgoing
+namespace Weave.User.Service.DTOs.ServerOutgoing
 {
     /// <summary>
     /// DTO representing what is shown in the article list screen

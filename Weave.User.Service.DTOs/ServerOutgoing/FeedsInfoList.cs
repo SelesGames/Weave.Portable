@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Runtime.Serialization;
 
-namespace Weave.UserFeedAggregator.DTOs.ServerOutgoing
+namespace Weave.User.Service.DTOs.ServerOutgoing
 {
     /// <summary>
     /// DTO representing a list of the User's Feeds
