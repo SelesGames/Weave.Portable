@@ -36,6 +36,7 @@
     <Compile Include="ArticleViewingType.cs" />
     <Compile Include="CategoryInfo.cs" />
     <Compile Include="Contracts\Client\IUserCache.cs" />
+    <Compile Include="EntryType.cs" />
     <Compile Include="Extensions\DateTimeDisplayFormattingExtensions.cs" />
     <Compile Include="Extensions\FeedExtensions.cs" />
     <Compile Include="Feed.cs" />

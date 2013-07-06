@@ -25,14 +25,14 @@ namespace Weave.ViewModels
         }
 
 
-        public async Task<NewsList> GetNewsForCategory(string category, bool refresh = false, bool markEntry = false, int skip = 0, int take = 10)
+        public async Task<NewsList> GetNewsForCategory(string category, EntryType entry = EntryType.Peek, int skip = 0, int take = 10)
         {
-            return await repo.GetNews(category, refresh, markEntry, skip, take);
+            return await repo.GetNews(category, entry, skip, take);
         }
 
-        public async Task<NewsList> GetNewsForFeed(Guid feedId, bool refresh = false, bool markEntry = false, int skip = 0, int take = 10)
+        public async Task<NewsList> GetNewsForFeed(Guid feedId, EntryType entry = EntryType.Peek, int skip = 0, int take = 10)
         {
-            return await repo.GetNews(feedId, refresh, markEntry, skip, take);
+            return await repo.GetNews(feedId, entry, skip, take);
         }
 
 
