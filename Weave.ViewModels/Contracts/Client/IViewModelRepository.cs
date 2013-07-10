@@ -22,8 +22,10 @@ namespace Weave.ViewModels.Contracts.Client
         Task MarkArticleRead(NewsItem newsItem);
         Task MarkArticleUnread(NewsItem newsItem);
         Task MarkArticlesSoftRead(List<NewsItem> newsItems);
+        Task<List<NewsItem>> GetRead(int skip = 0, int take = 10);
 
         Task AddFavorite(NewsItem newsItem);
         Task RemoveFavorite(NewsItem newsItem);
+        Task<List<NewsItem>> GetFavorites(int skip = 0, int take = 10);
     }
 }

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading.Tasks;
+using Weave.Article.Service.Contracts;
 using Weave.User.Service.Contracts;
 using Weave.ViewModels.Contracts.Client;
 using DTOs = Weave.User.Service.DTOs;
@@ -13,70 +14,72 @@ namespace Weave.ViewModels.Repository
 {
     public class StandardRepository : IViewModelRepository
     {
-        IWeaveUserService innerClient;
+        IWeaveUserService userService;
+        IWeaveArticleService articleService;
         Guid userId;
 
-        public StandardRepository(Guid userId, IWeaveUserService innerClient)
+        public StandardRepository(Guid userId, IWeaveUserService userService, IWeaveArticleService articleService)
         {
             this.userId = userId;
-            this.innerClient = innerClient;
+            this.userService = userService;
+            this.articleService = articleService;
         }
 
         public async Task<UserInfo> GetUserInfo(bool refresh = false)
         {
-            var user = await innerClient.GetUserInfo(userId, refresh);
+            var user = await userService.GetUserInfo(userId, refresh);
             return Convert(user);
         }
 
         public async Task<NewsList> GetNews(string category, EntryType entry = EntryType.Peek, int skip = 0, int take = 10, NewsItemType type = NewsItemType.Any, bool requireImage = false)
         {
-            var userNews = await innerClient.GetNews(userId, category, (Weave.User.Service.Contracts.EntryType)entry, skip, take, (DTOs.NewsItemType)type, requireImage);
+            var userNews = await userService.GetNews(userId, category, (Weave.User.Service.Contracts.EntryType)entry, skip, take, (DTOs.NewsItemType)type, requireImage);
             return Convert(userNews);
         }
 
         public async Task<NewsList> GetNews(Guid feedId, EntryType entry = EntryType.Peek, int skip = 0, int take = 10, NewsItemType type = NewsItemType.Any, bool requireImage = false)
         {
-            var userNews = await innerClient.GetNews(userId, feedId, (Weave.User.Service.Contracts.EntryType)entry, skip, take, (DTOs.NewsItemType)type, requireImage);
+            var userNews = await userService.GetNews(userId, feedId, (Weave.User.Service.Contracts.EntryType)entry, skip, take, (DTOs.NewsItemType)type, requireImage);
             return Convert(userNews);
         }
 
         public async Task<FeedsInfoList> GetFeeds(bool refresh = false, bool nested = false)
         {
-            var feedsInfoList = await innerClient.GetFeeds(userId, refresh, nested);
+            var feedsInfoList = await userService.GetFeeds(userId, refresh, nested);
             return Convert(feedsInfoList);
         }
 
         public async Task<FeedsInfoList> GetFeeds(string category, bool refresh = false, bool nested = false)
         {
-            var feedsInfoList = await innerClient.GetFeeds(userId, category, refresh, nested);
+            var feedsInfoList = await userService.GetFeeds(userId, category, refresh, nested);
             return Convert(feedsInfoList);
         }
 
         public async Task<FeedsInfoList> GetFeeds(Guid feedId, bool refresh = false, bool nested = false)
         {
-            var feedsInfoList = await innerClient.GetFeeds(userId, feedId, refresh, nested);
+            var feedsInfoList = await userService.GetFeeds(userId, feedId, refresh, nested);
             return Convert(feedsInfoList);
         }
 
         public async Task<Feed> AddFeed(Feed feed)
         {
-            var returnedFeed = await innerClient.AddFeed(userId, ConvertToNewFeed(feed));
+            var returnedFeed = await userService.AddFeed(userId, ConvertToNewFeed(feed));
             return Convert(returnedFeed);
         }
 
         public Task RemoveFeed(Feed feed)
         {
-            return innerClient.RemoveFeed(userId, feed.Id);
+            return userService.RemoveFeed(userId, feed.Id);
         }
 
         public Task UpdateFeed(Feed feed)
         {
-            return innerClient.UpdateFeed(userId, ConvertToUpdatedFeed(feed));
+            return userService.UpdateFeed(userId, ConvertToUpdatedFeed(feed));
         }
 
         public Task BatchChange(List<Feed> added = null, List<Feed> removed = null, List<Feed> updated = null)
         {
-            return innerClient.BatchChange(userId,
+            return userService.BatchChange(userId,
                 new Incoming.BatchFeedChange
                 {
                     Added = added == null ? null : added.Select(ConvertToNewFeed).ToList(),
@@ -87,27 +90,39 @@ namespace Weave.ViewModels.Repository
 
         public Task MarkArticleRead(NewsItem newsItem)
         {
-            return innerClient.MarkArticleRead(userId, newsItem.Feed.Id, newsItem.Id);
+            return userService.MarkArticleRead(userId, newsItem.Feed.Id, newsItem.Id);
         }
 
         public Task MarkArticleUnread(NewsItem newsItem)
         {
-            return innerClient.MarkArticleUnread(userId, newsItem.Feed.Id, newsItem.Id);
+            return userService.MarkArticleUnread(userId, newsItem.Feed.Id, newsItem.Id);
         }
 
         public Task MarkArticlesSoftRead(List<NewsItem> newsItems)
         {
-            return innerClient.MarkArticlesSoftRead(userId, newsItems == null ? null : newsItems.Select(o => o.Id).ToList());
+            return userService.MarkArticlesSoftRead(userId, newsItems == null ? null : newsItems.Select(o => o.Id).ToList());
         }
 
         public Task AddFavorite(NewsItem newsItem)
         {
-            return innerClient.AddFavorite(userId, newsItem.Feed.Id, newsItem.Id);
+            return userService.AddFavorite(userId, newsItem.Feed.Id, newsItem.Id);
         }
 
         public Task RemoveFavorite(NewsItem newsItem)
         {
-            return innerClient.RemoveFavorite(userId, newsItem.Feed.Id, newsItem.Id);
+            return userService.RemoveFavorite(userId, newsItem.Feed.Id, newsItem.Id);
+        }
+
+        public async Task<List<NewsItem>> GetRead(int skip = 0, int take = 10)
+        {
+            var read = await articleService.GetRead(userId, take, skip);
+            return read == null ? null : read.Select(Convert).ToList();
+        }
+
+        public async Task<List<NewsItem>> GetFavorites(int skip = 0, int take = 10)
+        {
+            var favorites = await articleService.GetFavorites(userId, take, skip);
+            return favorites == null ? null : favorites.Select(Convert).ToList();
         }
 
 
@@ -292,6 +307,23 @@ namespace Weave.ViewModels.Repository
                 Name = o.Name,
                 Category = o.Category,
                 ArticleViewingType = (Weave.User.Service.DTOs.ArticleViewingType)o.ArticleViewingType, 
+            };
+        }
+
+        NewsItem Convert(Weave.Article.Service.DTOs.ServerOutgoing.SavedNewsItem o)
+        {
+            return new NewsItem
+            {
+                Id = o.Id,
+                Feed = new Feed { Name = o.SourceName, ArticleViewingType = ArticleViewingType.Mobilizer },
+                Title = o.Title,
+                Link = o.Link,
+                UtcPublishDateTime = o.UtcPublishDateTime,
+                ImageUrl = o.ImageUrl,
+                YoutubeId = o.YoutubeId,
+                VideoUri = o.VideoUri,
+                PodcastUri = o.PodcastUri,
+                ZuneAppId = o.ZuneAppId,
             };
         }
 
