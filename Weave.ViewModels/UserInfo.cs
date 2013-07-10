@@ -114,6 +114,10 @@ namespace Weave.ViewModels
             return repo.MarkArticlesSoftRead(newsItems);
         }
 
+        public Task<List<NewsItem>> GetRead(int skip = 0, int take = 10)
+        {
+            return repo.GetRead(skip, take);
+        }
 
         public async Task AddFavorite(NewsItem newsItem)
         {
@@ -125,6 +129,11 @@ namespace Weave.ViewModels
         {
             await repo.RemoveFavorite(newsItem);
             newsItem.IsFavorite = false;
+        }
+
+        public Task<List<NewsItem>> GetFavorites(int skip = 0, int take = 10)
+        {
+            return repo.GetFavorites(skip, take);
         }
 
         #endregion
