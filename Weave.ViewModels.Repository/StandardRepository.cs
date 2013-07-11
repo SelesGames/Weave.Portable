@@ -116,13 +116,13 @@ namespace Weave.ViewModels.Repository
         public async Task<List<NewsItem>> GetRead(int skip = 0, int take = 10)
         {
             var read = await articleService.GetRead(userId, take, skip);
-            return read == null ? null : read.Select(Convert).ToList();
+            return read == null ? null : read.Select(ConvertToRead).ToList();
         }
 
         public async Task<List<NewsItem>> GetFavorites(int skip = 0, int take = 10)
         {
             var favorites = await articleService.GetFavorites(userId, take, skip);
-            return favorites == null ? null : favorites.Select(Convert).ToList();
+            return favorites == null ? null : favorites.Select(ConvertToFavorite).ToList();
         }
 
 
@@ -310,7 +310,25 @@ namespace Weave.ViewModels.Repository
             };
         }
 
-        NewsItem Convert(Weave.Article.Service.DTOs.ServerOutgoing.SavedNewsItem o)
+        NewsItem ConvertToFavorite(Weave.Article.Service.DTOs.ServerOutgoing.SavedNewsItem o)
+        {
+            return new NewsItem
+            {
+                Id = o.Id,
+                Feed = new Feed { Name = o.SourceName, ArticleViewingType = ArticleViewingType.Mobilizer },
+                Title = o.Title,
+                Link = o.Link,
+                UtcPublishDateTime = o.UtcPublishDateTime,
+                ImageUrl = o.ImageUrl,
+                YoutubeId = o.YoutubeId,
+                VideoUri = o.VideoUri,
+                PodcastUri = o.PodcastUri,
+                ZuneAppId = o.ZuneAppId,
+                IsFavorite = true,
+            };
+        }
+
+        NewsItem ConvertToRead(Weave.Article.Service.DTOs.ServerOutgoing.SavedNewsItem o)
         {
             return new NewsItem
             {
