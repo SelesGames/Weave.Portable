@@ -90,12 +90,12 @@ namespace Weave.ViewModels.Repository
 
         public Task MarkArticleRead(NewsItem newsItem)
         {
-            return userService.MarkArticleRead(userId, newsItem.Feed.Id, newsItem.Id);
+            return userService.MarkArticleRead(userId, newsItem.Id);
         }
 
         public Task MarkArticleUnread(NewsItem newsItem)
         {
-            return userService.MarkArticleUnread(userId, newsItem.Feed.Id, newsItem.Id);
+            return userService.MarkArticleUnread(userId, newsItem.Id);
         }
 
         public Task MarkArticlesSoftRead(List<NewsItem> newsItems)
@@ -105,12 +105,12 @@ namespace Weave.ViewModels.Repository
 
         public Task AddFavorite(NewsItem newsItem)
         {
-            return userService.AddFavorite(userId, newsItem.Feed.Id, newsItem.Id);
+            return userService.AddFavorite(userId, newsItem.Id);
         }
 
         public Task RemoveFavorite(NewsItem newsItem)
         {
-            return userService.RemoveFavorite(userId, newsItem.Feed.Id, newsItem.Id);
+            return userService.RemoveFavorite(userId, newsItem.Id);
         }
 
         public async Task<List<NewsItem>> GetRead(int skip = 0, int take = 10)
