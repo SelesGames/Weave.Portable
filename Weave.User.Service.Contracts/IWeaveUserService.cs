@@ -24,11 +24,11 @@ namespace Weave.User.Service.Contracts
         Task UpdateFeed(Guid userId, Incoming.UpdatedFeed feed);
         Task BatchChange(Guid userId, Incoming.BatchFeedChange changeSet);
 
-        Task MarkArticleRead(Guid userId, Guid feedId, Guid newsItemId);
-        Task MarkArticleUnread(Guid userId, Guid feedId, Guid newsItemId);
+        Task MarkArticleRead(Guid userId, Guid newsItemId);
+        Task MarkArticleUnread(Guid userId, Guid newsItemId);
         Task MarkArticlesSoftRead(Guid userId, List<Guid> newsItemIds);
         
-        Task AddFavorite(Guid userId, Guid feedId, Guid newsItemId);
-        Task RemoveFavorite(Guid userId, Guid feedId, Guid newsItemId);
+        Task AddFavorite(Guid userId, Guid newsItemId);
+        Task RemoveFavorite(Guid userId, Guid newsItemId);
     }
 }
