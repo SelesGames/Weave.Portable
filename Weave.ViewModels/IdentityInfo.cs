@@ -15,6 +15,8 @@ namespace Weave.ViewModels
 
         IIdentityService service;
 
+        Guid userId;
+
         string
             userName,
             passwordHash,
@@ -26,6 +28,9 @@ namespace Weave.ViewModels
         #endregion
 
 
+
+
+        public event EventHandler UserIdChanged;
 
 
         public IdentityInfo(IIdentityService service)
@@ -71,7 +76,19 @@ namespace Weave.ViewModels
 
 
 
-        public Guid UserId { get; set; }
+        public Guid UserId 
+        {
+            get { return userId; }
+            set
+            {
+                if (userId != value)
+                {
+                    userId = value;
+                    if (UserIdChanged != null)
+                        UserIdChanged(this, EventArgs.Empty);
+                }        
+            }
+        }
 
         public string UserName
         {

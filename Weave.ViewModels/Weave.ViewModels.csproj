@@ -63,6 +63,16 @@
       <HintPath>..\lib\System.Threading.Tasks.dll</HintPath>
     </Reference>
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Weave.Identity.Service.Contracts\Weave.Identity.Service.Contracts.csproj">
+      <Project>{cce98720-6054-4ef8-ba8c-14821b35ec1d}</Project>
+      <Name>Weave.Identity.Service.Contracts</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Weave.Identity.Service.DTOs\Weave.Identity.Service.DTOs.csproj">
+      <Project>{6fa5ac47-653a-4634-8bca-cf68ba33f884}</Project>
+      <Name>Weave.Identity.Service.DTOs</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\Portable\$(TargetFrameworkVersion)\Microsoft.Portable.CSharp.targets" />
   <!--Import Project="..\..\Weave\Windows%20Phone%208\packages\Microsoft.Bcl.Build.1.0.4\tools\Microsoft.Bcl.Build.targets" /-->
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
