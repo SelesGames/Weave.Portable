@@ -42,6 +42,7 @@
     <Compile Include="Feed.cs" />
     <Compile Include="FeedsInfoList.cs" />
     <Compile Include="Helpers\ViewModelLocator.cs" />
+    <Compile Include="IdentityInfo.cs" />
     <Compile Include="Image.cs" />
     <Compile Include="Contracts\INewsItem.cs" />
     <Compile Include="Contracts\Client\IViewModelRepository.cs" />
