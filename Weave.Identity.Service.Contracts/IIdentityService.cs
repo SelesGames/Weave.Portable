@@ -1,10 +1,12 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
 using Weave.Identity.Service.DTOs;
 
 namespace Weave.Identity.Service.Contracts
 {
     public interface IIdentityService
     {
+        Task<IdentityInfo> GetUserById(Guid userId);
         Task<IdentityInfo> GetUserFromFacebookToken(string facebookToken);
         Task<IdentityInfo> GetUserFromTwitterToken(string twitterToken);
         Task<IdentityInfo> GetUserFromMicrosoftToken(string microsoftToken);
