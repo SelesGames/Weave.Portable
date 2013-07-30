@@ -52,8 +52,22 @@ namespace Weave.ViewModels
 
         public async Task LoadFromFacebook()
         {
-            var identityInfo = await service.GetUserFromFacebookToken(FacebookAuthToken);
-            Load(identityInfo);
+            bool userFound = false;
+
+            try
+            {
+                var identityInfo = await service.GetUserFromFacebookToken(FacebookAuthToken);
+                Load(identityInfo);
+                userFound = true;
+            }
+            catch (Exception e)
+            {
+            }
+
+            if (userFound)
+                return;
+
+            await Save();
         }
 
         public async Task LoadFromTwitter()
@@ -72,6 +86,22 @@ namespace Weave.ViewModels
         {
             var identityInfo = await service.GetUserFromGoogleToken(GoogleAuthToken);
             Load(identityInfo);
+        }
+
+        public async Task Save()
+        {
+            var o = new DTOs.IdentityInfo
+            {
+                UserId = UserId,
+                UserName = UserName,
+                PasswordHash = PasswordHash,
+                FacebookAuthToken = FacebookAuthToken,
+                TwitterAuthToken = TwitterAuthToken,
+                MicrosoftAuthToken = MicrosoftAuthToken,
+                GoogleAuthToken = GoogleAuthToken,
+            };
+
+            await service.Add(o);
         }
 
 
