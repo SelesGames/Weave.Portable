@@ -9,7 +9,7 @@ using DTOs = Weave.Identity.Service.DTOs;
 
 namespace Weave.ViewModels
 {
-    public class IdentityInfo : INotifyPropertyChanged
+    public class IdentityInfo : ViewModelBase
     {
         #region Private member variables
 
@@ -72,23 +72,65 @@ namespace Weave.ViewModels
 
         public async Task LoadFromTwitter()
         {
-            var identityInfo = await service.GetUserFromTwitterToken(TwitterAuthToken);
-            Load(identityInfo);
+            bool userFound = false;
+
+            try
+            {
+                var identityInfo = await service.GetUserFromTwitterToken(TwitterAuthToken);
+                Load(identityInfo);
+                userFound = true;
+            }
+            catch (Exception e)
+            {
+            }
+
+            if (userFound)
+                return;
+
+            await Save();
         }
 
         public async Task LoadFromMicrosoft()
         {
-            var identityInfo = await service.GetUserFromMicrosoftToken(MicrosoftAuthToken);
-            Load(identityInfo);
+            bool userFound = false;
+
+            try
+            {
+                var identityInfo = await service.GetUserFromMicrosoftToken(MicrosoftAuthToken);
+                Load(identityInfo);
+                userFound = true;
+            }
+            catch (Exception e)
+            {
+            }
+
+            if (userFound)
+                return;
+
+            await Save();
         }
 
         public async Task LoadFromGoogle()
         {
-            var identityInfo = await service.GetUserFromGoogleToken(GoogleAuthToken);
-            Load(identityInfo);
+            bool userFound = false;
+
+            try
+            {
+                var identityInfo = await service.GetUserFromGoogleToken(GoogleAuthToken);
+                Load(identityInfo);
+                userFound = true;
+            }
+            catch (Exception e)
+            {
+            }
+
+            if (userFound)
+                return;
+
+            await Save();
         }
 
-        public async Task Save()
+        async Task Save()
         {
             var o = new DTOs.IdentityInfo
             {
@@ -166,24 +208,24 @@ namespace Weave.ViewModels
             get { return !string.IsNullOrEmpty(UserName); }
         }
 
-        public bool IsFacebookLinked
+        public bool IsFacebookLoginEnabled
         {
-            get { return !string.IsNullOrEmpty(FacebookAuthToken); }
+            get { return string.IsNullOrEmpty(FacebookAuthToken); }
         }
 
-        public bool IsTwitterLinked
+        public bool IsTwitterLoginEnabled
         {
-            get { return !string.IsNullOrEmpty(TwitterAuthToken); }
+            get { return string.IsNullOrEmpty(TwitterAuthToken); }
         }
 
-        public bool IsMicrosoftLinked
+        public bool IsMicrosoftLoginEnabled
         {
-            get { return !string.IsNullOrEmpty(MicrosoftAuthToken); }
+            get { return string.IsNullOrEmpty(MicrosoftAuthToken); }
         }
         
-        public bool IsGoogleLinked
+        public bool IsGoogleLoginEnabled
         {
-            get { return !string.IsNullOrEmpty(GoogleAuthToken); }
+            get { return string.IsNullOrEmpty(GoogleAuthToken); }
         }
 
         #endregion
@@ -203,24 +245,6 @@ namespace Weave.ViewModels
             MicrosoftAuthToken = o.MicrosoftAuthToken;
             GoogleAuthToken = o.GoogleAuthToken;
         }
-
-        #endregion
-
-
-        
-        
-        #region INotifyPropertyChanged
-
-        void Raise(params string[] p)
-        {
-            if (PropertyChanged != null)
-            {
-                foreach (var property in p)
-                    PropertyChanged(this, new PropertyChangedEventArgs(property));
-            }
-        }
-
-        public event PropertyChangedEventHandler PropertyChanged;
 
         #endregion
     }

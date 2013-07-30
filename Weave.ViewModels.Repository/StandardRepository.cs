@@ -25,6 +25,13 @@ namespace Weave.ViewModels.Repository
             this.articleService = articleService;
         }
 
+        public async Task<UserInfo> AddUserAndReturnUserInfo(UserInfo incomingUser)
+        {
+            var outgoingUser = Convert(incomingUser);
+            var user = await userService.AddUserAndReturnUserInfo(outgoingUser);
+            return Convert(user);
+        }
+
         public async Task<UserInfo> GetUserInfo(bool refresh = false)
         {
             var user = await userService.GetUserInfo(userId, refresh);
@@ -171,6 +178,15 @@ namespace Weave.ViewModels.Repository
 
 
         #region Conversion helpers
+
+        Incoming.UserInfo Convert(UserInfo o)
+        {
+            return new Incoming.UserInfo
+            {
+                Id = o.Id,
+                Feeds = o.Feeds == null ? null : o.Feeds.Select(ConvertToNewFeed).ToList(),
+            };
+        }
 
         UserInfo Convert(Outgoing.UserInfo o)
         {

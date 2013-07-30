@@ -4,10 +4,11 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Threading.Tasks;
 using Weave.ViewModels.Contracts.Client;
+using System.Linq;
 
 namespace Weave.ViewModels
 {
-    public class UserInfo : INotifyPropertyChanged
+    public class UserInfo : ViewModelBase
     {
         IViewModelRepository repo;
         bool shouldRefreshFeeds = false;
@@ -22,7 +23,34 @@ namespace Weave.ViewModels
         public UserInfo(IViewModelRepository repo)
         {
             this.repo = repo;
+            Feeds = new ObservableCollection<Feed>();
         }
+
+        public async Task Load(bool refreshNews = false)
+        {
+            var user = await repo.GetUserInfo(refreshNews);
+            UpdateTo(user);
+        }
+
+        public async Task Save()
+        {
+            var user = await repo.AddUserAndReturnUserInfo(this);
+            UpdateTo(user);
+        }
+
+        void UpdateTo(UserInfo user)
+        {
+            PreviousLoginTime = user.PreviousLoginTime;
+            CurrentLoginTime = user.CurrentLoginTime;
+            LatestNews = user.LatestNews;
+            Feeds = user.Feeds;
+            Raise("PreviousLoginTime", "CurrentLoginTime", "LatestNews", "Feeds");
+            //var setComparison = Feeds.GetSetComparison(user.Feeds, new FeedEqualityComparer());
+            //foreach (var feed in setComparison.Same)
+            //    feed.UpdateTo
+        }
+
+
 
 
         public async Task<NewsList> GetNewsForCategory(string category, EntryType entry = EntryType.Peek, int skip = 0, int take = 10)
@@ -51,8 +79,7 @@ namespace Weave.ViewModels
             var feeds = feedsInfo.Feeds;
 
             Feeds = new ObservableCollection<Feed>(feeds);
-            if (PropertyChanged != null)
-                PropertyChanged(this, new PropertyChangedEventArgs("Feeds"));
+            Raise("Feeds");
 
             shouldRefreshFeeds = false;
         }
@@ -137,10 +164,5 @@ namespace Weave.ViewModels
         }
 
         #endregion
-
-
-
-
-        public event PropertyChangedEventHandler PropertyChanged;
     }
 }
