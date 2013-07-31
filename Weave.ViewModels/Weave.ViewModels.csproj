@@ -44,7 +44,7 @@
     <Compile Include="FeedsInfoList.cs" />
     <Compile Include="Helpers\FeedEqualityComparer.cs" />
     <Compile Include="Helpers\ViewModelLocator.cs" />
-    <Compile Include="IdentityInfo.cs" />
+    <Compile Include="Identity\IdentityInfo.cs" />
     <Compile Include="Extensions\IEnumerableExtensions.cs" />
     <Compile Include="Image.cs" />
     <Compile Include="Contracts\INewsItem.cs" />
