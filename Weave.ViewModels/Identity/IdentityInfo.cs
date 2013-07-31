@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 using Weave.Identity.Service.Contracts;
 using DTOs = Weave.Identity.Service.DTOs;
 
-namespace Weave.ViewModels
+namespace Weave.ViewModels.Identity
 {
     public class IdentityInfo : ViewModelBase
     {
@@ -56,7 +56,7 @@ namespace Weave.ViewModels
                 Load(identityInfo);
                 userFound = true;
             }
-            catch (Exception e)
+            catch (NoMatchingUserException)
             {
             }
 
@@ -76,7 +76,7 @@ namespace Weave.ViewModels
                 Load(identityInfo);
                 userFound = true;
             }
-            catch (Exception e)
+            catch (NoMatchingUserException)
             {
             }
 
@@ -96,7 +96,7 @@ namespace Weave.ViewModels
                 Load(identityInfo);
                 userFound = true;
             }
-            catch (Exception e)
+            catch (NoMatchingUserException)
             {
             }
 
@@ -116,7 +116,7 @@ namespace Weave.ViewModels
                 Load(identityInfo);
                 userFound = true;
             }
-            catch (Exception e)
+            catch (NoMatchingUserException)
             {
             }
 
