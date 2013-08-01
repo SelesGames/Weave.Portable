@@ -6,6 +6,9 @@ namespace Weave.ViewModels
     {
         protected void Raise(params string[] p)
         {
+            if (p == null)
+                return;
+
             if (PropertyChanged != null)
             {
                 foreach (var property in p)
