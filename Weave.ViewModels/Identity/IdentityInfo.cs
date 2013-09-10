@@ -34,10 +34,26 @@ namespace Weave.ViewModels.Identity
             this.service = service;
         }
 
+
+
         public async Task LoadFromUserId()
         {
-            var identityInfo = await service.GetUserById(UserId);
-            Load(identityInfo);
+            bool userFound = false;
+
+            try
+            {
+                var identityInfo = await service.GetUserById(UserId);
+                Load(identityInfo);
+                userFound = true;
+            }
+            catch (NoMatchingUserException)
+            {
+            }
+
+            if (userFound)
+                return;
+
+            await Save();
         }
 
         public async Task LoadFromUsernameAndPassword()
@@ -66,24 +82,26 @@ namespace Weave.ViewModels.Identity
             await Save();
         }
 
-        public async Task LoadFromTwitter()
+        public Task LoadFromTwitter()
         {
-            bool userFound = false;
+            return LoadInnerImp(() => service.GetUserFromTwitterToken(TwitterAuthToken));
 
-            try
-            {
-                var identityInfo = await service.GetUserFromTwitterToken(TwitterAuthToken);
-                Load(identityInfo);
-                userFound = true;
-            }
-            catch (NoMatchingUserException)
-            {
-            }
+            //bool userFound = false;
 
-            if (userFound)
-                return;
+            //try
+            //{
+            //    var identityInfo = await service.GetUserFromTwitterToken(TwitterAuthToken);
+            //    Load(identityInfo);
+            //    userFound = true;
+            //}
+            //catch (NoMatchingUserException)
+            //{
+            //}
 
-            await Save();
+            //if (userFound)
+            //    return;
+
+            //await Save();
         }
 
         public async Task LoadFromMicrosoft()
@@ -126,23 +144,10 @@ namespace Weave.ViewModels.Identity
             await Save();
         }
 
-        async Task Save()
-        {
-            var o = new DTOs.IdentityInfo
-            {
-                UserId = UserId,
-                UserName = UserName,
-                PasswordHash = PasswordHash,
-                FacebookAuthToken = FacebookAuthToken,
-                TwitterAuthToken = TwitterAuthToken,
-                MicrosoftAuthToken = MicrosoftAuthToken,
-                GoogleAuthToken = GoogleAuthToken,
-            };
-
-            await service.Add(o);
-        }
 
 
+
+        #region Public Properties
 
         public Guid UserId 
         {
@@ -194,6 +199,8 @@ namespace Weave.ViewModels.Identity
             set { googleAuthToken = value; Raise("GoogleAuthToken", "IsGoogleLinked"); }
         }
 
+        #endregion
+
 
 
 
@@ -231,6 +238,27 @@ namespace Weave.ViewModels.Identity
 
         #region private helper methods
 
+        // Implements basic pattern of load IdentityInfo - if not not found, Save
+        async Task LoadInnerImp(Func<Task<DTOs.IdentityInfo>> loadAction)
+        {
+            bool userFound = false;
+
+            try
+            {
+                var identityInfo = await loadAction();
+                Load(identityInfo);
+                userFound = true;
+            }
+            catch (NoMatchingUserException)
+            {
+            }
+
+            if (userFound)
+                return;
+
+            await Save();
+        }
+
         void Load(DTOs.IdentityInfo o)
         {
             UserId = o.UserId;
@@ -240,6 +268,22 @@ namespace Weave.ViewModels.Identity
             TwitterAuthToken = o.TwitterAuthToken;
             MicrosoftAuthToken = o.MicrosoftAuthToken;
             GoogleAuthToken = o.GoogleAuthToken;
+        }
+
+        async Task Save()
+        {
+            var o = new DTOs.IdentityInfo
+            {
+                UserId = UserId,
+                UserName = UserName,
+                PasswordHash = PasswordHash,
+                FacebookAuthToken = FacebookAuthToken,
+                TwitterAuthToken = TwitterAuthToken,
+                MicrosoftAuthToken = MicrosoftAuthToken,
+                GoogleAuthToken = GoogleAuthToken,
+            };
+
+            await service.Add(o);
         }
 
         #endregion
