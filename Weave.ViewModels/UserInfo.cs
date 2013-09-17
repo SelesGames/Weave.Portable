@@ -12,7 +12,13 @@ namespace Weave.ViewModels
         bool shouldRefreshFeeds = false;
         DateTime lastFeedsInfoRefresh = DateTime.UtcNow;
 
-        public Guid Id { get; set; }
+        public Guid Id
+        {
+            get { return id; }
+            set { id = value; Raise("Id"); }
+        }
+        Guid id;
+
         public ObservableCollection<Feed> Feeds { get; set; }
         public DateTime PreviousLoginTime { get; set; }
         public DateTime CurrentLoginTime { get; set; }
@@ -46,9 +52,6 @@ namespace Weave.ViewModels
             LatestNews = user.LatestNews;
             Feeds = user.Feeds;
             Raise("PreviousLoginTime", "CurrentLoginTime", "LatestNews", "Feeds");
-            //var setComparison = Feeds.GetSetComparison(user.Feeds, new FeedEqualityComparer());
-            //foreach (var feed in setComparison.Same)
-            //    feed.UpdateTo
         }
 
 
