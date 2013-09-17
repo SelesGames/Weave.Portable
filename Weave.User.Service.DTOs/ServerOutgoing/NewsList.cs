@@ -22,6 +22,8 @@ namespace Weave.User.Service.DTOs.ServerOutgoing
         [DataMember(Order= 8)]  public PageInfo Page { get; set; }
 
         [DataMember(Order=97)]  public string EntryType { get; set; }
+
+
         [DataMember(Order=98)]  public TimeSpan DataStoreReadTime { get; set; }
         [DataMember(Order=99)]  public TimeSpan DataStoreWriteTime { get; set; }
     }
