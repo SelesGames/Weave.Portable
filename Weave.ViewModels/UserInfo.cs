@@ -42,21 +42,6 @@ namespace Weave.ViewModels
             UpdateTo(user);
         }
 
-        void UpdateTo(UserInfo user)
-        {
-            if (user == null)
-                return;
-
-            PreviousLoginTime = user.PreviousLoginTime;
-            CurrentLoginTime = user.CurrentLoginTime;
-            LatestNews = user.LatestNews;
-            Feeds = user.Feeds;
-            Raise("PreviousLoginTime", "CurrentLoginTime", "LatestNews", "Feeds");
-        }
-
-
-
-
         public async Task<NewsList> GetNewsForCategory(string category, EntryType entry = EntryType.Peek, int skip = 0, int take = 10)
         {
             return await repo.GetNews(Id, category, entry, skip, take);
@@ -165,6 +150,25 @@ namespace Weave.ViewModels
         public Task<List<NewsItem>> GetFavorites(int skip = 0, int take = 10)
         {
             return repo.GetFavorites(Id, skip, take);
+        }
+
+        #endregion
+
+
+
+
+        #region private helper functions
+
+        void UpdateTo(UserInfo user)
+        {
+            if (user == null)
+                return;
+
+            PreviousLoginTime = user.PreviousLoginTime;
+            CurrentLoginTime = user.CurrentLoginTime;
+            LatestNews = user.LatestNews;
+            Feeds = user.Feeds;
+            Raise("PreviousLoginTime", "CurrentLoginTime", "LatestNews", "Feeds");
         }
 
         #endregion
