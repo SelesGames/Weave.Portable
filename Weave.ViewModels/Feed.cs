@@ -9,6 +9,7 @@ namespace Weave.ViewModels
         public string Uri { get; set; }
         public string Category { get; set; }
         public ArticleViewingType ArticleViewingType { get; set; }
+        public string IconUrl { get; set; }
         public string TeaserImageUrl { get; set; }
 
         public int NewArticleCount { get; set; }
