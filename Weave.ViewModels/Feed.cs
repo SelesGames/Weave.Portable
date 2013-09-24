@@ -7,9 +7,9 @@ namespace Weave.ViewModels
         public Guid Id { get; set; }
         public string Name { get; set; }
         public string Uri { get; set; }
+        public string IconUrl { get; set; }
         public string Category { get; set; }
         public ArticleViewingType ArticleViewingType { get; set; }
-        public string IconUrl { get; set; }
         public string TeaserImageUrl { get; set; }
 
         public int NewArticleCount { get; set; }

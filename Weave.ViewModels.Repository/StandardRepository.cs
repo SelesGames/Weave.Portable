@@ -259,6 +259,7 @@ namespace Weave.ViewModels.Repository
                 Id = o.Id,
                 Name = o.Name,
                 Uri = o.Uri,
+                IconUrl = o.IconUri,
                 Category = o.Category,
                 ArticleViewingType = (ArticleViewingType)o.ArticleViewingType,
                 TeaserImageUrl = o.TeaserImageUrl,
