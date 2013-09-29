@@ -62,86 +62,24 @@ namespace Weave.ViewModels.Identity
             Load(identityInfo);
         }
 
-        public async Task LoadFromFacebook()
+        public Task LoadFromFacebook()
         {
-            bool userFound = false;
-
-            try
-            {
-                var identityInfo = await service.GetUserFromFacebookToken(FacebookAuthToken);
-                Load(identityInfo);
-                userFound = true;
-            }
-            catch (NoMatchingUserException)
-            {
-            }
-
-            if (userFound)
-                return;
-
-            await Save();
+            return LoadInnerImp(() => service.GetUserFromFacebookToken(FacebookAuthToken));
         }
 
         public Task LoadFromTwitter()
         {
             return LoadInnerImp(() => service.GetUserFromTwitterToken(TwitterAuthToken));
-
-            //bool userFound = false;
-
-            //try
-            //{
-            //    var identityInfo = await service.GetUserFromTwitterToken(TwitterAuthToken);
-            //    Load(identityInfo);
-            //    userFound = true;
-            //}
-            //catch (NoMatchingUserException)
-            //{
-            //}
-
-            //if (userFound)
-            //    return;
-
-            //await Save();
         }
 
-        public async Task LoadFromMicrosoft()
+        public Task LoadFromMicrosoft()
         {
-            bool userFound = false;
-
-            try
-            {
-                var identityInfo = await service.GetUserFromMicrosoftToken(MicrosoftAuthToken);
-                Load(identityInfo);
-                userFound = true;
-            }
-            catch (NoMatchingUserException)
-            {
-            }
-
-            if (userFound)
-                return;
-
-            await Save();
+            return LoadInnerImp(() => service.GetUserFromMicrosoftToken(MicrosoftAuthToken));
         }
 
-        public async Task LoadFromGoogle()
+        public Task LoadFromGoogle()
         {
-            bool userFound = false;
-
-            try
-            {
-                var identityInfo = await service.GetUserFromGoogleToken(GoogleAuthToken);
-                Load(identityInfo);
-                userFound = true;
-            }
-            catch (NoMatchingUserException)
-            {
-            }
-
-            if (userFound)
-                return;
-
-            await Save();
+            return LoadInnerImp(() => service.GetUserFromGoogleToken(GoogleAuthToken));
         }
 
 
@@ -283,7 +221,7 @@ namespace Weave.ViewModels.Identity
                 GoogleAuthToken = GoogleAuthToken,
             };
 
-            await service.Add(o);
+            await service.Update(o);
         }
 
         #endregion
