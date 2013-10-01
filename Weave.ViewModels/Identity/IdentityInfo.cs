@@ -34,52 +34,38 @@ namespace Weave.ViewModels.Identity
             this.service = service;
         }
 
-
-
         public async Task LoadFromUserId()
         {
-            bool userFound = false;
-
             try
             {
                 var identityInfo = await service.GetUserById(UserId);
                 Load(identityInfo);
-                userFound = true;
             }
-            catch (NoMatchingUserException)
-            {
-            }
-
-            if (userFound)
-                return;
-
-            await Save();
+            catch (NoMatchingUserException) { }
         }
 
-        public async Task LoadFromUsernameAndPassword()
+        public async Task LoadFromFacebook()
         {
-            var identityInfo = await service.GetUserFromUserNameAndPassword(UserName, PasswordHash);
+            var identityInfo = await service.SyncFacebook(UserId, FacebookAuthToken);
             Load(identityInfo);
         }
 
-        public Task LoadFromFacebook()
+        public async Task LoadFromTwitter()
         {
-            return LoadInnerImp(() => service.GetUserFromFacebookToken(FacebookAuthToken));
+            var identityInfo = await service.SyncTwitter(UserId, TwitterAuthToken);
+            Load(identityInfo);
         }
 
-        public Task LoadFromTwitter()
+        public async Task LoadFromMicrosoft()
         {
-            return LoadInnerImp(() => service.GetUserFromTwitterToken(TwitterAuthToken));
+            var identityInfo = await service.SyncMicrosoft(UserId, MicrosoftAuthToken);
+            Load(identityInfo);
         }
 
-        public Task LoadFromMicrosoft()
+        public async Task LoadFromGoogle()
         {
-            return LoadInnerImp(() => service.GetUserFromMicrosoftToken(MicrosoftAuthToken));
-        }
-
-        public Task LoadFromGoogle()
-        {
-            return LoadInnerImp(() => service.GetUserFromGoogleToken(GoogleAuthToken));
+            var identityInfo = await service.SyncGoogle(UserId, GoogleAuthToken);
+            Load(identityInfo);
         }
 
 
@@ -176,27 +162,6 @@ namespace Weave.ViewModels.Identity
 
         #region private helper methods
 
-        // Implements basic pattern of load IdentityInfo - if not not found, Save
-        async Task LoadInnerImp(Func<Task<DTOs.IdentityInfo>> loadAction)
-        {
-            bool userFound = false;
-
-            try
-            {
-                var identityInfo = await loadAction();
-                Load(identityInfo);
-                userFound = true;
-            }
-            catch (NoMatchingUserException)
-            {
-            }
-
-            if (userFound)
-                return;
-
-            await Save();
-        }
-
         void Load(DTOs.IdentityInfo o)
         {
             UserId = o.UserId;
@@ -206,22 +171,6 @@ namespace Weave.ViewModels.Identity
             TwitterAuthToken = o.TwitterAuthToken;
             MicrosoftAuthToken = o.MicrosoftAuthToken;
             GoogleAuthToken = o.GoogleAuthToken;
-        }
-
-        async Task Save()
-        {
-            var o = new DTOs.IdentityInfo
-            {
-                UserId = UserId,
-                UserName = UserName,
-                PasswordHash = PasswordHash,
-                FacebookAuthToken = FacebookAuthToken,
-                TwitterAuthToken = TwitterAuthToken,
-                MicrosoftAuthToken = MicrosoftAuthToken,
-                GoogleAuthToken = GoogleAuthToken,
-            };
-
-            await service.Update(o);
         }
 
         #endregion
