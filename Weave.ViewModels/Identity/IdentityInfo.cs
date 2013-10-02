@@ -14,8 +14,6 @@ namespace Weave.ViewModels.Identity
         Guid userId;
 
         string
-            userName,
-            passwordHash,
             facebookAuthToken,
             twitterAuthToken,
             microsoftAuthToken,
@@ -44,27 +42,27 @@ namespace Weave.ViewModels.Identity
             catch (NoMatchingUserException) { }
         }
 
-        public async Task LoadFromFacebook()
+        public async Task SyncFacebook(string facebookToken)
         {
-            var identityInfo = await service.SyncFacebook(UserId, FacebookAuthToken);
+            var identityInfo = await service.SyncFacebook(UserId, facebookToken);
             Load(identityInfo);
         }
 
-        public async Task LoadFromTwitter()
+        public async Task SyncTwitter(string twitterToken)
         {
-            var identityInfo = await service.SyncTwitter(UserId, TwitterAuthToken);
+            var identityInfo = await service.SyncTwitter(UserId, twitterToken);
             Load(identityInfo);
         }
 
-        public async Task LoadFromMicrosoft()
+        public async Task SyncMicrosoft(string microsoftToken)
         {
-            var identityInfo = await service.SyncMicrosoft(UserId, MicrosoftAuthToken);
+            var identityInfo = await service.SyncMicrosoft(UserId, microsoftToken);
             Load(identityInfo);
         }
 
-        public async Task LoadFromGoogle()
+        public async Task SyncGoogle(string googleToken)
         {
-            var identityInfo = await service.SyncGoogle(UserId, GoogleAuthToken);
+            var identityInfo = await service.SyncGoogle(UserId, googleToken);
             Load(identityInfo);
         }
 
@@ -87,40 +85,28 @@ namespace Weave.ViewModels.Identity
             }
         }
 
-        public string UserName
-        {
-            get { return userName; }
-            set { userName = value; Raise("UserName", "IsAccountLinked"); }
-        }
-
-        public string PasswordHash
-        {
-            get { return passwordHash; }
-            set { passwordHash = value; Raise("PasswordHash"); }
-        }
-
         public string FacebookAuthToken
         {
             get { return facebookAuthToken; }
-            set { facebookAuthToken = value; Raise("FacebookAuthToken", "IsFacebookLinked"); }
+            private set { facebookAuthToken = value; Raise("FacebookAuthToken", "IsFacebookLinked"); }
         }
 
         public string TwitterAuthToken
         {
             get { return twitterAuthToken; }
-            set { twitterAuthToken = value; Raise("TwitterAuthToken", "IsTwitterLinked"); }
+            private set { twitterAuthToken = value; Raise("TwitterAuthToken", "IsTwitterLinked"); }
         }
 
         public string MicrosoftAuthToken
         {
             get { return microsoftAuthToken; }
-            set { microsoftAuthToken = value; Raise("MicrosoftAuthToken", "IsMicrosoftLinked"); }
+            private set { microsoftAuthToken = value; Raise("MicrosoftAuthToken", "IsMicrosoftLinked"); }
         }
 
         public string GoogleAuthToken
         {
             get { return googleAuthToken; }
-            set { googleAuthToken = value; Raise("GoogleAuthToken", "IsGoogleLinked"); }
+            private set { googleAuthToken = value; Raise("GoogleAuthToken", "IsGoogleLinked"); }
         }
 
         #endregion
@@ -129,11 +115,6 @@ namespace Weave.ViewModels.Identity
 
 
         #region Derived Readonly Properties
-
-        public bool IsAccountLinked
-        {
-            get { return !string.IsNullOrEmpty(UserName); }
-        }
 
         public bool IsFacebookLoginEnabled
         {
@@ -165,8 +146,6 @@ namespace Weave.ViewModels.Identity
         void Load(DTOs.IdentityInfo o)
         {
             UserId = o.UserId;
-            UserName = o.UserName;
-            PasswordHash = o.PasswordHash;
             FacebookAuthToken = o.FacebookAuthToken;
             TwitterAuthToken = o.TwitterAuthToken;
             MicrosoftAuthToken = o.MicrosoftAuthToken;
