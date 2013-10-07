@@ -104,6 +104,8 @@ namespace SelesGames.HttpClient
         public async Task<TResult> PostAsync<TPost, TResult>(string url, TPost obj, CancellationToken cancelToken)
         {
             var response = await PostAsync(url, obj, cancelToken);
+            response.EnsureSuccessStatusCode();
+
             return await ReadObjectFromResponseMessage<TResult>(response).ConfigureAwait(false);
         }
 
@@ -120,9 +122,7 @@ namespace SelesGames.HttpClient
                 var content = new StreamContent(ms);
                 content.Headers.ContentType = mediaType;
 
-                var response = await PostAsync(url, content, cancelToken).ConfigureAwait(false);
-
-                response.EnsureSuccessStatusCode();
+                var response = await base.PostAsync(url, content, cancelToken).ConfigureAwait(false);
                 return response;
             }
         }
@@ -138,8 +138,6 @@ namespace SelesGames.HttpClient
         {
             try
             {
-                response.EnsureSuccessStatusCode();
-
                 T result;
 
                 var contentType = TryGetContentType(response);
@@ -168,28 +166,6 @@ namespace SelesGames.HttpClient
             return response.Content.Headers.ContentType;
         }
 
-        //MediaTypeFormatter FindWriteFormatter<T>(MediaTypeHeaderValue mediaType)
-        //{
-        //    MediaTypeFormatter formatter = null;
-
-        //    var type = typeof(T);
-        //    if (mediaType != null)
-        //    {
-        //        formatter = formatters.FindWriter(type, mediaType);
-        //    }
-
-        //    if (formatter == null)
-        //        throw new Exception(string.Format("unable to find a valid MediaTypeFormatter that matches {0}", mediaType));
-
-        //    return formatter;
-        //}
-
-        //static MediaTypeFormatterCollection CreateDefaultMediaTypeFormatters()
-        //{
-        //    var collection = new MediaTypeFormatterCollection();
-        //    collection.Add(new SelesGames.WebApi.Protobuf.ProtobufFormatter());
-        //    return collection;
-        //}
 
         #endregion
     }
