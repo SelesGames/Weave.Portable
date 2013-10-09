@@ -33,7 +33,6 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="AutoCompressionHttpClientHandler.cs" />
     <Compile Include="ContentEncoderSettings.cs" />
     <Compile Include="ContentSerializer.cs" />
     <Compile Include="ContentSerializerCollection.cs" />
@@ -60,7 +59,12 @@
       <HintPath>..\lib\System.Net.Http.Primitives.dll</HintPath>
     </Reference>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <ProjectReference Include="..\Common.Net.Http.Compression\Common.Net.Http.Compression.csproj">
+      <Project>{8162e82c-c141-4a69-90ef-4a2593a374df}</Project>
+      <Name>Common.Net.Http.Compression</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\Portable\$(TargetFrameworkVersion)\Microsoft.Portable.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

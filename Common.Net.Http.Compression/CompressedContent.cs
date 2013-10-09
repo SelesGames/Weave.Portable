@@ -59,7 +59,7 @@ namespace Common.Net.Http.Compression
                 if (compressedStream != null)
                 {
                     compressedStream.Flush();
-                    compressedStream.Close();
+                    //compressedStream.Close();
                     compressedStream.Dispose();
                 }
             });

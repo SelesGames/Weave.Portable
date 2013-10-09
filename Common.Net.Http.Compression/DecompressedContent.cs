@@ -45,8 +45,8 @@ namespace Common.Net.Http.Compression
             using (var gzip = CreateDecompressionsStream(ogStream))
             {
                 await gzip.CopyToAsync(stream).ConfigureAwait(false);
-                gzip.Close();
-                ogStream.Close();
+                //gzip.Close();
+                //ogStream.Close();
             }
         }
 

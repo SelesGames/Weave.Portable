@@ -1,4 +1,5 @@
-﻿using SelesGames.HttpClient.SerializerModules;
+﻿using Common.Net.Http.Compression;
+using SelesGames.HttpClient.SerializerModules;
 using System;
 using System.IO;
 using System.Net.Http;
@@ -54,7 +55,7 @@ namespace SelesGames.HttpClient
 
         static HttpClientHandler CreateHandler()
         {
-            return new AutoCompressionHttpClientHandler();
+            return new HttpClientCompressionHandler();
         }
 
         #endregion
@@ -71,6 +72,10 @@ namespace SelesGames.HttpClient
 
         public async Task<T> GetAsync<T>(string url, CancellationToken cancellationToken)
         {
+#if DEBUG
+            System.Diagnostics.Debug.WriteLine("HTTP GET : {0}", url);
+#endif
+
             var response = await GetAsync(url, cancellationToken).ConfigureAwait(false);
             EnsureSuccessStatusCode(response);
 
@@ -99,6 +104,9 @@ namespace SelesGames.HttpClient
 
         public async Task<HttpResponseMessage> PostAsync<T>(string url, T obj, CancellationToken cancelToken)
         {
+#if DEBUG
+            System.Diagnostics.Debug.WriteLine("HTTP POST : {0}", url);
+#endif
             var mediaType = new MediaTypeHeaderValue(encoderSettings.ContentType);
             var serializer = formatters.FindReader(mediaType);
 
