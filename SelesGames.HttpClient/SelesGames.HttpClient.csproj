@@ -33,6 +33,7 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="AutoCompressionHttpClientHandler.cs" />
     <Compile Include="ContentEncoderSettings.cs" />
     <Compile Include="ContentSerializer.cs" />
     <Compile Include="ContentSerializerCollection.cs" />

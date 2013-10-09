@@ -1,7 +1,6 @@
 ﻿using SelesGames.HttpClient.SerializerModules;
 using System;
 using System.IO;
-using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Threading;
@@ -55,13 +54,7 @@ namespace SelesGames.HttpClient
 
         static HttpClientHandler CreateHandler()
         {
-            var handler = new HttpClientHandler();
-            if (handler.SupportsAutomaticDecompression)
-            {
-                handler.AutomaticDecompression = DecompressionMethods.GZip |
-                                                 DecompressionMethods.Deflate;
-            }
-            return handler;
+            return new AutoCompressionHttpClientHandler();
         }
 
         #endregion
@@ -79,7 +72,7 @@ namespace SelesGames.HttpClient
         public async Task<T> GetAsync<T>(string url, CancellationToken cancellationToken)
         {
             var response = await GetAsync(url, cancellationToken).ConfigureAwait(false);
-            response.EnsureSuccessStatusCode();
+            EnsureSuccessStatusCode(response);
 
             return await ReadObjectFromResponseMessage<T>(response);
         }
@@ -96,15 +89,10 @@ namespace SelesGames.HttpClient
             return PostAsync<TPost, TResult>(url, obj, CancellationToken.None);
         }
 
-        public Task PostAsync<TPost>(string url, TPost obj)
-        {
-            return PostAsync(url, obj, CancellationToken.None);
-        }
-
         public async Task<TResult> PostAsync<TPost, TResult>(string url, TPost obj, CancellationToken cancelToken)
         {
             var response = await PostAsync(url, obj, cancelToken);
-            response.EnsureSuccessStatusCode();
+            EnsureSuccessStatusCode(response);
 
             return await ReadObjectFromResponseMessage<TResult>(response).ConfigureAwait(false);
         }
@@ -136,25 +124,18 @@ namespace SelesGames.HttpClient
 
         async Task<T> ReadObjectFromResponseMessage<T>(HttpResponseMessage response)
         {
-            try
+            var contentType = TryGetContentType(response);
+            if (contentType == null)
+                contentType = MediaTypeHeaderValue.Parse(encoderSettings.ContentType);
+
+            var serializer = formatters.FindReader(contentType);
+
+            if (serializer == null)
+                throw new Exception(string.Format("No serializer found for content type: {0}", contentType));
+
+            using (var stream = await response.Content.ReadAsStreamAsync().ConfigureAwait(false))
             {
-                T result;
-
-                var contentType = TryGetContentType(response);
-                var serializer = formatters.FindReader(contentType);
-
-                if (serializer == null)
-                    throw new Exception(string.Format("No serializer found for content type: {0}", contentType));
-
-                using (var stream = await response.Content.ReadAsStreamAsync().ConfigureAwait(false))
-                {
-                    result = serializer.ReadObject<T>(stream);
-                }
-                return result;
-            }
-            catch (Exception ex)
-            {
-                throw new ResponseException(ex, response);
+                return serializer.ReadObject<T>(stream);
             }
         }
 
@@ -166,6 +147,17 @@ namespace SelesGames.HttpClient
             return response.Content.Headers.ContentType;
         }
 
+        void EnsureSuccessStatusCode(HttpResponseMessage response)
+        {
+            try
+            {
+                response.EnsureSuccessStatusCode();
+            }
+            catch (Exception e)
+            {
+                throw new ResponseException(e, response);
+            }
+        }
 
         #endregion
     }
