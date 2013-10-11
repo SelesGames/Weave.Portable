@@ -62,9 +62,9 @@ namespace Weave.ViewModels
             return shouldRefreshFeeds || DateTime.UtcNow - lastFeedsInfoRefresh > TimeSpan.FromMinutes(1);
         }
 
-        public async Task RefreshFeedsInfo()
+        public async Task LoadFeeds(bool refresh = false)
         {
-            var feedsInfo = await repo.GetFeeds(Id);
+            var feedsInfo = await repo.GetFeeds(Id, refresh: refresh, nested: false);
             var feeds = feedsInfo.Feeds;
 
             Feeds = new ObservableCollection<Feed>(feeds);
