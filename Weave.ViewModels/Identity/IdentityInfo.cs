@@ -88,25 +88,25 @@ namespace Weave.ViewModels.Identity
         public string FacebookAuthToken
         {
             get { return facebookAuthToken; }
-            private set { facebookAuthToken = value; Raise("FacebookAuthToken", "IsFacebookLinked"); }
+            private set { facebookAuthToken = value; Raise("FacebookAuthToken", "IsFacebookLinked", "IsFacebookSynced"); }
         }
 
         public string TwitterAuthToken
         {
             get { return twitterAuthToken; }
-            private set { twitterAuthToken = value; Raise("TwitterAuthToken", "IsTwitterLinked"); }
+            private set { twitterAuthToken = value; Raise("TwitterAuthToken", "IsTwitterLinked", "IsTwitterSynced"); }
         }
 
         public string MicrosoftAuthToken
         {
             get { return microsoftAuthToken; }
-            private set { microsoftAuthToken = value; Raise("MicrosoftAuthToken", "IsMicrosoftLinked"); }
+            private set { microsoftAuthToken = value; Raise("MicrosoftAuthToken", "IsMicrosoftLinked", "IsMicrosoftSynced"); }
         }
 
         public string GoogleAuthToken
         {
             get { return googleAuthToken; }
-            private set { googleAuthToken = value; Raise("GoogleAuthToken", "IsGoogleLinked"); }
+            private set { googleAuthToken = value; Raise("GoogleAuthToken", "IsGoogleLinked", "IsGoogleSynced"); }
         }
 
         #endregion
@@ -116,24 +116,48 @@ namespace Weave.ViewModels.Identity
 
         #region Derived Readonly Properties
 
+        [Obsolete("Use IsFacebookSynced instead")]
         public bool IsFacebookLoginEnabled
         {
             get { return string.IsNullOrEmpty(FacebookAuthToken); }
         }
 
+        [Obsolete("Use IsTwitterSynced instead")]
         public bool IsTwitterLoginEnabled
         {
             get { return string.IsNullOrEmpty(TwitterAuthToken); }
         }
 
+        [Obsolete("Use IsMicrosoftSynced instead")]
         public bool IsMicrosoftLoginEnabled
         {
             get { return string.IsNullOrEmpty(MicrosoftAuthToken); }
         }
-        
+
+        [Obsolete("Use IsGoogleSynced instead")]
         public bool IsGoogleLoginEnabled
         {
             get { return string.IsNullOrEmpty(GoogleAuthToken); }
+        }
+
+        public bool IsFacebookSynced
+        {
+            get { return !string.IsNullOrEmpty(FacebookAuthToken); }
+        }
+
+        public bool IsTwitterSynced
+        {
+            get { return !string.IsNullOrEmpty(TwitterAuthToken); }
+        }
+
+        public bool IsMicrosoftSynced
+        {
+            get { return !string.IsNullOrEmpty(MicrosoftAuthToken); }
+        }
+
+        public bool IsGoogleSynced
+        {
+            get { return !string.IsNullOrEmpty(GoogleAuthToken); }
         }
 
         #endregion
