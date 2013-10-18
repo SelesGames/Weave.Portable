@@ -137,6 +137,16 @@ namespace Weave.ViewModels
             return repo.MarkArticlesSoftRead(Id, newsItems);
         }
 
+        public async Task MarkCategorySoftRead(string category)
+        {
+            await repo.MarkArticlesSoftRead(Id, category);
+        }
+
+        public async Task MarkFeedSoftRead(Guid feedId)
+        {
+            await repo.MarkArticlesSoftRead(Id, feedId);
+        }
+
         public Task<List<NewsItem>> GetRead(int skip = 0, int take = 10)
         {
             return repo.GetRead(Id, skip, take);

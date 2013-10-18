@@ -15,7 +15,6 @@ namespace Weave.User.Service.Contracts
         Task<Outgoing.NewsList> GetNews(Guid userId, string category, EntryType entry = EntryType.Peek, int skip = 0, int take = 10, NewsItemType type = NewsItemType.Any, bool requireImage = false);
         Task<Outgoing.NewsList> GetNews(Guid userId, Guid feedId, EntryType entry = EntryType.Peek, int skip = 0, int take = 10, NewsItemType type = NewsItemType.Any, bool requireImage = false);
 
-
         Task<Outgoing.FeedsInfoList> GetFeeds(Guid userId, bool refresh = false, bool nested = false);
         Task<Outgoing.FeedsInfoList> GetFeeds(Guid userId, string category, bool refresh = false, bool nested = false);
         Task<Outgoing.FeedsInfoList> GetFeeds(Guid userId, Guid feedId, bool refresh = false, bool nested = false);
@@ -27,6 +26,8 @@ namespace Weave.User.Service.Contracts
         Task MarkArticleRead(Guid userId, Guid newsItemId);
         Task MarkArticleUnread(Guid userId, Guid newsItemId);
         Task MarkArticlesSoftRead(Guid userId, List<Guid> newsItemIds);
+        Task MarkArticlesSoftRead(Guid userId, string category);
+        Task MarkArticlesSoftRead(Guid userId, Guid feedId);
         
         Task AddFavorite(Guid userId, Guid newsItemId);
         Task RemoveFavorite(Guid userId, Guid newsItemId);

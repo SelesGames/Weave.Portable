@@ -8,6 +8,7 @@ namespace Weave.ViewModels.Contracts.Client
     {
         Task<UserInfo> AddUserAndReturnUserInfo(UserInfo incomingUser);
         Task<UserInfo> GetUserInfo(Guid userId, bool refresh = false);
+        
         Task<NewsList> GetNews(Guid userId, string category, EntryType entry = EntryType.Peek, int skip = 0, int take = 10, NewsItemType type = NewsItemType.Any, bool requireImage = false);
         Task<NewsList> GetNews(Guid userId, Guid feedId, EntryType entry = EntryType.Peek, int skip = 0, int take = 10, NewsItemType type = NewsItemType.Any, bool requireImage = false);
 
@@ -22,6 +23,8 @@ namespace Weave.ViewModels.Contracts.Client
         Task MarkArticleRead(Guid userId, NewsItem newsItem);
         Task MarkArticleUnread(Guid userId, NewsItem newsItem);
         Task MarkArticlesSoftRead(Guid userId, List<NewsItem> newsItems);
+        Task MarkArticlesSoftRead(Guid userId, string category);
+        Task MarkArticlesSoftRead(Guid userId, Guid feedId);
         Task<List<NewsItem>> GetRead(Guid userId, int skip = 0, int take = 10);
 
         Task AddFavorite(Guid userId, NewsItem newsItem);
