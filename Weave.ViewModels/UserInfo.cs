@@ -9,20 +9,29 @@ namespace Weave.ViewModels
     public class UserInfo : ViewModelBase
     {
         IViewModelRepository repo;
-        bool shouldRefreshFeeds = false;
-        DateTime lastFeedsInfoRefresh = DateTime.UtcNow;
+        Guid id;
+
+
+
+
+        #region Public Properties
 
         public Guid Id
         {
             get { return id; }
             set { id = value; Raise("Id"); }
         }
-        Guid id;
 
         public ObservableCollection<Feed> Feeds { get; set; }
+        public List<NewsItem> LatestNews { get; set; }
         public DateTime PreviousLoginTime { get; set; }
         public DateTime CurrentLoginTime { get; set; }
-        public List<NewsItem> LatestNews { get; set; }
+        public bool AreFeedsModified { get; private set; }
+
+        #endregion
+
+
+
 
         public UserInfo(IViewModelRepository repo)
         {
@@ -30,15 +39,15 @@ namespace Weave.ViewModels
             Feeds = new ObservableCollection<Feed>();
         }
 
-        public async Task Load(bool refreshNews = false)
+        public async Task Create()
         {
-            var user = await repo.GetUserInfo(Id, refreshNews);
+            var user = await repo.AddUserAndReturnUserInfo(this);
             UpdateTo(user);
         }
 
-        public async Task Save()
+        public async Task Load(bool refreshNews = false)
         {
-            var user = await repo.AddUserAndReturnUserInfo(this);
+            var user = await repo.GetUserInfo(Id, refreshNews);
             UpdateTo(user);
         }
 
@@ -57,11 +66,6 @@ namespace Weave.ViewModels
 
         #region Feed management
 
-        public bool ShouldRefreshFeedsInfo()
-        {
-            return shouldRefreshFeeds || DateTime.UtcNow - lastFeedsInfoRefresh > TimeSpan.FromMinutes(1);
-        }
-
         public async Task LoadFeeds(bool refresh = false)
         {
             var feedsInfo = await repo.GetFeeds(Id, refresh: refresh, nested: false);
@@ -70,24 +74,27 @@ namespace Weave.ViewModels
             Feeds = new ObservableCollection<Feed>(feeds);
             Raise("Feeds");
 
-            shouldRefreshFeeds = false;
+            AreFeedsModified = false;
         }
 
         public async Task AddFeed(Feed feed)
         {
             var returnedFeed = await repo.AddFeed(Id, feed);
             Feeds.Add(returnedFeed);
+            AreFeedsModified = true;
         }
 
         public async Task RemoveFeed(Feed feed)
         {
             await repo.RemoveFeed(Id, feed);
             Feeds.Remove(feed);
+            AreFeedsModified = true;
         }
 
         public async Task UpdateFeed(Feed feed)
         {
             await repo.UpdateFeed(Id, feed);
+            AreFeedsModified = true;
         }
 
         public async Task BatchChange(List<Feed> added = null, List<Feed> removed = null, List<Feed> updated = null)
@@ -103,7 +110,7 @@ namespace Weave.ViewModels
                 foreach (var feed in removed)
                     Feeds.Remove(feed);
             }
-            shouldRefreshFeeds = true;
+            AreFeedsModified = true;
         }
 
         #endregion
