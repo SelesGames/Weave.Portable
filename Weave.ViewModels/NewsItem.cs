@@ -4,9 +4,11 @@ using Weave.ViewModels.Extensions;
 
 namespace Weave.ViewModels
 {
-    public class NewsItem : INotifyPropertyChanged, weave.INewsItem
+    public class NewsItem : ViewModelBase, weave.INewsItem
     {
         string utcPublishDateTime;
+        bool isFavorite, hasBeenViewed;
+
 
         public Guid Id { get; set; }
         public Feed Feed { get; set; }
@@ -41,11 +43,9 @@ namespace Weave.ViewModels
             set
             {
                 isFavorite = value;
-                if (PropertyChanged != null)
-                    PropertyChanged(this, new PropertyChangedEventArgs("DisplayState"));
+                Raise("DisplayState");
             }
         }
-        bool isFavorite;
 
         public bool HasBeenViewed
         {
@@ -53,11 +53,13 @@ namespace Weave.ViewModels
             set
             {
                 hasBeenViewed = value;
-                if (PropertyChanged != null)
-                    PropertyChanged(this, new PropertyChangedEventArgs("DisplayState"));
+                Raise("DisplayState");
             }
         }
-        bool hasBeenViewed;
+
+
+
+        #region Public derived properties
 
         public bool IsDisplayedAsNew
         {
@@ -82,19 +84,19 @@ namespace Weave.ViewModels
             }
         }
 
-        public double SortRating
-        {
-            get { return CalculateSortRating(UniversalDateTime); }
-        }
+        //public double SortRating
+        //{
+        //    get { return CalculateSortRating(UniversalDateTime); }
+        //}
 
-        static double CalculateSortRating(DateTime dateTime)
-        {
-            double elapsedHours = (DateTime.UtcNow - dateTime).TotalHours;
-            if (elapsedHours <= 0)
-                elapsedHours = 0.0001;
-            double value = 1d / elapsedHours;
-            return value;
-        }
+        //static double CalculateSortRating(DateTime dateTime)
+        //{
+        //    double elapsedHours = (DateTime.UtcNow - dateTime).TotalHours;
+        //    if (elapsedHours <= 0)
+        //        elapsedHours = 0.0001;
+        //    double value = 1d / elapsedHours;
+        //    return value;
+        //}
 
         public string OriginalSource
         {
@@ -128,6 +130,24 @@ namespace Weave.ViewModels
             }
         }
 
+        public string HighestQualityImageUrl
+        {
+            get
+            {
+                if (Image != null && !string.IsNullOrWhiteSpace(Image.OriginalUrl))
+                    return Image.OriginalUrl;
+                else
+                    return ImageUrl;
+            }
+        }
+
+        #endregion
+
+
+
+
+        #region private helper methods
+
         void ParseLocalAndUniversalDateTimes()
         {
             try
@@ -142,11 +162,14 @@ namespace Weave.ViewModels
             }
         }
 
+        #endregion
+
+
+
+
         public override string ToString()
         {
             return string.Format("{0}: {1}   from {2}", Feed.Category, Title, OriginalFeedUri);
         }
-
-        public event PropertyChangedEventHandler PropertyChanged;
     }
 }
