@@ -36,8 +36,16 @@
     <!-- A reference to the entire .NET Framework is automatically included -->
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="DebugDisposable.cs" />
+    <Compile Include="EventArgs.cs" />
+    <Compile Include="Extension Methods\ICollectionExtensions.cs" />
+    <Compile Include="Extension Methods\StringExtensionMethods.cs" />
+    <Compile Include="Extension Methods\StringReaderExtensions.cs" />
+    <Compile Include="Extension Methods\UriExtensionMethods.cs" />
+    <Compile Include="Lazy.cs" />
     <Compile Include="ObservableCollectionEx.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ServiceResolver.cs" />
     <Compile Include="UriExtensions.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\Portable\$(TargetFrameworkVersion)\Microsoft.Portable.CSharp.targets" />
