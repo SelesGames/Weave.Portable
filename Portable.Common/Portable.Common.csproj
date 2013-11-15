@@ -39,6 +39,7 @@
     <Compile Include="DebugDisposable.cs" />
     <Compile Include="DebugEx.cs" />
     <Compile Include="EventArgs.cs" />
+    <Compile Include="Extension Methods\ExceptionExtensions.cs" />
     <Compile Include="Extension Methods\ICollectionExtensions.cs" />
     <Compile Include="Extension Methods\StringExtensionMethods.cs" />
     <Compile Include="Extension Methods\StringReaderExtensions.cs" />
