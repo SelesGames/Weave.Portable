@@ -43,6 +43,7 @@
     <Compile Include="Extension Methods\ICollectionExtensions.cs" />
     <Compile Include="Extension Methods\StringExtensionMethods.cs" />
     <Compile Include="Extension Methods\StringReaderExtensions.cs" />
+    <Compile Include="Extension Methods\TaskExtensions.cs" />
     <Compile Include="Extension Methods\UriExtensionMethods.cs" />
     <Compile Include="Lazy.cs" />
     <Compile Include="ObservableCollectionEx.cs" />
