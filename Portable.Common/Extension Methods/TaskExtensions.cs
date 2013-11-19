@@ -56,9 +56,17 @@ namespace System.Threading.Tasks
             return Task.WhenAll(tasks).GetAwaiter();
         }
 
-        public static void Fire(this Task task)
+        public static async void Fire(this Task task, Action<Exception> onException = null)
         {
-            Task.Run(async () => await task).RunSynchronously();
+            try
+            {
+                await Task.Run(async () => await task);
+            }
+            catch(Exception e)
+            {
+                if (onException != null)
+                    onException(e);
+            }
         }
     }
 }
