@@ -23,7 +23,7 @@ namespace Portable.Common.Collections
             OnCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Add, items));
         }
 
-        public void ClearAndAddRange(IEnumerable<T> range)
+        public void Reset(IEnumerable<T> range)
         {
             disablePropertyChanged = true;
 

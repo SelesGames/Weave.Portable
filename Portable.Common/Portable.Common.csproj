@@ -46,7 +46,7 @@
     <Compile Include="Extension Methods\TaskExtensions.cs" />
     <Compile Include="Extension Methods\UriExtensionMethods.cs" />
     <Compile Include="Lazy.cs" />
-    <Compile Include="ObservableCollectionEx.cs" />
+    <Compile Include="Collections\ObservableCollectionEx.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ServiceResolver.cs" />
     <Compile Include="UriExtensions.cs" />
