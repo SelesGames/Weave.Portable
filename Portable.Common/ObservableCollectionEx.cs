@@ -25,19 +25,16 @@ namespace Portable.Common.Collections
 
         public void ClearAndAddRange(IEnumerable<T> range)
         {
-            var newItems = range.ToList();
-            var oldItems = this.ToList();
-
             disablePropertyChanged = true;
 
             this.Clear();
 
-            foreach (var o in newItems)
+            foreach (var o in range)
                 this.Add(o);
 
             disablePropertyChanged = false;
 
-            OnCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Replace, newItems, oldItems));
+            OnCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Reset));
         }
 
         protected override void OnCollectionChanged(NotifyCollectionChangedEventArgs e)
