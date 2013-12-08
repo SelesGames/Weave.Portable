@@ -4,7 +4,7 @@ using Weave.ViewModels.Extensions;
 
 namespace Weave.ViewModels
 {
-    public class NewsItem : ViewModelBase, weave.INewsItem
+    public class NewsItem : ViewModelBase
     {
         string utcPublishDateTime;
         bool isFavorite, hasBeenViewed;
