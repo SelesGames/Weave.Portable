@@ -140,47 +140,21 @@ namespace Weave.ViewModels.Repository
             return favorites == null ? null : favorites.Select(ConvertToFavorite).ToList();
         }
 
+        public Task Bookmark(Guid userId, NewsItem newsItem, BookmarkType bookmarkType)
+        {
+            switch (bookmarkType)
+            {
+                case BookmarkType.Favorite:
+                    return articleService.AddFavorite(userId, Convert(newsItem));
 
+                case BookmarkType.Read:
+                    return articleService.MarkRead(userId, Convert(newsItem));
 
-
-        #region Helper methods
-
-        //IList<NewsItem> CreateDistinctAndOrdered(Outgoing.NewsList newsList)
-        //{
-        //    var allNews = (from n in newsList.News
-        //                  join f in newsList.Feeds on n.FeedId equals f.Id
-        //                  select Convert(n, f))
-        //                  .OrderBy(o => o.LocalDateTime)
-        //                  .Distinct(NewsItemComparer.Instance)
-        //                  .ToList(); 
-        //    //var allNews = userNews.Feeds
-        //    //    .SelectMany(o => o.News
-        //    //        .Select(n => Convert(n, o)))
-        //    //    .OrderBy(o => o.LocalDateTime)
-        //    //    .Distinct(NewsItemComparer.Instance)
-        //    //    .ToList();
-
-        //    return allNews;
-        //}
-
-        //IList<NewsItem> CreateOrdered(Outgoing.LiveTileNewsList liveTileNewsList)
-        //{
-        //    var allNews = (from n in liveTileNewsList.News
-        //                   join f in liveTileNewsList.Feeds on n.FeedId equals f.Id
-        //                   select Convert(n, f))
-        //                  .OrderBy(o => o.LocalDateTime)
-        //                  .ToList(); 
-
-        //    //var allNews = liveTileNewsList.Feeds
-        //    //    .SelectMany(o => o.News
-        //    //        .Select(n => Convert(n, o)))
-        //    //    .OrderBy(o => o.LocalDateTime)
-        //    //    .ToList();
-
-        //    return allNews;
-        //}
-
-        #endregion
+                default:
+                    throw new ArgumentException(
+                        string.Format("unrecognized bookmarkType: {0}", bookmarkType));
+            }
+        }
 
 
 
@@ -337,20 +311,9 @@ namespace Weave.ViewModels.Repository
 
         NewsItem ConvertToFavorite(Weave.Article.Service.DTOs.ServerOutgoing.SavedNewsItem o)
         {
-            return new NewsItem
-            {
-                Id = o.Id,
-                Feed = new Feed { Name = o.SourceName, ArticleViewingType = ArticleViewingType.Mobilizer },
-                Title = o.Title,
-                Link = o.Link,
-                UtcPublishDateTime = o.UtcPublishDateTime,
-                ImageUrl = o.ImageUrl,
-                YoutubeId = o.YoutubeId,
-                VideoUri = o.VideoUri,
-                PodcastUri = o.PodcastUri,
-                ZuneAppId = o.ZuneAppId,
-                IsFavorite = true,
-            };
+            var newsItem = ConvertToRead(o);
+            newsItem.IsFavorite = true;
+            return newsItem;
         }
 
         NewsItem ConvertToRead(Weave.Article.Service.DTOs.ServerOutgoing.SavedNewsItem o)
@@ -370,6 +333,77 @@ namespace Weave.ViewModels.Repository
             };
         }
 
+        Weave.Article.Service.DTOs.ServerIncoming.SavedNewsItem Convert(NewsItem o)
+        {
+            return new Article.Service.DTOs.ServerIncoming.SavedNewsItem
+            {
+                SourceName = o.OriginalSource,
+                Title = o.Title,
+                Link = o.Link,
+                UtcPublishDateTime = o.UtcPublishDateTime,
+                ImageUrl = o.ImageUrl,
+                YoutubeId = o.YoutubeId,
+                VideoUri = o.VideoUri,
+                PodcastUri = o.PodcastUri,
+                ZuneAppId = o.ZuneAppId,
+                Image  = o.Image == null ? null : Convert(o.Image),
+                Tags = new List<string> {  o.Feed.Category },
+            };
+        }
+
+        Weave.Article.Service.DTOs.Image Convert(Image o)
+        {
+            return new Weave.Article.Service.DTOs.Image
+            {
+                BaseImageUrl = o.BaseImageUrl,
+                Width = o.Width,
+                Height = o.Height,
+                OriginalUrl = o.OriginalUrl,
+                SupportedFormats = o.SupportedFormats,
+            };
+        }
+
         #endregion
     }
 }
+
+
+
+#region Helper methods
+
+//IList<NewsItem> CreateDistinctAndOrdered(Outgoing.NewsList newsList)
+//{
+//    var allNews = (from n in newsList.News
+//                  join f in newsList.Feeds on n.FeedId equals f.Id
+//                  select Convert(n, f))
+//                  .OrderBy(o => o.LocalDateTime)
+//                  .Distinct(NewsItemComparer.Instance)
+//                  .ToList(); 
+//    //var allNews = userNews.Feeds
+//    //    .SelectMany(o => o.News
+//    //        .Select(n => Convert(n, o)))
+//    //    .OrderBy(o => o.LocalDateTime)
+//    //    .Distinct(NewsItemComparer.Instance)
+//    //    .ToList();
+
+//    return allNews;
+//}
+
+//IList<NewsItem> CreateOrdered(Outgoing.LiveTileNewsList liveTileNewsList)
+//{
+//    var allNews = (from n in liveTileNewsList.News
+//                   join f in liveTileNewsList.Feeds on n.FeedId equals f.Id
+//                   select Convert(n, f))
+//                  .OrderBy(o => o.LocalDateTime)
+//                  .ToList(); 
+
+//    //var allNews = liveTileNewsList.Feeds
+//    //    .SelectMany(o => o.News
+//    //        .Select(n => Convert(n, o)))
+//    //    .OrderBy(o => o.LocalDateTime)
+//    //    .ToList();
+
+//    return allNews;
+//}
+
+#endregion

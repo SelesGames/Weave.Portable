@@ -30,5 +30,7 @@ namespace Weave.ViewModels.Contracts.Client
         Task AddFavorite(Guid userId, NewsItem newsItem);
         Task RemoveFavorite(Guid userId, NewsItem newsItem);
         Task<List<NewsItem>> GetFavorites(Guid userId, int skip = 0, int take = 10);
+
+        Task Bookmark(Guid userId, NewsItem newsItem, BookmarkType bookmarkType);
     }
 }

@@ -169,6 +169,11 @@ namespace Weave.ViewModels
             return repo.GetFavorites(Id, skip, take);
         }
 
+        public Task Bookmark(NewsItem newsItem, BookmarkType bookmarkType)
+        {
+            return repo.Bookmark(Id, newsItem, bookmarkType);
+        }
+
         #endregion
 
 

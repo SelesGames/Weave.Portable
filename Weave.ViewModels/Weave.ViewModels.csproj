@@ -39,6 +39,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="ArticleViewingType.cs" />
+    <Compile Include="BookmarkType.cs" />
     <Compile Include="CategoryInfo.cs" />
     <Compile Include="EntryType.cs" />
     <Compile Include="Extensions\DateTimeDisplayFormattingExtensions.cs" />

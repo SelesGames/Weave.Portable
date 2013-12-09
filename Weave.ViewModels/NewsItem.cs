@@ -84,20 +84,6 @@ namespace Weave.ViewModels
             }
         }
 
-        //public double SortRating
-        //{
-        //    get { return CalculateSortRating(UniversalDateTime); }
-        //}
-
-        //static double CalculateSortRating(DateTime dateTime)
-        //{
-        //    double elapsedHours = (DateTime.UtcNow - dateTime).TotalHours;
-        //    if (elapsedHours <= 0)
-        //        elapsedHours = 0.0001;
-        //    double value = 1d / elapsedHours;
-        //    return value;
-        //}
-
         public string OriginalSource
         {
             get { return Feed.Name; }
