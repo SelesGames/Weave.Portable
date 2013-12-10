@@ -33,11 +33,20 @@ namespace Weave.ViewModels
 
 
 
+        #region Constructor
+
         public UserInfo(IViewModelRepository repo)
         {
             this.repo = repo;
             Feeds = new ObservableCollection<Feed>();
         }
+
+        #endregion
+
+
+
+
+        #region User Creation and Retrieval
 
         public async Task Create()
         {
@@ -51,6 +60,13 @@ namespace Weave.ViewModels
             UpdateTo(user);
         }
 
+        #endregion
+
+
+
+
+        #region Get News (by category or feed)
+
         public async Task<NewsList> GetNewsForCategory(string category, EntryType entry = EntryType.Peek, int skip = 0, int take = 10)
         {
             return await repo.GetNews(Id, category, entry, skip, take);
@@ -60,6 +76,8 @@ namespace Weave.ViewModels
         {
             return await repo.GetNews(Id, feedId, entry, skip, take);
         }
+
+        #endregion
 
 
 
