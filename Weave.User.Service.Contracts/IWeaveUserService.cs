@@ -31,5 +31,7 @@ namespace Weave.User.Service.Contracts
         
         Task AddFavorite(Guid userId, Guid newsItemId);
         Task RemoveFavorite(Guid userId, Guid newsItemId);
+
+        Task SetArticleDeleteTimes(Guid userId, Incoming.ArticleDeleteTimes articleDeleteTimes);
     }
 }

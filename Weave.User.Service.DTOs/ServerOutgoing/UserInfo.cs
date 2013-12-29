@@ -16,6 +16,9 @@ namespace Weave.User.Service.DTOs.ServerOutgoing
 
         [DataMember(Order= 6)]  public List<NewsItem> LatestNews { get; set; }
 
+        [DataMember(Order= 7)]  public string ArticleDeletionTimeForMarkedRead { get; set; }
+        [DataMember(Order= 8)]  public string ArticleDeletionTimeForUnread { get; set; }
+
 
         [DataMember(Order=98)]  public TimeSpan DataStoreReadTime { get; set; }
         [DataMember(Order=99)]  public TimeSpan DataStoreWriteTime { get; set; }
