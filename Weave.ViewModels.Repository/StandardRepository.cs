@@ -156,6 +156,16 @@ namespace Weave.ViewModels.Repository
             }
         }
 
+        public Task SetArticleDeleteTimes(Guid userId, string markedReadExpiry, string unreadExpiry)
+        {
+            return userService.SetArticleDeleteTimes(userId,
+                new Incoming.ArticleDeleteTimes
+                {
+                    ArticleDeletionTimeForMarkedRead = markedReadExpiry,
+                    ArticleDeletionTimeForUnread = unreadExpiry,
+                });
+        }
+
 
 
 
@@ -178,6 +188,8 @@ namespace Weave.ViewModels.Repository
                 Feeds = o.Feeds == null ? null : new ObservableCollection<Feed>(o.Feeds.Select(Convert)),
                 PreviousLoginTime = o.PreviousLoginTime,
                 CurrentLoginTime = o.CurrentLoginTime,
+                ArticleDeletionTimeForMarkedRead = o.ArticleDeletionTimeForMarkedRead,
+                ArticleDeletionTimeForUnread = o.ArticleDeletionTimeForUnread,
                 LatestNews = o.LatestNews == null ? null : GetJoinedNews(o.Feeds.Select(Convert).ToList(), o.LatestNews.Select(Convert).ToList()).ToList(),
             };
         }

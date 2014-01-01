@@ -26,6 +26,9 @@ namespace Weave.ViewModels
         public List<NewsItem> LatestNews { get; set; }
         public DateTime PreviousLoginTime { get; set; }
         public DateTime CurrentLoginTime { get; set; }
+        public string ArticleDeletionTimeForMarkedRead { get; set; }
+        public string ArticleDeletionTimeForUnread { get; set; }
+
         public bool AreFeedsModified { get; private set; }
 
         #endregion
@@ -190,6 +193,18 @@ namespace Weave.ViewModels
         public Task Bookmark(NewsItem newsItem, BookmarkType bookmarkType)
         {
             return repo.Bookmark(Id, newsItem, bookmarkType);
+        }
+
+        #endregion
+
+
+
+
+        #region Article Expiry times (Marked Read and Unread Deletion times)
+
+        public Task SetArticleDeleteTimes()
+        {
+            return repo.SetArticleDeleteTimes(Id, ArticleDeletionTimeForMarkedRead, ArticleDeletionTimeForUnread);
         }
 
         #endregion

@@ -32,5 +32,7 @@ namespace Weave.ViewModels.Contracts.Client
         Task<List<NewsItem>> GetFavorites(Guid userId, int skip = 0, int take = 10);
 
         Task Bookmark(Guid userId, NewsItem newsItem, BookmarkType bookmarkType);
+
+        Task SetArticleDeleteTimes(Guid userId, string markedReadExpiry, string unreadExpiry);
     }
 }
