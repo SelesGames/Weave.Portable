@@ -223,6 +223,8 @@ namespace Weave.ViewModels
             CurrentLoginTime = user.CurrentLoginTime;
             LatestNews = user.LatestNews;
             Feeds = user.Feeds;
+            ArticleDeletionTimeForMarkedRead = user.ArticleDeletionTimeForMarkedRead;
+            ArticleDeletionTimeForUnread = user.ArticleDeletionTimeForUnread;
             Raise("PreviousLoginTime", "CurrentLoginTime", "LatestNews", "Feeds");
         }
 
