@@ -51,7 +51,9 @@
     <Compile Include="Identity\IdentityInfo.cs" />
     <Compile Include="Image.cs" />
     <Compile Include="Contracts\Client\IViewModelRepository.cs" />
-    <Compile Include="MobilizedArticle.cs" />
+    <Compile Include="Mobilizer\MobilizedArticle.cs" />
+    <Compile Include="Mobilizer\MobilizedArticleRepository.cs" />
+    <Compile Include="Mobilizer\ResultCombiner.cs" />
     <Compile Include="NewsItem.cs" />
     <Compile Include="NewsItemType.cs" />
     <Compile Include="NewsList.cs" />
@@ -67,6 +69,14 @@
     <ProjectReference Include="..\Weave.Identity.Service.DTOs\Weave.Identity.Service.DTOs.csproj">
       <Project>{6fa5ac47-653a-4634-8bca-cf68ba33f884}</Project>
       <Name>Weave.Identity.Service.DTOs</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Weave.Mobilizer.Contracts\Weave.Mobilizer.Contracts.csproj">
+      <Project>{fc776ca4-35b3-4024-8667-cb265805a519}</Project>
+      <Name>Weave.Mobilizer.Contracts</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Weave.Mobilizer.DTOs\Weave.Mobilizer.DTOs.csproj">
+      <Project>{0a9019e4-e76f-4fac-a5c7-70f32cf5e2c1}</Project>
+      <Name>Weave.Mobilizer.DTOs</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\Portable\$(TargetFrameworkVersion)\Microsoft.Portable.CSharp.targets" />

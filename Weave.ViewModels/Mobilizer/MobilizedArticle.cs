@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Weave.ViewModels
+namespace Weave.ViewModels.Mobilizer
 {
     public class MobilizedArticle
     {

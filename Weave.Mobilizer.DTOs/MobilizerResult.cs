@@ -1,7 +1,7 @@
 ﻿
 namespace Weave.Mobilizer.DTOs
 {
-    public class ReadabilityResult
+    public class MobilizerResult
     {
         public string author { get; set; }
         public string content { get; set; }
