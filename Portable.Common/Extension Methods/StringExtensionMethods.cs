@@ -77,5 +77,29 @@ namespace System
             returnValue = newString.ToString();
             return returnValue.Trim();
         }
+
+        /// <summary>
+        /// Converts UTF-8 to Unicode
+        /// </summary>
+        /// <param name="text">The UTF-8 text to convert</param>
+        /// <returns>The text converted to Unicode format</returns>
+        public static string ConvertExtendedASCII(this string text)
+        {
+            if (string.IsNullOrEmpty(text))
+                return text;
+
+            var answer = new StringBuilder();
+            char[] s = text.ToCharArray();
+
+            foreach (char c in s)
+            {
+                if (Convert.ToInt32(c) > 127)
+                    answer.Append("&#" + Convert.ToInt32(c) + ";");
+                else
+                    answer.Append(c);
+            }
+            var result = answer.ToString();
+            return result;
+        }
     }
 }

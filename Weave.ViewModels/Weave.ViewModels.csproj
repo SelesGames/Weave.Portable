@@ -51,6 +51,7 @@
     <Compile Include="Identity\IdentityInfo.cs" />
     <Compile Include="Image.cs" />
     <Compile Include="Contracts\Client\IViewModelRepository.cs" />
+    <Compile Include="MobilizedArticle.cs" />
     <Compile Include="NewsItem.cs" />
     <Compile Include="NewsItemType.cs" />
     <Compile Include="NewsList.cs" />
