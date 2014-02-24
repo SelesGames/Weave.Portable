@@ -13,6 +13,6 @@ namespace Weave.ViewModels.Mobilizer
         public string CombinedPublicationAndDate { get; set; }
         public string Author { get; set; }
 
-        public bool HasImage { get { return string.IsNullOrWhiteSpace(HeroImageUrl); } }
+        public bool HasImage { get { return !string.IsNullOrWhiteSpace(HeroImageUrl); } }
     }
 }
