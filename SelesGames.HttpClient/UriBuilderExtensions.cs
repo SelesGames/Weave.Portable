@@ -15,5 +15,10 @@ namespace System
 
             return uri;
         }
+
+        public static UriBuilder AddCacheBuster(this UriBuilder uri, string cacheBusterParameter = "xzpmqr")
+        {
+            return uri.AddParameter(cacheBusterParameter, Guid.NewGuid());
+        }
     }
 }
