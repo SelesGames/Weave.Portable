@@ -20,7 +20,7 @@ namespace SelesGames.HttpClient
         ContentEncoderSettings encoderSettings;
         CompressionSettings compressionSettings;
 
-        internal MediaTypeFormatterCollection Formatters { get { return formatters; } }
+        public MediaTypeFormatterCollection Formatters { get { return formatters; } }
 
 
 
