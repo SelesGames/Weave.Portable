@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Common.Compression;
+using System;
 using System.IO;
 using System.IO.Compression;
 using System.Net;
@@ -11,6 +12,7 @@ namespace Common.Net.Http.Compression
     {
         HttpContent originalContent;
         string encodingType;
+        CompressionHandler compressionHandler;
 
         public DecompressedContent(HttpContent content, string encodingType)
         {
@@ -24,6 +26,8 @@ namespace Common.Net.Http.Compression
             {
                 throw new InvalidOperationException(string.Format("Encoding '{0}' is not supported. Only supports gzip or deflate encoding.", this.encodingType));
             }
+
+            compressionHandler = Common.Compression.Settings.CompressionHandlers.Find(this.encodingType);
 
             // copy the headers from the original content
             foreach (var header in originalContent.Headers)
@@ -41,25 +45,9 @@ namespace Common.Net.Http.Compression
         protected override async Task SerializeToStreamAsync(Stream stream, TransportContext context)
         {
             using (var ogStream = await originalContent.ReadAsStreamAsync().ConfigureAwait(false))
-            using (var gzip = CreateDecompressedStream(ogStream))
+            using (var gzip = compressionHandler.Decompress(ogStream))// CreateDecompressedStream(ogStream))
             {
                 await gzip.CopyToAsync(stream).ConfigureAwait(false);
-            }
-        }
-
-        Stream CreateDecompressedStream(Stream stream)
-        {
-            if (encodingType == "gzip")
-            {
-                return new GZipStream(stream, CompressionMode.Decompress, leaveOpen: false);
-            }
-            else if (encodingType == "deflate")
-            {
-                return new DeflateStream(stream, CompressionMode.Decompress, leaveOpen: false);
-            }
-            else
-            {
-                throw new ArgumentException(string.Format("unsupported encodingType: {0}", encodingType));
             }
         }
     }

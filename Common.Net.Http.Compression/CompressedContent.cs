@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Common.Compression;
+using System;
 using System.IO;
 using System.IO.Compression;
 using System.Net;
@@ -11,6 +12,7 @@ namespace Common.Net.Http.Compression
     {
         HttpContent originalContent;
         string encodingType;
+        CompressionHandler compressionHandler;
 
         public CompressedContent(HttpContent content, string encodingType)
         {
@@ -24,6 +26,8 @@ namespace Common.Net.Http.Compression
             {
                 throw new InvalidOperationException(string.Format("Encoding '{0}' is not supported. Only supports gzip or deflate encoding.", this.encodingType));
             }
+
+            compressionHandler = Common.Compression.Settings.CompressionHandlers.Find(this.encodingType);
 
             // copy the headers from the original content
             foreach (var header in originalContent.Headers)
@@ -42,26 +46,10 @@ namespace Common.Net.Http.Compression
 
         protected async override Task SerializeToStreamAsync(Stream stream, TransportContext context)
         {
-            using (var compressedStream = CreateCompressedStream(stream, encodingType))
+            using (var compressedStream = compressionHandler.Compress(stream))// CreateCompressedStream(stream, encodingType))
             {
                 await originalContent.CopyToAsync(compressedStream).ConfigureAwait(false);
                 compressedStream.Flush();
-            }
-        }
-
-        Stream CreateCompressedStream(Stream stream, string encodingType)
-        {
-            if (encodingType == "gzip")
-            {
-                return new GZipStream(stream, CompressionMode.Compress, leaveOpen: true);
-            }
-            else if (encodingType == "deflate")
-            {
-                return new DeflateStream(stream, CompressionMode.Compress, leaveOpen: true);
-            }
-            else
-            {
-                throw new ArgumentException(string.Format("unsupported encodingType: {0}", encodingType));
             }
         }
     }
