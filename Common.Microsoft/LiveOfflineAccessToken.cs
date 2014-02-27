@@ -13,13 +13,15 @@ namespace Common.Microsoft
     /// </summary>
     public class LiveOfflineAccessToken : LiveAccessToken
     {
-        #region Endpoints
+        #region Endpoints and Private member variables
 
         const string
             MSA_TOKEN_REFRESH_URL = "https://login.live.com/oauth20_token.srf",
             TOKEN_REFRESH_CONTENT_TYPE = "application/x-www-form-urlencoded",
             TOKEN_REFRESH_REDIRECT_URI = "https://login.live.com/oauth20_desktop.srf",
             TOKEN_REFRESH_REQUEST_BODY = "client_id={0}&redirect_uri={1}&grant_type=refresh_token&refresh_token={2}";
+
+        DateTimeOffset now;
 
         #endregion
 
@@ -73,7 +75,7 @@ namespace Common.Microsoft
 
         async Task RefreshAccessTokenIfNecessary()
         {
-            var now = DateTime.UtcNow;
+            now = DateTimeOffset.UtcNow;
             if (now > AccessTokenExpiration)
                 await AttemptAccessTokenRefresh();
         }
@@ -104,7 +106,8 @@ namespace Common.Microsoft
             {
                 dynamic responseObject = JsonConvert.DeserializeObject(await response.Content.ReadAsStringAsync());
                 AccessToken = responseObject.access_token;
-                AccessTokenExpiration = AccessTokenExpiration.AddSeconds((double)responseObject.expires_in);
+                var expiresInSeconds = (double)responseObject.expires_in;
+                AccessTokenExpiration = now.AddSeconds(expiresInSeconds);
                 RefreshToken = responseObject.refresh_token;
             }
         }
