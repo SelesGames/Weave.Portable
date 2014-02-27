@@ -1,7 +1,8 @@
-﻿using SelesGames.HttpClient;
+﻿using System;
 using System.Linq;
+using System.Net.Http.Formatting;
 
-namespace System.Net.Http.Formatting
+namespace SelesGames.HttpClient
 {
     public static class SmartHttpClientExtensions
     {

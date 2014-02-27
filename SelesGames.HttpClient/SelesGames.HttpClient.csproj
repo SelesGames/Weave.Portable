@@ -37,6 +37,7 @@
   <ItemGroup>
     <Compile Include="CompressionSettings.cs" />
     <Compile Include="ContentEncoderSettings.cs" />
+    <Compile Include="ErrorResponseException.cs" />
     <Compile Include="Extensions\HttpClientExtensions.cs" />
     <Compile Include="Extensions\HttpResponseMessageExtensions.cs" />
     <Compile Include="Extensions\SmartHttpClientExtensions.cs" />

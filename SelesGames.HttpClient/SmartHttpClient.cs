@@ -67,7 +67,7 @@ namespace SelesGames.HttpClient
         public async Task<T> GetAsync<T>(string url, CancellationToken cancellationToken)
         {
             var response = await GetAsync(url, cancellationToken).ConfigureAwait(false);
-            response.EnsureSuccessStatusCode();
+            response.EnsureSuccessStatusCode2();
 
             return await ReadResponseContentAsync<T>(response).ConfigureAwait(false);
         }
@@ -87,7 +87,7 @@ namespace SelesGames.HttpClient
         public async Task<TResult> PostAsync<TPost, TResult>(string url, TPost obj, CancellationToken cancelToken)
         {
             var response = await PostAsync(url, obj, cancelToken);
-            response.EnsureSuccessStatusCode();
+            response.EnsureSuccessStatusCode2();
 
             return await ReadResponseContentAsync<TResult>(response).ConfigureAwait(false);
         }
@@ -111,8 +111,15 @@ namespace SelesGames.HttpClient
 
         public async Task<T> ReadResponseContentAsync<T>(HttpResponseMessage response)
         {
-            var result = await response.Content.ReadAsAsync<T>(formatters).ConfigureAwait(false);
-            return result;
+            try
+            {
+                var result = await response.Content.ReadAsAsync<T>(formatters).ConfigureAwait(false);
+                return result;
+            }
+            catch(Exception ex)
+            {
+                throw new ErrorResponseException(response, "parse error in SmartHttpClient.ReadResponseContentAsync", ex);
+            }
         }
 
         #endregion

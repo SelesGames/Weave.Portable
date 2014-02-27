@@ -71,9 +71,20 @@ namespace Weave.Identity.Service.Client
             {
                 return await CreateClient().GetAsync<DTOs.IdentityInfo>(url, CancellationToken.None);
             }
-            catch (WebException responseException)
+            //catch (WebException responseException)
+            //{
+            //    var response = responseException.Response as HttpWebResponse;
+            //    if (response == null)
+            //        throw responseException;
+
+            //    if (response.StatusCode == HttpStatusCode.NotFound)
+            //        throw new NoMatchingUserException();
+            //    else
+            //        throw responseException;
+            //}
+            catch (ErrorResponseException responseException)
             {
-                var response = responseException.Response as HttpWebResponse;
+                var response = responseException.ResponseMessage;
                 if (response == null)
                     throw responseException;
 
