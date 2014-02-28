@@ -62,7 +62,8 @@ namespace Common.Microsoft
 
         public async override Task<string> GetAccessToken()
         {
-            await RefreshAccessTokenIfNecessary();
+            await AttemptAccessTokenRefresh();
+            //await RefreshAccessTokenIfNecessary();
             return AccessToken;
         }
 
@@ -104,7 +105,8 @@ namespace Common.Microsoft
         {
             if (response.StatusCode == HttpStatusCode.OK)
             {
-                dynamic responseObject = JsonConvert.DeserializeObject(await response.Content.ReadAsStringAsync());
+                var responseString = await response.Content.ReadAsStringAsync();
+                dynamic responseObject = JsonConvert.DeserializeObject(responseString);
                 AccessToken = responseObject.access_token;
                 var expiresInSeconds = (double)responseObject.expires_in;
                 AccessTokenExpiration = now.AddSeconds(expiresInSeconds);
