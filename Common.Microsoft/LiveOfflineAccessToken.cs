@@ -32,7 +32,7 @@ namespace Common.Microsoft
 
         public string ClientId { get; set; }
         public string AccessToken { get; set; }
-        public DateTimeOffset AccessTokenExpiration { get; set; }
+        //public DateTimeOffset AccessTokenExpiration { get; set; }
         public string RefreshToken { get; set; }
 
         #endregion
@@ -45,11 +45,11 @@ namespace Common.Microsoft
         // Empty constructor to allow for serialization
         public LiveOfflineAccessToken() { }
 
-        public LiveOfflineAccessToken(string clientId, string accessToken, DateTimeOffset accessTokenExpiration, string refreshToken)
+        public LiveOfflineAccessToken(string clientId, string accessToken, /*DateTimeOffset accessTokenExpiration,*/ string refreshToken)
         {
             this.ClientId = clientId;
             this.AccessToken = accessToken;
-            this.AccessTokenExpiration = accessTokenExpiration;
+            //this.AccessTokenExpiration = accessTokenExpiration;
             this.RefreshToken = refreshToken;
         }
 
@@ -74,12 +74,12 @@ namespace Common.Microsoft
 
         #region Token refresh
 
-        async Task RefreshAccessTokenIfNecessary()
-        {
-            now = DateTimeOffset.UtcNow;
-            if (now > AccessTokenExpiration)
-                await AttemptAccessTokenRefresh();
-        }
+        //async Task RefreshAccessTokenIfNecessary()
+        //{
+        //    now = DateTimeOffset.UtcNow;
+        //    if (now > AccessTokenExpiration)
+        //        await AttemptAccessTokenRefresh();
+        //}
 
         async Task AttemptAccessTokenRefresh()
         {
@@ -109,7 +109,7 @@ namespace Common.Microsoft
                 dynamic responseObject = JsonConvert.DeserializeObject(responseString);
                 AccessToken = responseObject.access_token;
                 var expiresInSeconds = (double)responseObject.expires_in;
-                AccessTokenExpiration = now.AddSeconds(expiresInSeconds);
+                //AccessTokenExpiration = now.AddSeconds(expiresInSeconds);
                 RefreshToken = responseObject.refresh_token;
             }
         }
