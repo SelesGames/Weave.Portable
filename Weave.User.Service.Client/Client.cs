@@ -43,9 +43,8 @@ namespace Weave.User.Service.Client
             var url = new UriBuilder(SERVICE_URL + append)
                 .AddParameter("userId", userId)
                 .AddParameter("refresh", refresh)
-                .AddParameter("blah", Guid.NewGuid())
+                .AddCacheBuster()
                 .ToString();
-
 
             var client = CreateClient();
             var result = await client.GetAsync<Outgoing.UserInfo>(url, CancellationToken.None);
@@ -70,10 +69,11 @@ namespace Weave.User.Service.Client
                 .AddParameter("take", take)
                 .AddParameter("type", (int)type)
                 .AddParameter("requireImage", requireImage)
-                .AddParameter("blah", Guid.NewGuid())
+                .AddCacheBuster()
                 .ToString();
 
             var client = CreateClient();
+
             var result = await client.GetAsync<Outgoing.NewsList>(url, CancellationToken.None);
             return result;
         }
@@ -89,10 +89,11 @@ namespace Weave.User.Service.Client
                 .AddParameter("take", take)
                 .AddParameter("type", (int)type)
                 .AddParameter("requireImage", requireImage)
-                .AddParameter("blah", Guid.NewGuid())
+                .AddCacheBuster()
                 .ToString();
 
             var client = CreateClient();
+
             var result = await client.GetAsync<Outgoing.NewsList>(url, CancellationToken.None);
             return result;
         }
@@ -111,7 +112,7 @@ namespace Weave.User.Service.Client
                 .AddParameter("userId", userId)
                 .AddParameter("refresh", refresh)
                 .AddParameter("nested", nested)
-                .AddParameter("blah", Guid.NewGuid())
+                .AddCacheBuster()
                 .ToString();
 
             var client = CreateClient();
@@ -126,7 +127,7 @@ namespace Weave.User.Service.Client
                 .AddParameter("category", category)
                 .AddParameter("refresh", refresh)
                 .AddParameter("nested", nested)
-                .AddParameter("blah", Guid.NewGuid())
+                .AddCacheBuster()
                 .ToString();
 
             var client = CreateClient();
@@ -141,7 +142,7 @@ namespace Weave.User.Service.Client
                 .AddParameter("feedId", feedId)
                 .AddParameter("refresh", refresh)
                 .AddParameter("nested", nested)
-                .AddParameter("blah", Guid.NewGuid())
+                .AddCacheBuster()
                 .ToString();
 
             var client = CreateClient();
@@ -165,7 +166,7 @@ namespace Weave.User.Service.Client
             var url = new UriBuilder(SERVICE_URL + append)
                 .AddParameter("userId", userId)
                 .AddParameter("feedId", feedId)
-                .AddParameter("blah", Guid.NewGuid())
+                .AddCacheBuster()
                 .ToString();
 
             var client = CreateClient();
@@ -207,7 +208,7 @@ namespace Weave.User.Service.Client
             var url = new UriBuilder(SERVICE_URL + append)
                 .AddParameter("userId", userId)
                 .AddParameter("newsItemId", newsItemId)
-                .AddParameter("blah", Guid.NewGuid())
+                .AddCacheBuster()
                 .ToString();
 
             var client = CreateClient();
@@ -220,7 +221,7 @@ namespace Weave.User.Service.Client
             var url = new UriBuilder(SERVICE_URL + append)
                 .AddParameter("userId", userId)
                 .AddParameter("newsItemId", newsItemId)
-                .AddParameter("blah", Guid.NewGuid())
+                .AddCacheBuster()
                 .ToString();
 
             var client = CreateClient();
@@ -270,7 +271,7 @@ namespace Weave.User.Service.Client
             var url = new UriBuilder(SERVICE_URL + append)
                 .AddParameter("userId", userId)
                 .AddParameter("newsItemId", newsItemId)
-                .AddParameter("blah", Guid.NewGuid())
+                .AddCacheBuster()
                 .ToString();
 
             var client = CreateClient();
@@ -295,14 +296,28 @@ namespace Weave.User.Service.Client
 
 
 
-        SmartHttpClient CreateClient()
-        {
-            return new SmartHttpClient();
-        }
+        #region Article Expiry times (Marked Read and Unread Deletion times)
 
         public Task SetArticleDeleteTimes(Guid userId, Incoming.ArticleDeleteTimes articleDeleteTimes)
         {
-            throw new NotImplementedException();
+            string append = "set_delete_times";
+            var url = new UriBuilder(SERVICE_URL + append)
+                .AddParameter("userId", userId)
+                .AddCacheBuster()
+                .ToString();
+
+            var client = CreateClient();
+            return client.PostAsync(url, articleDeleteTimes, CancellationToken.None);
+        }
+
+        #endregion
+
+
+
+
+        SmartHttpClient CreateClient()
+        {
+            return new SmartHttpClient();
         }
     }
 }
