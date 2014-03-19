@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using System.Net.Http;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Common.Net.Http.Compression
@@ -12,12 +13,31 @@ namespace Common.Net.Http.Compression
             get { return false; }
         }
 
-        protected override Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, System.Threading.CancellationToken cancellationToken)
+        protected override Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
         {
-            return base.SendAsync(request, cancellationToken).ContinueWith(o => UnzipContent(o), TaskContinuationOptions.OnlyOnRanToCompletion);
+            return base.SendAsync(CompressIfNeeded(request), cancellationToken).ContinueWith(o => DecompressIfNeeded(o), TaskContinuationOptions.OnlyOnRanToCompletion);
         }
 
-        HttpResponseMessage UnzipContent(Task<HttpResponseMessage> o)
+        static HttpRequestMessage CompressIfNeeded(HttpRequestMessage request)
+        {
+            var content = request.Content;
+            if (content != null)
+            {
+                var contentEncoding = content.Headers.ContentEncoding;
+                if (contentEncoding != null && contentEncoding.Any())
+                {
+                    string encodingType = contentEncoding.First();
+
+                    if (IsGzipOrDeflate(encodingType))
+                    {
+                        request.Content = new CompressedContent(request.Content, encodingType);
+                    }
+                }
+            }
+            return request;
+        }
+
+        static HttpResponseMessage DecompressIfNeeded(Task<HttpResponseMessage> o)
         {
             HttpResponseMessage response = o.Result;
 
@@ -29,7 +49,7 @@ namespace Common.Net.Http.Compression
                 {
                     string encodingType = contentEncoding.First();
 
-                    if (!encodingType.Equals("identity", StringComparison.OrdinalIgnoreCase))
+                    if (IsGzipOrDeflate(encodingType))
                     {
                         response.Content = new DecompressedContent(response.Content, encodingType);
                     }
@@ -37,6 +57,13 @@ namespace Common.Net.Http.Compression
             }
 
             return response;
+        }
+
+        static bool IsGzipOrDeflate(string encodingType)
+        {
+            return 
+                encodingType.Equals("gzip", StringComparison.OrdinalIgnoreCase) ||
+                encodingType.Equals("deflate", StringComparison.OrdinalIgnoreCase);
         }
     }
 }

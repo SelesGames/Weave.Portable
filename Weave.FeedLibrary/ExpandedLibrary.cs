@@ -27,7 +27,7 @@ namespace Weave.FeedLibrary
 
         async Task<List<Feed>> GetFeedsFromWeb()
         {
-            var client = new SmartHttpClient();
+            var client = new AutoCompressionClient();
             var responseStream = await client.GetStreamAsync(libraryUrl);
             var doc = XElement.Load(responseStream);
             var feeds = Parse(doc);

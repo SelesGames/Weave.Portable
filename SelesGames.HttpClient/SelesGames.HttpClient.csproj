@@ -35,6 +35,7 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="AutoCompressionClient.cs" />
     <Compile Include="CompressionSettings.cs" />
     <Compile Include="ContentEncoderSettings.cs" />
     <Compile Include="ErrorResponseException.cs" />
