@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace SelesGames.HttpClient
 {
-    public class HttpResourceListener : IDisposable
+    class HttpResourceListener : IDisposable
     {
         System.Net.Http.HttpClient innerClient;
         string eTag, lastModified;
@@ -22,18 +22,14 @@ namespace SelesGames.HttpClient
 
         public event EventHandler Updated;
 
-        public HttpResourceListener(System.Net.Http.HttpClient innerClient, string resourceUrl)
+        public HttpResourceListener(System.Net.Http.HttpClient innerClient, string resourceUrl, Action<HttpResponseMessage> onUpdated, Action<Exception> onException = null)
         {
             this.innerClient = innerClient;
             this.resourceUrl = resourceUrl;
-
-            PollingInterval = TimeSpan.FromMinutes(15);
-        }
-
-        public void RegisterOnUpdatedCallback(Action<HttpResponseMessage> onUpdated, Action<Exception> onException = null)
-        {
             this.onUpdated = onUpdated;
             this.onException = onException;
+
+            PollingInterval = TimeSpan.FromMinutes(15);
         }
 
         public async void BeginListening()
@@ -49,6 +45,11 @@ namespace SelesGames.HttpClient
                 await Task.Delay(PollingInterval);
             }
         }
+
+
+
+
+        #region Private helper functions
 
         async Task TryCheckResource()
         {
@@ -127,6 +128,8 @@ namespace SelesGames.HttpClient
             eTag = response.Headers.GetValueForHeader("ETag");
             lastModified = response.Content.Headers.GetValueForHeader("Last-Modified");
         }
+
+        #endregion
 
 
 

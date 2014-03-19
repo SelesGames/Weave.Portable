@@ -1,5 +1,4 @@
 ﻿using Common.Net.Http.Compression;
-using System;
 using System.Net.Http;
 using System.Net.Http.Formatting;
 using System.Net.Http.Headers;
@@ -28,10 +27,10 @@ namespace SelesGames.HttpClient
         #region Constructors
 
         public SmartHttpClient(CompressionSettings compressionSettings = CompressionSettings.OnRequest | CompressionSettings.OnContent)
-            : this(CreateDefaultMediaTypeFormatters(), ContentEncoderSettings.Default, compressionSettings) { }
+            : this(new StandardMediaTypeFormatters(), ContentEncoderSettings.Default, compressionSettings) { }
 
         public SmartHttpClient(ContentEncoderSettings encoderSettings, CompressionSettings compressionSettings = CompressionSettings.OnRequest | CompressionSettings.OnContent)
-            : this(CreateDefaultMediaTypeFormatters(), encoderSettings, compressionSettings) { }
+            : this(new StandardMediaTypeFormatters(), encoderSettings, compressionSettings) { }
 
         SmartHttpClient(
             MediaTypeFormatterCollection formatters,
@@ -69,7 +68,7 @@ namespace SelesGames.HttpClient
             var response = await GetAsync(url, cancellationToken).ConfigureAwait(false);
             response.EnsureSuccessStatusCode2();
 
-            return await ReadResponseContentAsync<T>(response).ConfigureAwait(false);
+            return await response.ReadResponseContentAsync<T>(Formatters).ConfigureAwait(false);
         }
 
         #endregion
@@ -89,67 +88,17 @@ namespace SelesGames.HttpClient
             var response = await PostAsync(url, obj, cancelToken);
             response.EnsureSuccessStatusCode2();
 
-            return await ReadResponseContentAsync<TResult>(response).ConfigureAwait(false);
+            return await response.ReadResponseContentAsync<TResult>(Formatters).ConfigureAwait(false);
         }
 
         public Task<HttpResponseMessage> PostAsync<T>(string url, T obj, CancellationToken cancelToken)
         {
             var mediaType = new MediaTypeHeaderValue(encoderSettings.ContentType);
-            var formatter = FindWriteFormatter<T>(mediaType);
+            var formatter = Formatters.FindWriteFormatter<T>(mediaType);
 
             var content = new ObjectContent<T>(obj, formatter, mediaType);
 
             return base.PostAsync(url, content, cancelToken);
-        }
-
-        #endregion
-
-
-
-
-        #region Read Response.Content async public helper method
-
-        public async Task<T> ReadResponseContentAsync<T>(HttpResponseMessage response)
-        {
-            try
-            {
-                var result = await response.Content.ReadAsAsync<T>(formatters).ConfigureAwait(false);
-                return result;
-            }
-            catch(Exception ex)
-            {
-                throw new ErrorResponseException(response, "parse error in SmartHttpClient.ReadResponseContentAsync", ex);
-            }
-        }
-
-        #endregion
-
-
-
-
-        #region helper methods
-
-        MediaTypeFormatter FindWriteFormatter<T>(MediaTypeHeaderValue mediaType)
-        {
-            MediaTypeFormatter formatter = null;
-
-            var type = typeof(T);
-            if (mediaType != null)
-            {
-                formatter = formatters.FindWriter(type, mediaType);
-            }
-
-            if (formatter == null)
-                throw new Exception(string.Format("unable to find a valid MediaTypeFormatter that matches {0}", mediaType));
-
-            return formatter;
-        }
-
-        static MediaTypeFormatterCollection CreateDefaultMediaTypeFormatters()
-        {
-            var collection = new MediaTypeFormatterCollection();
-            //collection.Add(new SelesGames.WebApi.Protobuf.ProtobufFormatter());
-            return collection;
         }
 
         #endregion

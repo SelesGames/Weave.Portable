@@ -40,11 +40,13 @@
     <Compile Include="ErrorResponseException.cs" />
     <Compile Include="Extensions\HttpClientExtensions.cs" />
     <Compile Include="Extensions\HttpResponseMessageExtensions.cs" />
+    <Compile Include="Extensions\MediaTypeFormatterCollectionExtensions.cs" />
     <Compile Include="Extensions\SmartHttpClientExtensions.cs" />
     <Compile Include="Helpers\EnumerableEx.cs" />
     <Compile Include="HttpResourceListener.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SmartHttpClient.cs" />
+    <Compile Include="StandardMediaTypeFormatters.cs" />
     <Compile Include="UriBuilderExtensions.cs" />
     <Compile Include="UrlHelper.cs" />
   </ItemGroup>

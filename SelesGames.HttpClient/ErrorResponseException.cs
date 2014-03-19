@@ -24,15 +24,4 @@ namespace SelesGames.HttpClient
             ResponseMessage = response;
         }
     }
-
-    //public class ParseErrorResponseException : ErrorResponseException
-    //{
-    //    public string ResponseText { get; set; }
-
-    //    public ParseErrorResponseException(HttpResponseMessage response)
-    //        : base(response)
-    //    {
-    //        ResponseText = response.Content.
-    //    }
-    //}
 }

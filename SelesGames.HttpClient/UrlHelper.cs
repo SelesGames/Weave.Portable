@@ -31,11 +31,7 @@ namespace SelesGames.HttpClient
         {
             var client = new System.Net.Http.HttpClient(new HttpClientHandler { AllowAutoRedirect = false });
             var response = await client.SendAsync(new HttpRequestMessage(HttpMethod.Head, url));
-            //var request = HttpWebRequest.CreateHttp(url);
-            //request.AllowAutoRedirect = false;
-            //request.Method = "HEAD";
 
-            //var response = (HttpWebResponse)await request.GetResponseAsync();
             var statusCode = response.StatusCode;
 
             if (
@@ -51,7 +47,6 @@ namespace SelesGames.HttpClient
                 || statusCode == HttpStatusCode.RedirectKeepVerb    // 307
                 || (int)statusCode == 308)                          // Permanent Redirect 308, part of experimental RFC proposal
             {
-                //var movedTo = response.Headers[HttpResponseHeader.Location];
                 var movedTo = GetLocationOrNull(response);
                 if (!string.IsNullOrWhiteSpace(movedTo))
                     return movedTo;

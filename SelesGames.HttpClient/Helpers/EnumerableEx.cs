@@ -2,7 +2,7 @@
 
 namespace System.Collections.Generic
 {
-    internal static class EnumerableEx
+    static class EnumerableEx
     {
         public static bool IsNullOrEmpty<T>(IEnumerable<T> source)
         {
