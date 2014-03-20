@@ -38,7 +38,9 @@
     <Compile Include="CompressedContent.cs" />
     <Compile Include="DecompressedContent.cs" />
     <Compile Include="EncodingDelegateHandler.cs" />
+    <Compile Include="Extensions\StringExtensions.cs" />
     <Compile Include="HttpClientCompressionHandler.cs" />
+    <Compile Include="Extensions\HttpResponseMessageExtensions.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

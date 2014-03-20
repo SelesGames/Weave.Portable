@@ -1,5 +1,4 @@
-﻿using System;
-using System.Linq;
+﻿using System.Linq;
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
@@ -26,9 +25,9 @@ namespace Common.Net.Http.Compression
                 var contentEncoding = content.Headers.ContentEncoding;
                 if (contentEncoding != null && contentEncoding.Any())
                 {
-                    string encodingType = contentEncoding.First();
+                    string encodingType = contentEncoding.First() ?? "";
 
-                    if (IsGzipOrDeflate(encodingType))
+                    if (encodingType.IsGzipOrDeflate())
                     {
                         request.Content = new CompressedContent(request.Content, encodingType);
                     }
@@ -47,9 +46,9 @@ namespace Common.Net.Http.Compression
 
                 if (contentEncoding != null && contentEncoding.Any())
                 {
-                    string encodingType = contentEncoding.First();
+                    string encodingType = contentEncoding.First() ?? "";
 
-                    if (IsGzipOrDeflate(encodingType))
+                    if (encodingType.IsGzipOrDeflate())
                     {
                         response.Content = new DecompressedContent(response.Content, encodingType);
                     }
@@ -57,13 +56,6 @@ namespace Common.Net.Http.Compression
             }
 
             return response;
-        }
-
-        static bool IsGzipOrDeflate(string encodingType)
-        {
-            return 
-                encodingType.Equals("gzip", StringComparison.OrdinalIgnoreCase) ||
-                encodingType.Equals("deflate", StringComparison.OrdinalIgnoreCase);
         }
     }
 }
