@@ -52,6 +52,10 @@
     <Compile Include="UrlHelper.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Common.Compression\Common.Compression.csproj">
+      <Project>{00617b68-c1f0-4ad8-8307-25c0608d745d}</Project>
+      <Name>Common.Compression</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Common.Net.Http.Compression\Common.Net.Http.Compression.csproj">
       <Project>{8162e82c-c141-4a69-90ef-4a2593a374df}</Project>
       <Name>Common.Net.Http.Compression</Name>
