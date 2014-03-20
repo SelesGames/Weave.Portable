@@ -106,12 +106,15 @@
 //}
 
 
+using Common.Compression;
 using Common.Net.Http.Compression;
+using System.Collections.Generic;
 using System.Net.Http;
 using System.Net.Http.Formatting;
 using System.Net.Http.Headers;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Linq;
 
 namespace SelesGames.HttpClient
 {
@@ -126,6 +129,7 @@ namespace SelesGames.HttpClient
         readonly MediaTypeFormatterCollection formatters;
         readonly ContentEncoderSettings encoderSettings;
         readonly CompressionSettings compressionSettings;
+        readonly IEnumerable<string> acceptEncodings;
 
         public MediaTypeFormatterCollection Formatters { get { return formatters; } }
 
@@ -148,6 +152,7 @@ namespace SelesGames.HttpClient
             this.formatters = formatters;
             this.encoderSettings = encoderSettings;
             this.compressionSettings = compressionSettings;
+            this.acceptEncodings = Settings.CompressionHandlers.GetSupportedEncodings().ToArray();
         }
 
         #endregion
@@ -228,7 +233,7 @@ namespace SelesGames.HttpClient
                 client.DefaultRequestHeaders.TryAddWithoutValidation("Accept", accept);
 
             if (compressionSettings.HasFlag(CompressionSettings.OnRequest))
-                client.DefaultRequestHeaders.TryAddWithoutValidation("Accept-Encoding", new[] { "gzip", "deflate" });
+                client.DefaultRequestHeaders.TryAddWithoutValidation("Accept-Encoding", acceptEncodings);
 
             return client;
         }

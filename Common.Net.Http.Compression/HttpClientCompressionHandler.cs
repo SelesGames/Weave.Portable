@@ -14,7 +14,9 @@ namespace Common.Net.Http.Compression
 
         protected override Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
         {
-            return base.SendAsync(CompressIfNeeded(request), cancellationToken).ContinueWith(o => DecompressIfNeeded(o), TaskContinuationOptions.OnlyOnRanToCompletion);
+            return base
+                .SendAsync(CompressIfNeeded(request), cancellationToken)
+                .ContinueWith(o => DecompressIfNeeded(o.Result), TaskContinuationOptions.OnlyOnRanToCompletion);
         }
 
         static HttpRequestMessage CompressIfNeeded(HttpRequestMessage request)
@@ -36,10 +38,8 @@ namespace Common.Net.Http.Compression
             return request;
         }
 
-        static HttpResponseMessage DecompressIfNeeded(Task<HttpResponseMessage> o)
+        static HttpResponseMessage DecompressIfNeeded(HttpResponseMessage response)
         {
-            HttpResponseMessage response = o.Result;
-
             if (response.IsSuccessStatusCode)
             {
                 var contentEncoding = response.Content.Headers.ContentEncoding;
