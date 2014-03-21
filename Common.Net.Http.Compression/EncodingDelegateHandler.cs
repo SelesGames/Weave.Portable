@@ -19,7 +19,7 @@ namespace Common.Net.Http.Compression
         protected override Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
         {
             return base
-                .SendAsync(DecompressContentIfNeeded(request), cancellationToken)
+                .SendAsync(request, cancellationToken)
                 .ContinueWith(o => CompressIfRequested(o.Result), TaskContinuationOptions.OnlyOnRanToCompletion);
         }
 
