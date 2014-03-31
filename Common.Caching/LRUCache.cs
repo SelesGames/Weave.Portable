@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Common.Caching
 {
@@ -26,12 +27,7 @@ namespace Common.Caching
             cache = new Dictionary<TKey, LinkedListNode<LRUCacheItem<TKey, TValue>>>(capacity + 1);
         }
 
-        public bool ContainsKey(TKey key)
-        {
-            return cache.ContainsKey(key);
-        }
-
-        public TValue Get(TKey key)
+        TValue Get(TKey key)
         {
             lock (sync)
             {
@@ -44,7 +40,7 @@ namespace Common.Caching
             }
         }
 
-        public void AddOrUpdate(TKey key, TValue value)
+        void AddOrUpdate(TKey key, TValue value, bool checkPresenceOfKeyBeforeAdd)
         {
             LRUCacheItem<TKey, TValue> evicted = null;
 
@@ -119,23 +115,115 @@ namespace Common.Caching
 
         #region Partial Collection implementation
 
+        public int Count
+        {
+            get { return list.Count; }
+        }
+
         public void Clear()
         {
-            lock(sync)
+            lock (sync)
             {
                 list.Clear();
                 cache.Clear();
             }
         }
 
-        public int Count
+        #endregion
+
+
+
+
+        #region Partical IDictionary<TKey, TValue> implementation
+
+        public ICollection<TKey> Keys
         {
-            get { return list.Count; }
+            get { return cache.Keys; }
         }
 
+        public ICollection<TValue> Values
+        {
+            get { return cache.Values.Select(o => o.Value.Value).ToList(); }
+        }
+
+        /// <summary>
+        /// Gets or sets the value associated with the specified key.
+        /// </summary>
+        /// <param name="key">The key of the value to get or set.</param>
+        /// <returns>
+        /// The value associated with the specified key. If the specified key is not
+        /// found, a get operation throws a System.Collections.Generic.KeyNotFoundException,
+        /// and a set operation creates a new element with the specified key.
+        /// </returns>
+        /// <exception cref="System.ArgumentNullException">key is null.</exception>
+        /// <exception cref="System.Collections.Generic.KeyNotFoundException:">The property is retrieved and key does not exist in the collection.</exception>
+        public TValue this[TKey key]
+        {
+            get
+            {
+                return Get(key);
+            }
+            set
+            {
+                AddOrUpdate(key, value, true);
+            }
+        }
+
+        // Summary:
+        //     Adds an element with the provided key and value to the LRUCache<TKey,TValue>.
+        //
+        // Parameters:
+        //   key:
+        //     The object to use as the key of the element to add.
+        //
+        //   value:
+        //     The object to use as the value of the element to add.
+        //
+        // Exceptions:
+        //   System.ArgumentNullException:
+        //     key is null.
+        //
+        //   System.ArgumentException:
+        //     An element with the same key already exists in the System.Collections.Generic.IDictionary<TKey,TValue>.
+        public void Add(TKey key, TValue value)
+        {
+            AddOrUpdate(key, value, false);
+        }
+
+        // Summary:
+        //     Determines whether the LRUCache<TKey,TValue>
+        //     contains an element with the specified key.
+        //
+        // Parameters:
+        //   key:
+        //     The key to locate in the LRUCache<TKey,TValue>.
+        //
+        // Returns:
+        //     true if the LRUCache<TKey,TValue> contains
+        //     an element with the key; otherwise, false.
+        //
+        // Exceptions:
+        //   System.ArgumentNullException:
+        //     key is null.
+        public bool ContainsKey(TKey key)
+        {
+            return cache.ContainsKey(key);
+        }
+
+        /// <summary>
+        /// Removes the element with the specified key from the LRUCache&lt;TKey,TValue&gt;.
+        /// </summary>
+        /// <param name="key">The key of the element to remove.</param>
+        /// <returns>
+        /// true if the element is successfully removed; otherwise, false. This method
+        /// also returns false if key was not found in the original LRUCacheLRUCache&lt;TKey,TValue&gt;.
+        /// </returns>
+        /// <exception cref="System.ArgumentNullException">
+        /// key is null.
+        /// </exception>
         public bool Remove(TKey key)
         {
-            lock(sync)
+            lock (sync)
             {
                 if (cache.ContainsKey(key))
                 {
