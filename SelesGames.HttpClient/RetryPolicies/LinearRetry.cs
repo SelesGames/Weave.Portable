@@ -1,12 +1,24 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace SelesGames.HttpClient.RetryPolicies
 {
-    class LinearRetry
+    public class LinearRetry : IRetryPolicy
     {
+        TimeSpan deltaBackoff;
+        int maxAttempts;
+
+        public LinearRetry(TimeSpan deltaBackoff, int maxAttempts)
+        {
+            this.deltaBackoff = deltaBackoff;
+            this.maxAttempts = maxAttempts;
+        }
+
+        public RetryInfo Evaluate(RetryContext retryContext)
+        {
+            if (retryContext.CurrentRetryCount < maxAttempts)
+                return new RetryInfo(true) { RetryInterval = deltaBackoff };
+            else
+                return new RetryInfo(false);
+        }
     }
 }
