@@ -24,37 +24,45 @@ namespace SelesGames.HttpClient
         readonly ContentEncoderSettings encoderSettings;
         readonly CompressionSettings compressionSettings;
         readonly IEnumerable<string> acceptEncodings;
-        readonly IRetryPolicy retryPolicy;
+
+        IRetryPolicy retryPolicy;
 
         public MediaTypeFormatterCollection Formatters { get { return formatters; } }
-
+        public IRetryPolicy RetryPolicy
+        {
+            get { return retryPolicy; }
+            set
+            {
+                if (value == null) throw new ArgumentNullException("value in RetryPolicy setter");
+                retryPolicy = value;
+            }
+        }
     
 
 
         #region Constructors
 
         public SmartHttpClient(CompressionSettings compressionSettings = CompressionSettings.OnRequest | CompressionSettings.OnContent)
-            : this(new StandardMediaTypeFormatters(), ContentEncoderSettings.Default, CreateDefaultRetryPolicy(), compressionSettings) { }
+            : this(new StandardMediaTypeFormatters(), ContentEncoderSettings.Default, compressionSettings) { }
 
         public SmartHttpClient(ContentEncoderSettings encoderSettings, CompressionSettings compressionSettings = CompressionSettings.OnRequest | CompressionSettings.OnContent)
-            : this(new StandardMediaTypeFormatters(), encoderSettings, CreateDefaultRetryPolicy(), compressionSettings) { }
+            : this(new StandardMediaTypeFormatters(), encoderSettings, compressionSettings) { }
 
         SmartHttpClient(
             MediaTypeFormatterCollection formatters,
             ContentEncoderSettings encoderSettings,
-            IRetryPolicy retryPolicy,
             CompressionSettings compressionSettings = CompressionSettings.OnRequest | CompressionSettings.OnContent)
         {
             this.formatters = formatters;
             this.encoderSettings = encoderSettings;
-            this.retryPolicy = retryPolicy;
+            this.retryPolicy = CreateDefaultRetryPolicy();
             this.compressionSettings = compressionSettings;
             this.acceptEncodings = Settings.CompressionHandlers.GetSupportedEncodings().ToArray();
         }
 
         static IRetryPolicy CreateDefaultRetryPolicy()
         {
-            return new LinearRetry(TimeSpan.FromSeconds(1), 5);
+            return new NoRetry();
         }
 
         #endregion
@@ -87,8 +95,8 @@ namespace SelesGames.HttpClient
 
             var content = new ObjectContent<T>(obj, formatter, mediaType);
 
-            //if (compressionSettings.HasFlag(CompressionSettings.OnContent))
-            //    content.Headers.TryAddWithoutValidation("Content-Encoding", "gzip");
+            if (compressionSettings.HasFlag(CompressionSettings.OnContent))
+                content.Headers.TryAddWithoutValidation("Content-Encoding", "gzip");
 
             request.Content = content;
             return request;
@@ -99,14 +107,34 @@ namespace SelesGames.HttpClient
 
 
 
-        #region GET
+        #region Send Async (send any HttpRequestMessage)
 
-        public Task<HttpResponseMessage> GetAsync(string url, CancellationToken cancellationToken)
+        public async Task<HttpResponse> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
         {
-            return CreateClient().SendAsync(CreateRequest(HttpMethod.Get, url), cancellationToken);
+            var response = await CreateClient()
+                .SendAsync(request, cancellationToken)
+                .ConfigureAwait(false);
+
+            cancellationToken.ThrowIfCancellationRequested();
+            response.EnsureSuccessStatusCode2();
+
+            return new HttpResponse(response, this.Formatters);
         }
 
-        public Task<HttpResponseMessage> GetAsync(string url)
+        #endregion
+
+
+
+
+        #region GET
+
+        public Task<HttpResponse> GetAsync(string url, CancellationToken cancellationToken)
+        {
+            var request = CreateRequest(HttpMethod.Get, url);
+            return SendAsync(request, cancellationToken);
+        }
+
+        public Task<HttpResponse> GetAsync(string url)
         {
             return GetAsync(url, CancellationToken.None);
         }
@@ -114,11 +142,8 @@ namespace SelesGames.HttpClient
         public async Task<T> GetAsync<T>(string url, CancellationToken cancellationToken)
         {
             var response = await GetAsync(url, cancellationToken).ConfigureAwait(false);
-
-            cancellationToken.ThrowIfCancellationRequested();
-            response.EnsureSuccessStatusCode2();
-
-            return await response.ReadResponseContentAsync<T>(Formatters).ConfigureAwait(false);
+            var result = await response.Read<T>().ConfigureAwait(false);
+            return result;
         }
 
         public Task<T> GetAsync<T>(string url)
@@ -131,14 +156,16 @@ namespace SelesGames.HttpClient
 
 
 
+
         #region POST
 
-        public Task<HttpResponseMessage> PostAsync<T>(string url, T obj, CancellationToken cancellationToken)
+        public Task<HttpResponse> PostAsync<T>(string url, T obj, CancellationToken cancellationToken)
         {
-            return CreateClient().SendAsync(CreateRequest(HttpMethod.Post, url, obj), cancellationToken);
+            var request = CreateRequest(HttpMethod.Post, url, obj);
+            return SendAsync(request, cancellationToken);
         }
 
-        public Task<HttpResponseMessage> PostAsync<T>(string url, T obj)
+        public Task<HttpResponse> PostAsync<T>(string url, T obj)
         {
             return PostAsync(url, obj, CancellationToken.None);
         }
@@ -146,11 +173,8 @@ namespace SelesGames.HttpClient
         public async Task<TResult> PostAsync<TPost, TResult>(string url, TPost obj, CancellationToken cancellationToken)
         {
             var response = await PostAsync(url, obj, cancellationToken).ConfigureAwait(false);
-
-            cancellationToken.ThrowIfCancellationRequested();
-            response.EnsureSuccessStatusCode2();
-
-            return await response.ReadResponseContentAsync<TResult>(Formatters).ConfigureAwait(false);
+            var result = await response.Read<TResult>().ConfigureAwait(false);
+            return result;
         }
 
         public Task<TResult> PostAsync<TPost, TResult>(string url, TPost obj)

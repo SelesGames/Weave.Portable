@@ -1,18 +1,19 @@
 ﻿using System;
 using System.Net;
 using System.Net.Http;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace SelesGames.HttpClient
 {
     class HttpResourceListener : IDisposable
     {
-        System.Net.Http.HttpClient innerClient;
+        SmartHttpClient innerClient;
         string eTag, lastModified;
         string resourceUrl;
 
-        HttpResponseMessage response;
-        Action<HttpResponseMessage> onUpdated;
+        HttpResponse response;
+        Action<HttpResponse> onUpdated;
         Action<Exception> onException;
 
         bool isDisposed = false, isListening = false;
@@ -22,7 +23,7 @@ namespace SelesGames.HttpClient
 
         public event EventHandler Updated;
 
-        public HttpResourceListener(System.Net.Http.HttpClient innerClient, string resourceUrl, Action<HttpResponseMessage> onUpdated, Action<Exception> onException = null)
+        public HttpResourceListener(SmartHttpClient innerClient, string resourceUrl, Action<HttpResponse> onUpdated, Action<Exception> onException = null)
         {
             this.innerClient = innerClient;
             this.resourceUrl = resourceUrl;
@@ -79,36 +80,33 @@ namespace SelesGames.HttpClient
         /// <returns>A boolean specifying whether the resource was updated</returns>
         async Task<bool> CheckForUpdate()
         {
+            var httpMethod = UseHttpHead ? HttpMethod.Head : HttpMethod.Get;
+            var request = new HttpRequestMessage(httpMethod, resourceUrl);
+
+
             #region CONDITIONAL GET
 
             if (!string.IsNullOrEmpty(eTag))
             {
-                innerClient.DefaultRequestHeaders.TryAddWithoutValidation("If-None-Match", eTag);
+                request.Headers.TryAddWithoutValidation("If-None-Match", eTag);
             }
 
             if (!string.IsNullOrEmpty(lastModified))
             {
-                innerClient.DefaultRequestHeaders.TryAddWithoutValidation("If-Modified-Since", lastModified);
+                request.Headers.TryAddWithoutValidation("If-Modified-Since", lastModified);
             }
 
             #endregion
 
 
-            if (UseHttpHead)
-            {
-                response = await innerClient.SendAsync(new HttpRequestMessage(HttpMethod.Head, resourceUrl)).ConfigureAwait(false);
-            }
-            else
-            {
-                response = await innerClient.GetAsync(resourceUrl).ConfigureAwait(false);
-            }
+            response = await innerClient.SendAsync(request, CancellationToken.None);
 
-            if (response.StatusCode == HttpStatusCode.NotModified)
+            if (response.HttpResponseMessage.StatusCode == HttpStatusCode.NotModified)
             {
                 return false;
             }
 
-            else if (response.StatusCode == HttpStatusCode.OK)
+            else if (response.HttpResponseMessage.StatusCode == HttpStatusCode.OK)
             {
                 SetConditionalHeaders();
                 return true;
@@ -116,7 +114,7 @@ namespace SelesGames.HttpClient
 
             else
             {
-                throw new Exception(response.StatusCode.ToString());
+                throw new Exception(response.HttpResponseMessage.StatusCode.ToString());
             }
         }
 
@@ -125,8 +123,8 @@ namespace SelesGames.HttpClient
             if (response == null)
                 return;
 
-            eTag = response.Headers.GetValueForHeader("ETag");
-            lastModified = response.Content.Headers.GetValueForHeader("Last-Modified");
+            eTag = response.HttpResponseMessage.Headers.GetValueForHeader("ETag");
+            lastModified = response.HttpResponseMessage.Content.Headers.GetValueForHeader("Last-Modified");
         }
 
         #endregion

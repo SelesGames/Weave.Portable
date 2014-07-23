@@ -24,18 +24,5 @@ namespace SelesGames.HttpClient
             if (!message.IsSuccessStatusCode)
                 throw new ErrorResponseException(message);
         }
-
-        public static async Task<T> ReadResponseContentAsync<T>(this HttpResponseMessage response, MediaTypeFormatterCollection formatters)
-        {
-            try
-            {
-                var result = await response.Content.ReadAsAsync<T>(formatters).ConfigureAwait(false);
-                return result;
-            }
-            catch (Exception ex)
-            {
-                throw new ErrorResponseException(response, "parse error in SmartHttpClient.ReadResponseContentAsync", ex);
-            }
-        }
     }
 }

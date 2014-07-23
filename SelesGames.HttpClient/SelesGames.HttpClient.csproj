@@ -42,9 +42,9 @@
     <Compile Include="Extensions\HttpClientExtensions.cs" />
     <Compile Include="Extensions\HttpResponseMessageExtensions.cs" />
     <Compile Include="Extensions\MediaTypeFormatterCollectionExtensions.cs" />
-    <Compile Include="Extensions\SmartHttpClientExtensions.cs" />
     <Compile Include="Helpers\EnumerableEx.cs" />
     <Compile Include="HttpResourceListener.cs" />
+    <Compile Include="HttpResponse.cs" />
     <Compile Include="RetryHandler.cs" />
     <Compile Include="RetryPolicies\IRetryPolicy.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

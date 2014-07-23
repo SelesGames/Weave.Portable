@@ -5,7 +5,7 @@ namespace SelesGames.HttpClient
 {
     public static class HttpClientExtensions
     {
-        public static IDisposable PollChangesToResource(this System.Net.Http.HttpClient client, string resourceUrl, TimeSpan pollingInterval, IObserver<HttpResponseMessage> observer)
+        public static IDisposable PollChangesToResource(this SmartHttpClient client, string resourceUrl, TimeSpan pollingInterval, IObserver<HttpResponse> observer)
         {
             var listener = new HttpResourceListener(client, resourceUrl, observer.OnNext, observer.OnError);
             listener.PollingInterval = pollingInterval;
@@ -14,10 +14,10 @@ namespace SelesGames.HttpClient
             return listener;
         }
 
-        public static IDisposable PollChangesToResource(this System.Net.Http.HttpClient client,
+        public static IDisposable PollChangesToResource(this SmartHttpClient client,
             string resourceUrl,
             TimeSpan pollingInterval,
-            Action<HttpResponseMessage> onUpdated,
+            Action<HttpResponse> onUpdated,
             Action<Exception> onException = null)
         {
             var listener = new HttpResourceListener(client, resourceUrl, onUpdated, onException);
