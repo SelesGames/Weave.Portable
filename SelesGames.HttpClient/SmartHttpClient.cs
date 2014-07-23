@@ -1,7 +1,6 @@
 ﻿using Common.Compression;
 using Common.Net.Http.Compression;
 using SelesGames.HttpClient.RetryPolicies;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
@@ -20,86 +19,30 @@ namespace SelesGames.HttpClient
     /// </summary>
     public class SmartHttpClient
     {
-        readonly MediaTypeFormatterCollection formatters;
         readonly ContentEncoderSettings encoderSettings;
         readonly CompressionSettings compressionSettings;
         readonly IEnumerable<string> acceptEncodings;
 
-        IRetryPolicy retryPolicy;
+        public MediaTypeFormatterCollection Formatters { get; private set; }
+        public IRetryPolicy RetryPolicy { get; private set; }
 
-        public MediaTypeFormatterCollection Formatters { get { return formatters; } }
-        public IRetryPolicy RetryPolicy
-        {
-            get { return retryPolicy; }
-            set
-            {
-                if (value == null) throw new ArgumentNullException("value in RetryPolicy setter");
-                retryPolicy = value;
-            }
-        }
-    
+
 
 
         #region Constructors
 
-        public SmartHttpClient(CompressionSettings compressionSettings = CompressionSettings.OnRequest | CompressionSettings.OnContent)
-            : this(new StandardMediaTypeFormatters(), ContentEncoderSettings.Default, compressionSettings) { }
+        public SmartHttpClient(CompressionSettings compressionSettings = CompressionSettings.AcceptEncoding | CompressionSettings.ContentEncoding)
+            : this(ContentEncoderSettings.Default, compressionSettings) { }
 
-        public SmartHttpClient(ContentEncoderSettings encoderSettings, CompressionSettings compressionSettings = CompressionSettings.OnRequest | CompressionSettings.OnContent)
-            : this(new StandardMediaTypeFormatters(), encoderSettings, compressionSettings) { }
-
-        SmartHttpClient(
-            MediaTypeFormatterCollection formatters,
+        public SmartHttpClient(
             ContentEncoderSettings encoderSettings,
-            CompressionSettings compressionSettings = CompressionSettings.OnRequest | CompressionSettings.OnContent)
+            CompressionSettings compressionSettings = CompressionSettings.AcceptEncoding | CompressionSettings.ContentEncoding)
         {
-            this.formatters = formatters;
             this.encoderSettings = encoderSettings;
-            this.retryPolicy = CreateDefaultRetryPolicy();
             this.compressionSettings = compressionSettings;
             this.acceptEncodings = Settings.CompressionHandlers.GetSupportedEncodings().ToArray();
-        }
-
-        static IRetryPolicy CreateDefaultRetryPolicy()
-        {
-            return new NoRetry();
-        }
-
-        #endregion
-
-
-
-
-        #region Create the HttpRequestMessage based on settings
-
-        public HttpRequestMessage CreateRequest(HttpMethod method, string url)
-        {
-            var request = new HttpRequestMessage(method, url);
-
-            var accept = encoderSettings.Accept;
-            if (!string.IsNullOrEmpty(accept))
-                request.Headers.TryAddWithoutValidation("Accept", accept);
-
-            if (compressionSettings.HasFlag(CompressionSettings.OnRequest))
-                request.Headers.TryAddWithoutValidation("Accept-Encoding", acceptEncodings);
-
-            return request;
-        }
-
-        public HttpRequestMessage CreateRequest<T>(HttpMethod method, string url, T obj)
-        {
-            var request = CreateRequest(method, url);
-
-            var mediaType = new MediaTypeHeaderValue(encoderSettings.ContentType);
-            var formatter = Formatters.FindWriteFormatter<T>(mediaType);
-
-            var content = new ObjectContent<T>(obj, formatter, mediaType);
-
-            if (compressionSettings.HasFlag(CompressionSettings.OnContent))
-                content.Headers.TryAddWithoutValidation("Content-Encoding", "gzip");
-
-            request.Content = content;
-            return request;
+            this.Formatters = new StandardMediaTypeFormatters();
+            this.RetryPolicy = Retry.None;
         }
 
         #endregion
@@ -156,7 +99,6 @@ namespace SelesGames.HttpClient
 
 
 
-
         #region POST
 
         public Task<HttpResponse> PostAsync<T>(string url, T obj, CancellationToken cancellationToken)
@@ -187,9 +129,50 @@ namespace SelesGames.HttpClient
 
 
 
+        #region Create the HttpClient
+
         System.Net.Http.HttpClient CreateClient()
         {
-            return new System.Net.Http.HttpClient(new RetryHandler(new HttpClientCompressionHandler(), retryPolicy));
+            return new System.Net.Http.HttpClient(new RetryHandler(new HttpClientCompressionHandler(), RetryPolicy ?? Retry.None));
         }
+
+        #endregion
+
+
+
+
+        #region Create the HttpRequestMessage based on settings
+
+        HttpRequestMessage CreateRequest(HttpMethod method, string url)
+        {
+            var request = new HttpRequestMessage(method, url);
+
+            var accept = encoderSettings.Accept;
+            if (!string.IsNullOrEmpty(accept))
+                request.Headers.TryAddWithoutValidation("Accept", accept);
+
+            if (compressionSettings.HasFlag(CompressionSettings.AcceptEncoding))
+                request.Headers.TryAddWithoutValidation("Accept-Encoding", acceptEncodings);
+
+            return request;
+        }
+
+        HttpRequestMessage CreateRequest<T>(HttpMethod method, string url, T obj)
+        {
+            var request = CreateRequest(method, url);
+
+            var mediaType = new MediaTypeHeaderValue(encoderSettings.ContentType);
+            var formatter = Formatters.FindWriteFormatter<T>(mediaType);
+
+            var content = new ObjectContent<T>(obj, formatter, mediaType);
+
+            if (compressionSettings.HasFlag(CompressionSettings.ContentEncoding))
+                content.Headers.TryAddWithoutValidation("Content-Encoding", "gzip");
+
+            request.Content = content;
+            return request;
+        }
+
+        #endregion
     }
 }
