@@ -46,7 +46,7 @@ namespace Common.Net.Http.Compression
 
                 if (contentEncoding != null && contentEncoding.Any())
                 {
-                    string encodingType = contentEncoding.First() ?? "";
+                    string encodingType = contentEncoding.FirstOrDefault() ?? "";
 
                     if (encodingType.IsGzipOrDeflate())
                     {

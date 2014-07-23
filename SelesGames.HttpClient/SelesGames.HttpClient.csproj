@@ -48,6 +48,7 @@
     <Compile Include="RetryHandler.cs" />
     <Compile Include="RetryPolicies\IRetryPolicy.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="RetryPolicies\Retry.cs" />
     <Compile Include="RetryPolicies\RetryContext.cs" />
     <Compile Include="RetryPolicies\LinearRetry.cs" />
     <Compile Include="RetryPolicies\NoRetry.cs" />
