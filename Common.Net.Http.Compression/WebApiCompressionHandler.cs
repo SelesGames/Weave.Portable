@@ -15,7 +15,7 @@ namespace Common.Net.Http.Compression
     /// 
     /// Decompresses incoming content if the Content-Encoding is gzip or deflate
     /// </summary>
-    public class EncodingDelegateHandler : DelegatingHandler
+    public class WebApiCompressionHandler : DelegatingHandler
     {
         protected override Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
         {

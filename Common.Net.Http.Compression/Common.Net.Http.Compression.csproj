@@ -36,7 +36,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="CompressionContent.cs" />
-    <Compile Include="EncodingDelegateHandler.cs" />
+    <Compile Include="WebApiCompressionHandler.cs" />
     <Compile Include="Extensions\HttpContentExtensions.cs" />
     <Compile Include="Extensions\Mode.cs" />
     <Compile Include="HttpClientCompressionHandler.cs" />
