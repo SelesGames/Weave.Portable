@@ -17,5 +17,24 @@ namespace Common.Compression
                 .FirstOrDefault(o => o.SupportedEncodings
                     .Any(e => e.Equals(encoding, StringComparison.OrdinalIgnoreCase)));
         }
+
+        public IEnumerable<CompressionHandler> Find(IEnumerable<string> encodings)
+        {
+            List<CompressionHandler> matches = new List<CompressionHandler>();
+
+            foreach (var encoding in encodings)
+            {
+                foreach (var handler in this)
+                {
+                    if (handler.SupportedEncodings
+                        .Any(o => o.Equals(encoding, StringComparison.OrdinalIgnoreCase)))
+                    {
+                        matches.Add(handler);
+                    }
+                }
+            }
+
+            return matches.Distinct();
+        }
     }
 }

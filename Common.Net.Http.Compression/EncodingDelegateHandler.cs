@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Headers;
@@ -18,12 +19,13 @@ namespace Common.Net.Http.Compression
     {
         protected override Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
         {
-            return base
-                .SendAsync(DecompressContentIfNeeded(request), cancellationToken)
-                .ContinueWith(o => CompressIfRequested(o.Result), TaskContinuationOptions.OnlyOnRanToCompletion);
+            request = DecompressRequest(request);
+
+            return base.SendAsync(request, cancellationToken)
+                .ContinueWith(o => CompressResponse(o.Result), TaskContinuationOptions.OnlyOnRanToCompletion);
         }
 
-        static HttpRequestMessage DecompressContentIfNeeded(HttpRequestMessage request)
+        static HttpRequestMessage DecompressRequest(HttpRequestMessage request)
         {
             var content = request.Content;
             if (content != null)
@@ -32,17 +34,17 @@ namespace Common.Net.Http.Compression
                 if (contentEncoding != null && contentEncoding.Any())
                 {
                     string encodingType = contentEncoding.First() ?? "";
+                    var compressionHandler = Common.Compression.Settings.CompressionHandlers.Find(encodingType);
+                    if (compressionHandler == null)
+                        throw new Exception("no compression handler was found for encoding type: " + encodingType);
 
-                    if (encodingType.IsGzipOrDeflate())
-                    {
-                        request.Content = new DecompressedContent(request.Content, encodingType);
-                    }
+                    request.Content = new CompressionContent(content, compressionHandler, Mode.Decompress);
                 }
             }
             return request;
         }
 
-        static HttpResponseMessage CompressIfRequested(HttpResponseMessage response)
+        static HttpResponseMessage CompressResponse(HttpResponseMessage response)
         {
             if (response.HasEncodeableContent())
             {
@@ -50,11 +52,20 @@ namespace Common.Net.Http.Compression
 
                 if (acceptEncoding != null && acceptEncoding.Any())
                 {
-                    string encodingType = GetFilteredEncodings(acceptEncoding).FirstOrDefault();
+                    var acceptEncodings = GetFilteredEncodings(acceptEncoding);
 
-                    if (encodingType != null)
+                    if (acceptEncodings != null && acceptEncodings.Any())
                     {
-                        response.Content = new CompressedContent(response.Content, encodingType);
+                        var handler = Common.Compression.Settings.CompressionHandlers.Find(acceptEncodings).FirstOrDefault();
+
+                        if (handler != null)
+                        {
+                            var contentEncoding = handler.SupportedEncodings.First();
+
+                            response.Content.Headers.ContentEncoding.Clear();
+                            response.Content.Headers.ContentEncoding.Add(contentEncoding);
+                            response.Content = new CompressionContent(response.Content, handler, Mode.Compress);
+                        }
                     }
                 }
             }
@@ -66,8 +77,12 @@ namespace Common.Net.Http.Compression
         {
             foreach (var headerValue in headerValues)
             {
-                if (headerValue != null && headerValue.Value != null && headerValue.Value.IsGzipOrDeflate())
+                if (headerValue != null &&
+                    headerValue.Value != null &&
+                    !headerValue.Value.Equals("identity", StringComparison.OrdinalIgnoreCase))
+                {
                     yield return headerValue.Value;
+                }
             }
         }
     }

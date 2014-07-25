@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
@@ -12,14 +13,18 @@ namespace Common.Net.Http.Compression
             get { return false; }
         }
 
-        protected override Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
+        protected async override Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
         {
-            return base
-                .SendAsync(CompressIfNeeded(request), cancellationToken)
-                .ContinueWith(o => DecompressIfNeeded(o.Result), TaskContinuationOptions.OnlyOnRanToCompletion);
+            request = await CompressRequest(request).ConfigureAwait(false);
+
+            var response = await base
+                .SendAsync(request, cancellationToken)
+                .ContinueWith(o => DecompressResponse(o.Result), TaskContinuationOptions.OnlyOnRanToCompletion);
+
+            return await response;
         }
 
-        static HttpRequestMessage CompressIfNeeded(HttpRequestMessage request)
+        static async Task<HttpRequestMessage> CompressRequest(HttpRequestMessage request)
         {
             var content = request.Content;
             if (content != null)
@@ -28,30 +33,29 @@ namespace Common.Net.Http.Compression
                 if (contentEncoding != null && contentEncoding.Any())
                 {
                     string encodingType = contentEncoding.First() ?? "";
+                    var compressionHandler = Common.Compression.Settings.CompressionHandlers.Find(encodingType);
+                    if (compressionHandler == null)
+                        throw new Exception("no compression handler was found for encoding type: " + encodingType);
 
-                    if (encodingType.IsGzipOrDeflate())
-                    {
-                        request.Content = new CompressedContent(request.Content, encodingType);
-                    }
+                    request.Content = await content.AsByteArray(compressionHandler, Mode.Compress);
                 }
             }
             return request;
         }
 
-        static HttpResponseMessage DecompressIfNeeded(HttpResponseMessage response)
+        static async Task<HttpResponseMessage> DecompressResponse(HttpResponseMessage response)
         {
             if (response.IsSuccessStatusCode)
             {
                 var contentEncoding = response.Content.Headers.ContentEncoding;
-
                 if (contentEncoding != null && contentEncoding.Any())
                 {
-                    string encodingType = contentEncoding.FirstOrDefault() ?? "";
+                    string encodingType = contentEncoding.First() ?? "";
+                    var compressionHandler = Common.Compression.Settings.CompressionHandlers.Find(encodingType);
+                    if (compressionHandler == null)
+                        throw new Exception("no compression handler was found for encoding type: " + encodingType);
 
-                    if (encodingType.IsGzipOrDeflate())
-                    {
-                        response.Content = new DecompressedContent(response.Content, encodingType);
-                    }
+                    response.Content = await response.Content.AsByteArray(compressionHandler, Mode.Decompress);
                 }
             }
 
