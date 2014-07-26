@@ -46,19 +46,45 @@ namespace Common.Net.Http.Compression
             //}
 
             // the below method works, but makes an extra copy of the memorystream's byte array buffer so is inefficient
-            byte[] bytes;
 
-            // NEW WAY OF COMPRESSING, SEE IF THIS WORKS
-            var ms = new MemoryStream();
-
-            using (var gzip = compressionStrategy(ms))
-            using (var readStream = await originalContent.ReadAsStreamAsync().ConfigureAwait(false))
+            try
             {
-                await readStream.CopyToAsync(gzip).ConfigureAwait(false);
-            }
-            bytes = ms.ToArray();
+                byte[] readBytes = await originalContent.ReadAsByteArrayAsync();
+                byte[] writeBytes;
 
-            await stream.WriteAsync(bytes, 0, bytes.Length);
+                // NEW WAY OF COMPRESSING, SEE IF THIS WORKS
+                var ms = new MemoryStream(readBytes);
+
+                using (var gzip = compressionStrategy(ms))
+                //using (var readStream = await originalContent.ReadAsStreamAsync().ConfigureAwait(false))
+                {
+                    //await gzip.WriteAsync(readBytes, 0, readBytes.Length);
+                    //await readStream.CopyToAsync(gzip).ConfigureAwait(false);
+                }
+                writeBytes = ms.ToArray();
+
+                await stream.WriteAsync(writeBytes, 0, writeBytes.Length);
+
+
+
+                //byte[] bytes;
+
+                //// NEW WAY OF COMPRESSING, SEE IF THIS WORKS
+                //var ms = new MemoryStream();
+
+                //using (var gzip = compressionStrategy(ms))
+                //using (var readStream = await originalContent.ReadAsStreamAsync().ConfigureAwait(false))
+                //{
+                //    await readStream.CopyToAsync(gzip).ConfigureAwait(false);
+                //}
+                //bytes = ms.ToArray();
+
+                //await stream.WriteAsync(bytes, 0, bytes.Length);
+            }
+            catch(Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine(ex);
+            }
         }
 
         static void CopyHeaders(HttpContent source, HttpContent destination)

@@ -13,18 +13,16 @@ namespace Common.Net.Http.Compression
             get { return false; }
         }
 
-        protected async override Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
+        protected override Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
         {
-            request = await CompressRequest(request).ConfigureAwait(false);
+            request = CompressRequest(request);
 
-            var response = await base
+            return base
                 .SendAsync(request, cancellationToken)
                 .ContinueWith(o => DecompressResponse(o.Result), TaskContinuationOptions.OnlyOnRanToCompletion);
-
-            return await response;
         }
 
-        static async Task<HttpRequestMessage> CompressRequest(HttpRequestMessage request)
+        static HttpRequestMessage CompressRequest(HttpRequestMessage request)
         {
             var content = request.Content;
             if (content != null)
@@ -37,13 +35,13 @@ namespace Common.Net.Http.Compression
                     if (compressionHandler == null)
                         throw new Exception("no compression handler was found for encoding type: " + encodingType);
 
-                    request.Content = await content.AsByteArray(compressionHandler, Mode.Compress);
+                    request.Content = new CompressedContent(content, compressionHandler);
                 }
             }
             return request;
         }
 
-        static async Task<HttpResponseMessage> DecompressResponse(HttpResponseMessage response)
+        static HttpResponseMessage DecompressResponse(HttpResponseMessage response)
         {
             if (response.IsSuccessStatusCode)
             {
@@ -55,7 +53,7 @@ namespace Common.Net.Http.Compression
                     if (compressionHandler == null)
                         throw new Exception("no compression handler was found for encoding type: " + encodingType);
 
-                    response.Content = await response.Content.AsByteArray(compressionHandler, Mode.Decompress);
+                    response.Content = new DecompressedContent(response.Content, compressionHandler);
                 }
             }
 

@@ -38,7 +38,7 @@ namespace Common.Net.Http.Compression
                     if (compressionHandler == null)
                         throw new Exception("no compression handler was found for encoding type: " + encodingType);
 
-                    request.Content = new CompressionContent(content, compressionHandler, Mode.Decompress);
+                    request.Content = new DecompressedContent(content, compressionHandler);
                 }
             }
             return request;
@@ -64,7 +64,7 @@ namespace Common.Net.Http.Compression
 
                             response.Content.Headers.ContentEncoding.Clear();
                             response.Content.Headers.ContentEncoding.Add(contentEncoding);
-                            response.Content = new CompressionContent(response.Content, handler, Mode.Compress);
+                            response.Content = new CompressedContent(response.Content, handler);
                         }
                     }
                 }

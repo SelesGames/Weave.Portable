@@ -35,10 +35,9 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="CompressionContent.cs" />
+    <Compile Include="CompressedContent.cs" />
+    <Compile Include="DecompressedContent.cs" />
     <Compile Include="WebApiCompressionHandler.cs" />
-    <Compile Include="Extensions\HttpContentExtensions.cs" />
-    <Compile Include="Extensions\Mode.cs" />
     <Compile Include="HttpClientCompressionHandler.cs" />
     <Compile Include="Extensions\HttpResponseMessageExtensions.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

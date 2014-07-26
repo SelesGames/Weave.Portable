@@ -10,31 +10,19 @@ namespace Common.Net.Http.Compression
     public class CompressedContent : HttpContent
     {
         HttpContent originalContent;
-        string encodingType;
         CompressionHandler compressionHandler;
 
-        public CompressedContent(HttpContent content, string encodingType)
+        internal CompressedContent(
+            HttpContent originalContent,
+            CompressionHandler compressionHandler)
         {
-            if (content == null) throw new ArgumentNullException("content");
-            if (encodingType == null) throw new ArgumentNullException("encodingType");
+            if (originalContent == null) throw new ArgumentNullException("content");
+            if (compressionHandler == null) throw new ArgumentNullException("handler");
 
-            originalContent = content;
-            this.encodingType = encodingType.ToLowerInvariant();
+            this.originalContent = originalContent;
+            this.compressionHandler = compressionHandler;
 
-            if (this.encodingType != "gzip" && this.encodingType != "deflate")
-            {
-                throw new InvalidOperationException(string.Format("Encoding '{0}' is not supported. Only supports gzip or deflate encoding.", this.encodingType));
-            }
-
-            compressionHandler = Common.Compression.Settings.CompressionHandlers.Find(this.encodingType);
-
-            // copy the headers from the original content
-            foreach (var header in originalContent.Headers)
-            {
-                this.Headers.TryAddWithoutValidation(header.Key, header.Value);
-            }
-
-            this.Headers.ContentEncoding.Add(encodingType);
+            CopyHeaders(originalContent, this);
         }
 
         protected override bool TryComputeLength(out long length)
@@ -45,11 +33,37 @@ namespace Common.Net.Http.Compression
 
         protected async override Task SerializeToStreamAsync(Stream stream, TransportContext context)
         {
-            using (var compressedStream = compressionHandler.Compress(stream))// CreateCompressedStream(stream, encodingType))
+            using (var compressedStream = compressionHandler.Compress(stream))
             {
                 await originalContent.CopyToAsync(compressedStream).ConfigureAwait(false);
                 compressedStream.Flush();
             }
         }
+
+        static void CopyHeaders(HttpContent source, HttpContent destination)
+        {
+            // copy the headers from the original content
+            foreach (var header in source.Headers)
+            {
+                destination.Headers.TryAddWithoutValidation(header.Key, header.Value);
+            }
+        }
+
+
+
+    
+        #region IDisposable
+
+        protected override void Dispose(bool disposing)
+        {
+            base.Dispose(disposing);
+
+            if (disposing)
+                return;
+
+            originalContent.Dispose();
+        }
+
+        #endregion
     }
 }
