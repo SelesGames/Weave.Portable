@@ -40,9 +40,18 @@ namespace SelesGames.HttpClient
         {
             this.encoderSettings = encoderSettings;
             this.compressionSettings = compressionSettings;
-            this.acceptEncodings = Settings.CompressionHandlers.GetSupportedEncodings().ToArray();
             this.Formatters = new StandardMediaTypeFormatters();
             this.RetryPolicy = Retry.None;
+
+            if (Settings.CompressionHandlers == null)
+            {
+                this.acceptEncodings = new List<string>();
+                System.Diagnostics.Debug.WriteLine("\r\n\r\nNO GLOBAL COMPRESSION HANDLERS have been set.  If you want to enable compression/decompression of HTTP requests, you have to set Common.Compression.Settings to a valid compression handler collection.\r\n******************************************\r\n");
+            }
+            else
+            {
+                this.acceptEncodings = Settings.CompressionHandlers.GetSupportedEncodings().ToArray();
+            }
         }
 
         #endregion
@@ -151,7 +160,7 @@ namespace SelesGames.HttpClient
             if (!string.IsNullOrEmpty(accept))
                 request.Headers.TryAddWithoutValidation("Accept", accept);
 
-            if (compressionSettings.HasFlag(CompressionSettings.AcceptEncoding))
+            if (compressionSettings.HasFlag(CompressionSettings.AcceptEncoding) && acceptEncodings.Any())
                 request.Headers.TryAddWithoutValidation("Accept-Encoding", acceptEncodings);
 
             return request;
