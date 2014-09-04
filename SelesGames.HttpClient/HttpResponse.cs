@@ -37,5 +37,11 @@ namespace SelesGames.HttpClient
                 throw new ErrorResponseException(HttpResponseMessage, "parse error in SmartHttpClient.ReadResponseContentAsync", ex);
             }
         }
+
+        public void EnsureSuccessStatusCode()
+        {
+            if (!HttpResponseMessage.IsSuccessStatusCode)
+                throw new ErrorResponseException(HttpResponseMessage);
+        }
     }
 }

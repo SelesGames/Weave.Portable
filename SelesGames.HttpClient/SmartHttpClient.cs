@@ -72,7 +72,6 @@ namespace SelesGames.HttpClient
                 .ConfigureAwait(false);
 
             cancellationToken.ThrowIfCancellationRequested();
-            response.EnsureSuccessStatusCode2();
 
             return new HttpResponse(response, this.Formatters);
         }
@@ -98,6 +97,7 @@ namespace SelesGames.HttpClient
         public async Task<T> GetAsync<T>(string url, CancellationToken cancellationToken)
         {
             var response = await GetAsync(url, cancellationToken).ConfigureAwait(false);
+            response.EnsureSuccessStatusCode();
             var result = await response.Read<T>().ConfigureAwait(false);
             return result;
         }
@@ -128,6 +128,7 @@ namespace SelesGames.HttpClient
         public async Task<TResult> PostAsync<TPost, TResult>(string url, TPost obj, CancellationToken cancellationToken)
         {
             var response = await PostAsync(url, obj, cancellationToken).ConfigureAwait(false);
+            response.EnsureSuccessStatusCode();
             var result = await response.Read<TResult>().ConfigureAwait(false);
             return result;
         }

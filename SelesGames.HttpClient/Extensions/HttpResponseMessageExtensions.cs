@@ -19,10 +19,10 @@ namespace SelesGames.HttpClient
                 return null;
         }
 
-        public static void EnsureSuccessStatusCode2(this HttpResponseMessage message)
-        {
-            if (!message.IsSuccessStatusCode)
-                throw new ErrorResponseException(message);
-        }
+        //public static void EnsureSuccessStatusCode2(this HttpResponseMessage message)
+        //{
+        //    if (!message.IsSuccessStatusCode)
+        //        throw new ErrorResponseException(message);
+        //}
     }
 }
