@@ -1,6 +1,7 @@
 ﻿using Common.Compression;
 using Common.Net.Http.Compression;
 using SelesGames.HttpClient.RetryPolicies;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
@@ -25,8 +26,10 @@ namespace SelesGames.HttpClient
 
         public MediaTypeFormatterCollection Formatters { get; private set; }
         public IRetryPolicy RetryPolicy { get; private set; }
+        public TimeSpan Timeout { get; set; }
 
-
+        // 100 seconds matches the default timeout of the inner HttpClient
+        static TimeSpan DEFAULT_TIMEOUT = TimeSpan.FromSeconds(100);
 
 
         #region Constructors
@@ -42,6 +45,7 @@ namespace SelesGames.HttpClient
             this.compressionSettings = compressionSettings;
             this.Formatters = new StandardMediaTypeFormatters();
             this.RetryPolicy = Retry.None;
+            this.Timeout = DEFAULT_TIMEOUT;
 
             if (Settings.CompressionHandlers == null)
             {
@@ -142,7 +146,9 @@ namespace SelesGames.HttpClient
 
         System.Net.Http.HttpClient CreateClient()
         {
-            return new System.Net.Http.HttpClient(new RetryHandler(new HttpClientCompressionHandler(), RetryPolicy ?? Retry.None));
+            var client = new System.Net.Http.HttpClient(new RetryHandler(new HttpClientCompressionHandler(), RetryPolicy ?? Retry.None));
+            client.Timeout = Timeout;
+            return client;
         }
 
         #endregion

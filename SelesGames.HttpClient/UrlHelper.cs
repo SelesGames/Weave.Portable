@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
@@ -7,12 +8,12 @@ namespace SelesGames.HttpClient
 {
     public static class UrlHelper
     {
-        public static async Task<string> GetFinalRedirectLocation(string url, int cycleLimit = 5)
+        public static async Task<string> GetFinalRedirectLocation(string url, TimeSpan timeout, int cycleLimit = 5)
         {
             int cycleCount = 0;
 
             string previousRedirect = url;
-            var currentRedirect = await GetRedirectOrOriginalUri(url);
+            var currentRedirect = await GetRedirectOrOriginalUri(url, timeout);
 
             while (currentRedirect != previousRedirect)
             {
@@ -21,15 +22,17 @@ namespace SelesGames.HttpClient
                     return url;
 
                 previousRedirect = currentRedirect;
-                currentRedirect = await GetRedirectOrOriginalUri(currentRedirect);
+                currentRedirect = await GetRedirectOrOriginalUri(currentRedirect, timeout);
             }
 
             return currentRedirect;
         }
 
-        static async Task<string> GetRedirectOrOriginalUri(string url)
+        static async Task<string> GetRedirectOrOriginalUri(string url, TimeSpan timeout)
         {
             var client = new System.Net.Http.HttpClient(new HttpClientHandler { AllowAutoRedirect = false });
+            client.Timeout = timeout;
+
             var response = await client.SendAsync(new HttpRequestMessage(HttpMethod.Head, url));
 
             var statusCode = response.StatusCode;
