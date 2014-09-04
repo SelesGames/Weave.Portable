@@ -1,5 +1,6 @@
 ﻿using SelesGames.HttpClient.RetryPolicies;
 using System;
+using System.Net;
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
@@ -29,6 +30,11 @@ namespace SelesGames.HttpClient
             return SendAsync(request, null, cancellationToken);
         }
 
+
+
+
+        #region actual SendAsync implementation
+
         async Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, RetryContext retryContext, CancellationToken cancellationToken)
         {
             if (retryContext != null)
@@ -41,20 +47,15 @@ namespace SelesGames.HttpClient
                 cancellationToken.ThrowIfCancellationRequested();
             }
 
-            await TraceRequest(request, retryContext);
+            await TraceRequest(request, retryContext).ConfigureAwait(false);
 
             var response = await base.SendAsync(request, cancellationToken).ConfigureAwait(false);
 
-            await TraceResponse(response);
+            await TraceResponse(response).ConfigureAwait(false);
 
             cancellationToken.ThrowIfCancellationRequested();
 
-            if (response.IsSuccessStatusCode)
-            {
-                return response;
-            }
-
-            else
+            if (IsRetryableResponseCode(response.StatusCode))
             {
                 retryContext = retryContext ?? new RetryContext();
 
@@ -64,6 +65,17 @@ namespace SelesGames.HttpClient
                 request = Copy(request);
                 return await SendAsync(request, retryContext, cancellationToken);
             }
+
+            else
+            {
+                return response;
+            }
+        }
+
+        static bool IsRetryableResponseCode(HttpStatusCode statusCode)
+        {
+            return 
+                statusCode == HttpStatusCode.InternalServerError;
         }
 
         HttpRequestMessage Copy(HttpRequestMessage original)
@@ -86,6 +98,8 @@ namespace SelesGames.HttpClient
 
             return request;
         }
+
+        #endregion
 
 
 
