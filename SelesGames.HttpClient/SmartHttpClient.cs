@@ -94,17 +94,19 @@ namespace SelesGames.HttpClient
             return GetAsync(url, CancellationToken.None);
         }
 
-        public async Task<T> GetAsync<T>(string url, CancellationToken cancellationToken)
-        {
-            var response = await GetAsync(url, cancellationToken).ConfigureAwait(false);
-            response.EnsureSuccessStatusCode();
-            var result = await response.Read<T>().ConfigureAwait(false);
-            return result;
-        }
-
         public Task<T> GetAsync<T>(string url)
         {
             return GetAsync<T>(url, CancellationToken.None);
+        }
+
+        public async Task<T> GetAsync<T>(string url, CancellationToken cancellationToken)
+        {
+            using (var response = await GetAsync(url, cancellationToken).ConfigureAwait(false))
+            {
+                response.EnsureSuccessStatusCode();
+                var result = await response.Read<T>().ConfigureAwait(false);
+                return result;
+            }
         }
 
         #endregion
@@ -116,7 +118,7 @@ namespace SelesGames.HttpClient
 
         public Task<HttpResponse> PostAsync<T>(string url, T obj, CancellationToken cancellationToken)
         {
-            var request = CreateRequest(HttpMethod.Post, url, obj);
+            using (var request = CreateRequest(HttpMethod.Post, url, obj))
             return SendAsync(request, cancellationToken);
         }
 
@@ -125,17 +127,19 @@ namespace SelesGames.HttpClient
             return PostAsync(url, obj, CancellationToken.None);
         }
 
-        public async Task<TResult> PostAsync<TPost, TResult>(string url, TPost obj, CancellationToken cancellationToken)
-        {
-            var response = await PostAsync(url, obj, cancellationToken).ConfigureAwait(false);
-            response.EnsureSuccessStatusCode();
-            var result = await response.Read<TResult>().ConfigureAwait(false);
-            return result;
-        }
-
         public Task<TResult> PostAsync<TPost, TResult>(string url, TPost obj)
         {
             return PostAsync<TPost, TResult>(url, obj, CancellationToken.None);
+        }
+
+        public async Task<TResult> PostAsync<TPost, TResult>(string url, TPost obj, CancellationToken cancellationToken)
+        {
+            using (var response = await PostAsync(url, obj, cancellationToken).ConfigureAwait(false))
+            {
+                response.EnsureSuccessStatusCode();
+                var result = await response.Read<TResult>().ConfigureAwait(false);
+                return result;
+            }
         }
 
         #endregion

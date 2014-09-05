@@ -6,8 +6,10 @@ using System.Threading.Tasks;
 
 namespace SelesGames.HttpClient
 {
-    public class HttpResponse
+    public class HttpResponse : IDisposable
     {
+        bool isDisposed = false;
+
         public MediaTypeFormatterCollection Formatters { get; private set; }
         public HttpResponseMessage HttpResponseMessage { get; private set; }
 
@@ -42,6 +44,15 @@ namespace SelesGames.HttpClient
         {
             if (!HttpResponseMessage.IsSuccessStatusCode)
                 throw new ErrorResponseException(HttpResponseMessage);
+        }
+
+        public void Dispose()
+        {
+            if (isDisposed)
+                return;
+
+            isDisposed = true;
+            HttpResponseMessage.Dispose();
         }
     }
 }
