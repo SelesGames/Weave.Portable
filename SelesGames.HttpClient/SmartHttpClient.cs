@@ -118,7 +118,7 @@ namespace SelesGames.HttpClient
 
         public Task<HttpResponse> PostAsync<T>(string url, T obj, CancellationToken cancellationToken)
         {
-            using (var request = CreateRequest(HttpMethod.Post, url, obj))
+            var request = CreateRequest(HttpMethod.Post, url, obj);
             return SendAsync(request, cancellationToken);
         }
 
