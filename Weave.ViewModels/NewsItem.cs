@@ -110,8 +110,7 @@ namespace Weave.ViewModels
         {
             get
             {
-                return !string.IsNullOrEmpty(ImageUrl) &&
-                    Uri.IsWellFormedUriString(ImageUrl, UriKind.Absolute);
+                return !string.IsNullOrEmpty(ImageUrl);
             }
         }
 
