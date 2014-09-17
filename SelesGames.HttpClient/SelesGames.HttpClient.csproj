@@ -46,6 +46,8 @@
     <Compile Include="Helpers\EnumerableEx.cs" />
     <Compile Include="HttpResourceListener.cs" />
     <Compile Include="HttpResponse.cs" />
+    <Compile Include="LogHandler.cs" />
+    <Compile Include="RequestTimeoutException.cs" />
     <Compile Include="RetryHandler.cs" />
     <Compile Include="RetryPolicies\IRetryPolicy.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

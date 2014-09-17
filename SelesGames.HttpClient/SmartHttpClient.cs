@@ -67,13 +67,29 @@ namespace SelesGames.HttpClient
 
         public async Task<HttpResponse> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
         {
-            var response = await CreateClient()
-                .SendAsync(request, cancellationToken)
-                .ConfigureAwait(false);
+            var now = DateTime.UtcNow;
 
-            cancellationToken.ThrowIfCancellationRequested();
+            try
+            {
+                var response = await CreateClient()
+                    .SendAsync(request, cancellationToken)
+                    .ConfigureAwait(false);
 
-            return new HttpResponse(response, this.Formatters);
+                cancellationToken.ThrowIfCancellationRequested();
+
+                return new HttpResponse(response, this.Formatters);
+            }
+            catch(TaskCanceledException)
+            {
+                var actualElapsed = DateTime.UtcNow - now;
+                var requestTimeoutException = new RequestTimeoutException(request, Timeout, actualElapsed);
+                throw requestTimeoutException;
+            }
+            catch(Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine(ex);
+                throw ex;
+            }
         }
 
         #endregion
@@ -151,7 +167,8 @@ namespace SelesGames.HttpClient
 
         System.Net.Http.HttpClient CreateClient()
         {
-            var client = new System.Net.Http.HttpClient(new RetryHandler(new HttpClientCompressionHandler(), RetryPolicy ?? Retry.None));
+            //var client = new System.Net.Http.HttpClient(new RetryHandler(new HttpClientCompressionHandler(), RetryPolicy ?? Retry.None));
+            var client = new System.Net.Http.HttpClient(new HttpClientCompressionHandler());
             client.Timeout = Timeout;
             return client;
         }

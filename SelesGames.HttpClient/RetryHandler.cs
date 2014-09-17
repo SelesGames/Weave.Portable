@@ -11,18 +11,12 @@ namespace SelesGames.HttpClient
     {
         IRetryPolicy retryPolicy;
 
-        public Action<string> Log { get; set; }
-
         public RetryHandler(HttpMessageHandler innerHandler, IRetryPolicy retryPolicy)
             : base(innerHandler)
         {
             if (retryPolicy == null) throw new ArgumentNullException("retryPolicy");
 
             this.retryPolicy = retryPolicy;
-
-#if DEBUG
-            Log = s => System.Diagnostics.Debug.WriteLine(s);
-#endif
         }
 
         protected override Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
@@ -47,13 +41,7 @@ namespace SelesGames.HttpClient
                 cancellationToken.ThrowIfCancellationRequested();
             }
 
-            await TraceRequest(request, retryContext).ConfigureAwait(false);
-
             var response = await base.SendAsync(request, cancellationToken).ConfigureAwait(false);
-
-            await TraceResponse(response).ConfigureAwait(false);
-
-            cancellationToken.ThrowIfCancellationRequested();
 
             if (IsRetryableResponseCode(response.StatusCode))
             {
@@ -97,77 +85,6 @@ namespace SelesGames.HttpClient
             }
 
             return request;
-        }
-
-        #endregion
-
-
-
-
-        #region Trace the request and response using the specificied Log delegate
-
-        async Task TraceRequest(HttpRequestMessage request, RetryContext retryContext)
-        {
-            if (Log == null)
-                return;
-
-            string output;
-            var contentString = await ReadContentAsString(request.Content);
-
-            if (string.IsNullOrEmpty(contentString))
-            {
-                output = string.Format(
-                    "Sending request... (attempt {1})\r\n{0}\r\n\r\n",
-                    request.ToString(),
-                    retryContext == null ? 0 : retryContext.CurrentRetryCount);
-            }
-            else
-            {
-                output = string.Format(
-                    "Sending request... (attempt {2})\r\n{0}\r\nCONTENT:\r\n{1}\r\n\r\n",
-                    request.ToString(),
-                    contentString,
-                    retryContext == null ? 0 : retryContext.CurrentRetryCount);
-            }
-
-            Log(output);
-        }
-
-        async Task<string> ReadContentAsString(HttpContent content)
-        {
-            if (!(content is ObjectContent))
-                return null;
-
-            var objectContent = (ObjectContent)content;
-            var copy = new ObjectContent(objectContent.ObjectType, objectContent.Value, objectContent.Formatter);
-
-            return await copy.ReadAsStringAsync();
-        }
-
-        async Task TraceResponse(HttpResponseMessage response)
-        {
-            if (Log == null)
-                return;
-
-            string output;
-
-            var responseString = await response.Content.ReadAsStringAsync();
-
-            if (string.IsNullOrEmpty(responseString))
-            {
-                output = string.Format(
-                    "Received response ... \r\n{0}\r\n\r\n",
-                    response.ToString());
-            }
-            else
-            {
-                output = string.Format(
-                    "Received response ... \r\n{0}\r\nRESPONSE:\r\n{1}\r\n\r\n",
-                    response.ToString(),
-                    responseString);
-            }
-
-            Log(output);
         }
 
         #endregion
