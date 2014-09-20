@@ -13,7 +13,7 @@ namespace Weave.User.Service.Client
     {
         /// PRODUCTION
         /// ****************************
-        const string SERVICE_URL = "http://weave-user-v2.cloudapp.net/api/user/";
+        const string SERVICE_URL = "http://weave-user.cloudapp.net/api/user/";
 
 
 
