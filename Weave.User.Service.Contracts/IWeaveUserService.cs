@@ -12,8 +12,8 @@ namespace Weave.User.Service.Contracts
         Task<Outgoing.UserInfo> AddUserAndReturnUserInfo(Incoming.UserInfo incomingUser);
         Task<Outgoing.UserInfo> GetUserInfo(Guid userId, bool refresh = false);
         
-        Task<Outgoing.NewsList> GetNews(Guid userId, string category, EntryType entry = EntryType.Peek, int skip = 0, int take = 10, NewsItemType type = NewsItemType.Any, bool requireImage = false);
-        Task<Outgoing.NewsList> GetNews(Guid userId, Guid feedId, EntryType entry = EntryType.Peek, int skip = 0, int take = 10, NewsItemType type = NewsItemType.Any, bool requireImage = false);
+        Task<Outgoing.NewsList> GetNews(Guid userId, string category, EntryType entry = EntryType.Peek, Guid? cursorId = null, int take = 10, NewsItemType type = NewsItemType.Any, bool requireImage = false);
+        Task<Outgoing.NewsList> GetNews(Guid userId, Guid feedId, EntryType entry = EntryType.Peek, Guid? cursorId = null, int take = 10, NewsItemType type = NewsItemType.Any, bool requireImage = false);
 
         Task<Outgoing.FeedsInfoList> GetFeeds(Guid userId, bool refresh = false, bool nested = false);
         Task<Outgoing.FeedsInfoList> GetFeeds(Guid userId, string category, bool refresh = false, bool nested = false);

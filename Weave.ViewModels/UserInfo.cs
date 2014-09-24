@@ -70,14 +70,14 @@ namespace Weave.ViewModels
 
         #region Get News (by category or feed)
 
-        public async Task<NewsList> GetNewsForCategory(string category, EntryType entry = EntryType.Peek, int skip = 0, int take = 10)
+        public async Task<NewsList> GetNewsForCategory(string category, EntryType entry = EntryType.Peek, Guid? cursorId = null, int take = 10)
         {
-            return await repo.GetNews(Id, category, entry, skip, take);
+            return await repo.GetNews(Id, category, entry, cursorId, take);
         }
 
-        public async Task<NewsList> GetNewsForFeed(Guid feedId, EntryType entry = EntryType.Peek, int skip = 0, int take = 10)
+        public async Task<NewsList> GetNewsForFeed(Guid feedId, EntryType entry = EntryType.Peek, Guid? cursorId = null, int take = 10)
         {
-            return await repo.GetNews(Id, feedId, entry, skip, take);
+            return await repo.GetNews(Id, feedId, entry, cursorId, take);
         }
 
         #endregion

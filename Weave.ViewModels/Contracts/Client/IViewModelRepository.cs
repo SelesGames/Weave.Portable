@@ -8,9 +8,9 @@ namespace Weave.ViewModels.Contracts.Client
     {
         Task<UserInfo> AddUserAndReturnUserInfo(UserInfo incomingUser);
         Task<UserInfo> GetUserInfo(Guid userId, bool refresh = false);
-        
-        Task<NewsList> GetNews(Guid userId, string category, EntryType entry = EntryType.Peek, int skip = 0, int take = 10, NewsItemType type = NewsItemType.Any, bool requireImage = false);
-        Task<NewsList> GetNews(Guid userId, Guid feedId, EntryType entry = EntryType.Peek, int skip = 0, int take = 10, NewsItemType type = NewsItemType.Any, bool requireImage = false);
+
+        Task<NewsList> GetNews(Guid userId, string category, EntryType entry = EntryType.Peek, Guid? cursorId = null, int take = 10, NewsItemType type = NewsItemType.Any, bool requireImage = false);
+        Task<NewsList> GetNews(Guid userId, Guid feedId, EntryType entry = EntryType.Peek, Guid? cursorId = null, int take = 10, NewsItemType type = NewsItemType.Any, bool requireImage = false);
 
         Task<FeedsInfoList> GetFeeds(Guid userId, bool refresh = false, bool nested = false);
         Task<FeedsInfoList> GetFeeds(Guid userId, string category, bool refresh = false, bool nested = false);

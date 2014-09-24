@@ -58,19 +58,28 @@ namespace Weave.User.Service.Client
 
         #region Get News for User (either by category or feedId)
 
-        public async Task<Outgoing.NewsList> GetNews(Guid userId, string category, EntryType entry = EntryType.Peek, int skip = 0, int take = 10, DTOs.NewsItemType type = DTOs.NewsItemType.Any, bool requireImage = false)
+        public async Task<Outgoing.NewsList> GetNews(Guid userId, string category, EntryType entry = EntryType.Peek, Guid? cursorId = null, int take = 10, DTOs.NewsItemType type = DTOs.NewsItemType.Any, bool requireImage = false)
         {
             string append = "news";
-            var url = new UriBuilder(SERVICE_URL + append)
+            var builder = new UriBuilder(SERVICE_URL + append)
                 .AddParameter("userId", userId)
-                .AddParameter("category", category)
-                .AddParameter("entry", entry)
-                .AddParameter("skip", skip)
-                .AddParameter("take", take)
-                .AddParameter("type", (int)type)
-                .AddParameter("requireImage", requireImage)
-                .AddCacheBuster()
-                .ToString();
+                .AddParameter("category", category);
+
+            if (entry != EntryType.Peek)
+                builder = builder.AddParameter("entry", entry);
+
+            if (cursorId.HasValue)
+                builder = builder.AddParameter("cursorId", cursorId);
+
+            builder = builder.AddParameter("take", take);
+
+            if (type != DTOs.NewsItemType.Any)
+                builder = builder.AddParameter("type", (int)type);
+
+            if (requireImage)
+                builder = builder.AddParameter("requireImage", requireImage);
+                
+            var url = builder.AddCacheBuster().ToString();
 
             var client = CreateClient();
 
@@ -78,19 +87,28 @@ namespace Weave.User.Service.Client
             return result;
         }
 
-        public async Task<Outgoing.NewsList> GetNews(Guid userId, Guid feedId, EntryType entry = EntryType.Peek, int skip = 0, int take = 10, DTOs.NewsItemType type = DTOs.NewsItemType.Any, bool requireImage = false)
+        public async Task<Outgoing.NewsList> GetNews(Guid userId, Guid feedId, EntryType entry = EntryType.Peek, Guid? cursorId = null, int take = 10, DTOs.NewsItemType type = DTOs.NewsItemType.Any, bool requireImage = false)
         {
             string append = "news";
-            var url = new UriBuilder(SERVICE_URL + append)
+            var builder = new UriBuilder(SERVICE_URL + append)
                 .AddParameter("userId", userId)
-                .AddParameter("feedId", feedId)
-                .AddParameter("entry", entry)
-                .AddParameter("skip", skip)
-                .AddParameter("take", take)
-                .AddParameter("type", (int)type)
-                .AddParameter("requireImage", requireImage)
-                .AddCacheBuster()
-                .ToString();
+                .AddParameter("feedId", feedId);
+
+            if (entry != EntryType.Peek)
+                builder = builder.AddParameter("entry", entry);
+
+            if (cursorId.HasValue)
+                builder = builder.AddParameter("cursorId", cursorId);
+
+            builder = builder.AddParameter("take", take);
+
+            if (type != DTOs.NewsItemType.Any)
+                builder = builder.AddParameter("type", (int)type);
+
+            if (requireImage)
+                builder = builder.AddParameter("requireImage", requireImage);
+
+            var url = builder.AddCacheBuster().ToString();
 
             var client = CreateClient();
 
@@ -317,7 +335,7 @@ namespace Weave.User.Service.Client
 
         SmartHttpClient CreateClient()
         {
-            return new SmartHttpClient(CompressionSettings.None);//.AcceptEncoding);
+            return new SmartHttpClient();
         }
     }
 }

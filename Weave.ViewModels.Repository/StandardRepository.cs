@@ -36,15 +36,15 @@ namespace Weave.ViewModels.Repository
             return Convert(user);
         }
 
-        public async Task<NewsList> GetNews(Guid userId, string category, EntryType entry = EntryType.Peek, int skip = 0, int take = 10, NewsItemType type = NewsItemType.Any, bool requireImage = false)
+        public async Task<NewsList> GetNews(Guid userId, string category, EntryType entry = EntryType.Peek, Guid? cursorId = null, int take = 10, NewsItemType type = NewsItemType.Any, bool requireImage = false)
         {
-            var userNews = await userService.GetNews(userId, category, (Weave.User.Service.Contracts.EntryType)entry, skip, take, (DTOs.NewsItemType)type, requireImage);
+            var userNews = await userService.GetNews(userId, category, (Weave.User.Service.Contracts.EntryType)entry, cursorId, take, (DTOs.NewsItemType)type, requireImage);
             return Convert(userNews);
         }
 
-        public async Task<NewsList> GetNews(Guid userId, Guid feedId, EntryType entry = EntryType.Peek, int skip = 0, int take = 10, NewsItemType type = NewsItemType.Any, bool requireImage = false)
+        public async Task<NewsList> GetNews(Guid userId, Guid feedId, EntryType entry = EntryType.Peek, Guid? cursorId = null, int take = 10, NewsItemType type = NewsItemType.Any, bool requireImage = false)
         {
-            var userNews = await userService.GetNews(userId, feedId, (Weave.User.Service.Contracts.EntryType)entry, skip, take, (DTOs.NewsItemType)type, requireImage);
+            var userNews = await userService.GetNews(userId, feedId, (Weave.User.Service.Contracts.EntryType)entry, cursorId, take, (DTOs.NewsItemType)type, requireImage);
             return Convert(userNews);
         }
 
