@@ -1,6 +1,6 @@
 ﻿using System.Threading.Tasks;
 
-namespace Common.Microsoft.OneNote
+namespace Common.Microsoft.Services.OneNote
 {
     public class OneNoteServiceClient : OneNoteServiceClientBase
     {

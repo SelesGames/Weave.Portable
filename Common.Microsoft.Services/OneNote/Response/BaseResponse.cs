@@ -1,6 +1,6 @@
 ﻿using System.Net;
 
-namespace Common.Microsoft.OneNote.Response
+namespace Common.Microsoft.Services.OneNote.Response
 {
     /// <summary>
     /// Base class representing a simplified response from a service call 

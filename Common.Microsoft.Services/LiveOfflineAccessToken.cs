@@ -6,7 +6,7 @@ using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Common.Microsoft
+namespace Common.Microsoft.Services
 {
     /// <summary>
     /// For offline access of Live services.  Only valid when app uses the wl.offline_access wl.signin scopes.  A RefreshToken is used to keep the AccessToken up-to-date

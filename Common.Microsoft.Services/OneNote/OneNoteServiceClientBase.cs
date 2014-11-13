@@ -1,4 +1,4 @@
-﻿using Common.Microsoft.OneNote.Response;
+﻿using Common.Microsoft.Services.OneNote.Response;
 using Newtonsoft.Json;
 using System.Collections.Generic;
 using System.IO;
@@ -9,7 +9,7 @@ using System.Net.Http.Headers;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Common.Microsoft.OneNote
+namespace Common.Microsoft.Services.OneNote
 {
     public abstract class OneNoteServiceClientBase
     {

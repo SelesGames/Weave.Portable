@@ -1,6 +1,6 @@
 ﻿using System.Net;
 
-namespace Common.Microsoft.OneNote.Response
+namespace Common.Microsoft.Services.OneNote.Response
 {
     /// <summary>
     /// Class representing standard error from the service

@@ -1,5 +1,5 @@
 ﻿
-namespace Common.Microsoft.OneNote.Response
+namespace Common.Microsoft.Services.OneNote.Response
 {
     /// <summary>
     /// Class representing a successful create call from the service

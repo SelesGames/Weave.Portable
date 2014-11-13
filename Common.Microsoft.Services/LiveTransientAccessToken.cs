@@ -1,6 +1,6 @@
 ﻿using System.Threading.Tasks;
 
-namespace Common.Microsoft
+namespace Common.Microsoft.Services
 {
     public class LiveTransientAccessToken : LiveAccessToken
     {
