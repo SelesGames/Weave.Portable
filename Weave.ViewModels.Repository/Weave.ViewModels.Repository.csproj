@@ -39,21 +39,9 @@
   </PropertyGroup>
   <ItemGroup>
     <!-- A reference to the entire .NET Framework is automatically included -->
-    <ProjectReference Include="..\Weave.Article.Service.Contracts\Weave.Article.Service.Contracts.csproj">
-      <Project>{d727f239-ee96-4b05-8f17-65871b52b260}</Project>
-      <Name>Weave.Article.Service.Contracts</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Weave.Article.Service.DTOs\Weave.Article.Service.DTOs.csproj">
-      <Project>{2b4d1af0-8c77-475d-8d14-db7b506f9450}</Project>
-      <Name>Weave.Article.Service.DTOs</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Weave.User.Service.Contracts\Weave.User.Service.Contracts.csproj">
-      <Project>{02f3363f-7b0f-4c5f-9123-b388f2870c35}</Project>
-      <Name>Weave.User.Service.Contracts</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Weave.User.Service.DTOs\Weave.User.Service.DTOs.csproj">
-      <Project>{75f2f4b1-beb2-4ac6-a935-5a795c5a79a0}</Project>
-      <Name>Weave.User.Service.DTOs</Name>
+    <ProjectReference Include="..\Weave.Services\Weave.Services.csproj">
+      <Project>{2161f2b3-d54d-4294-9497-fafe0c37e77f}</Project>
+      <Name>Weave.Services</Name>
     </ProjectReference>
     <ProjectReference Include="..\Weave.ViewModels\Weave.ViewModels.csproj">
       <Project>{0f188fc9-d10c-48db-917a-ff1cb9c8e795}</Project>

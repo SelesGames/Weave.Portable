@@ -1,5 +1,5 @@
 ﻿using System;
-using Weave.Mobilizer.DTOs;
+using Weave.Services.Mobilizer.DTOs;
 
 namespace Weave.ViewModels.Mobilizer
 {

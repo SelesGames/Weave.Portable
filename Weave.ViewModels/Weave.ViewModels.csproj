@@ -62,21 +62,9 @@
     <Compile Include="ViewModelBase.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Weave.Identity.Service.Contracts\Weave.Identity.Service.Contracts.csproj">
-      <Project>{cce98720-6054-4ef8-ba8c-14821b35ec1d}</Project>
-      <Name>Weave.Identity.Service.Contracts</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Weave.Identity.Service.DTOs\Weave.Identity.Service.DTOs.csproj">
-      <Project>{6fa5ac47-653a-4634-8bca-cf68ba33f884}</Project>
-      <Name>Weave.Identity.Service.DTOs</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Weave.Mobilizer.Contracts\Weave.Mobilizer.Contracts.csproj">
-      <Project>{fc776ca4-35b3-4024-8667-cb265805a519}</Project>
-      <Name>Weave.Mobilizer.Contracts</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Weave.Mobilizer.DTOs\Weave.Mobilizer.DTOs.csproj">
-      <Project>{0a9019e4-e76f-4fac-a5c7-70f32cf5e2c1}</Project>
-      <Name>Weave.Mobilizer.DTOs</Name>
+    <ProjectReference Include="..\Weave.Services\Weave.Services.csproj">
+      <Project>{2161f2b3-d54d-4294-9497-fafe0c37e77f}</Project>
+      <Name>Weave.Services</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\Portable\$(TargetFrameworkVersion)\Microsoft.Portable.CSharp.targets" />

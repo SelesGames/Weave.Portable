@@ -5,18 +5,18 @@
     <MinimumVisualStudioVersion>11.0</MinimumVisualStudioVersion>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{8162E82C-C141-4A69-90EF-4A2593A374DF}</ProjectGuid>
+    <ProjectGuid>{2161F2B3-D54D-4294-9497-FAFE0C37E77F}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Common.Net.Http.Compression</RootNamespace>
-    <AssemblyName>Common.Net.Http.Compression</AssemblyName>
-    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
-    <TargetFrameworkProfile>Profile259</TargetFrameworkProfile>
+    <RootNamespace>Weave.Services</RootNamespace>
+    <AssemblyName>Weave.Services</AssemblyName>
+    <DefaultLanguage>en-US</DefaultLanguage>
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{786C830F-07A1-408B-BD7F-6EE04809D6DB};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
-    <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">..\..\Weave.Windows8\Weave\</SolutionDir>
+    <TargetFrameworkProfile>Profile259</TargetFrameworkProfile>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">..\..\Weave\Windows Phone 8\</SolutionDir>
     <RestorePackages>true</RestorePackages>
-    <NuGetPackageImportStamp>5568ba13</NuGetPackageImportStamp>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -36,34 +36,53 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="CompressedContent.cs" />
-    <Compile Include="DecompressedContent.cs" />
-    <Compile Include="WebApiCompressionHandler.cs" />
-    <Compile Include="HttpClientCompressionHandler.cs" />
-    <Compile Include="Extensions\HttpResponseMessageExtensions.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
+    <!-- A reference to the entire .NET Framework is automatically included -->
+    <ProjectReference Include="..\SelesGames.HttpClient\SelesGames.HttpClient.csproj">
+      <Project>{e93c1441-a175-4d76-9e97-092e9c621e55}</Project>
+      <Name>SelesGames.HttpClient</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Common.Compression\Common.Compression.csproj">
-      <Project>{00617b68-c1f0-4ad8-8307-25c0608d745d}</Project>
-      <Name>Common.Compression</Name>
-    </ProjectReference>
+    <Compile Include="Article\Contracts\IWeaveArticleService.cs" />
+    <Compile Include="Article\DTOs\Image.cs" />
+    <Compile Include="Article\DTOs\ServerIncoming\SavedNewsItem.cs" />
+    <Compile Include="Article\DTOs\ServerOutgoing\SavedNewsItem.cs" />
+    <Compile Include="Article\Client.cs" />
+    <Compile Include="Identity\Contracts\IIdentityService.cs" />
+    <Compile Include="Identity\Contracts\NoMatchingUserException.cs" />
+    <Compile Include="Identity\DTOs\IdentityInfo.cs" />
+    <Compile Include="Identity\Client.cs" />
+    <Compile Include="Mobilizer\Client.cs" />
+    <Compile Include="Mobilizer\Contracts\IMobilizerService.cs" />
+    <Compile Include="Mobilizer\DTOs\MobilizerResult.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="User\Client.cs" />
+    <Compile Include="User\Contracts\EntryType.cs" />
+    <Compile Include="User\Contracts\IWeaveUserService.cs" />
+    <Compile Include="User\DTOs\ArticleViewingType.cs" />
+    <Compile Include="User\DTOs\NewsItemType.cs" />
+    <Compile Include="User\DTOs\ServerIncoming\ArticleDeleteTimes.cs" />
+    <Compile Include="User\DTOs\ServerIncoming\BatchFeedChange.cs" />
+    <Compile Include="User\DTOs\ServerIncoming\NewFeed.cs" />
+    <Compile Include="User\DTOs\ServerIncoming\UpdatedFeed.cs" />
+    <Compile Include="User\DTOs\ServerIncoming\UserInfo.cs" />
+    <Compile Include="User\DTOs\ServerOutgoing\CategoryInfo.cs" />
+    <Compile Include="User\DTOs\ServerOutgoing\Feed.cs" />
+    <Compile Include="User\DTOs\ServerOutgoing\FeedsInfoList.cs" />
+    <Compile Include="User\DTOs\ServerOutgoing\Image.cs" />
+    <Compile Include="User\DTOs\ServerOutgoing\NewsItem.cs" />
+    <Compile Include="User\DTOs\ServerOutgoing\NewsList.cs" />
+    <Compile Include="User\DTOs\ServerOutgoing\UserInfo.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <Reference Include="Newtonsoft.Json">
-      <HintPath>..\..\Weave\Windows Phone 8\packages\Newtonsoft.Json.6.0.4\lib\portable-net45+wp80+win8+wpa81\Newtonsoft.Json.dll</HintPath>
-    </Reference>
     <Reference Include="System.Net.Http">
       <HintPath>..\..\Weave\Windows Phone 8\packages\Microsoft.Net.Http.2.2.28\lib\portable-net40+sl4+win8+wp71+wpa81\System.Net.Http.dll</HintPath>
     </Reference>
     <Reference Include="System.Net.Http.Extensions">
       <HintPath>..\..\Weave\Windows Phone 8\packages\Microsoft.Net.Http.2.2.28\lib\portable-net40+sl4+win8+wp71+wpa81\System.Net.Http.Extensions.dll</HintPath>
-    </Reference>
-    <Reference Include="System.Net.Http.Formatting">
-      <HintPath>..\..\Weave\Windows Phone 8\packages\Microsoft.AspNet.WebApi.Client.5.2.2\lib\portable-wp8+netcore45+net45+wp81+wpa81\System.Net.Http.Formatting.dll</HintPath>
     </Reference>
     <Reference Include="System.Net.Http.Primitives">
       <HintPath>..\..\Weave\Windows Phone 8\packages\Microsoft.Net.Http.2.2.28\lib\portable-net40+sl4+win8+wp71+wpa81\System.Net.Http.Primitives.dll</HintPath>
@@ -71,12 +90,11 @@
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\Portable\$(TargetFrameworkVersion)\Microsoft.Portable.CSharp.targets" />
   <Import Project="$(SolutionDir)\.nuget\NuGet.targets" Condition="Exists('$(SolutionDir)\.nuget\NuGet.targets')" />
-  <Import Project="..\..\Weave.Windows8\Weave\packages\Microsoft.Bcl.Build.1.0.21\build\Microsoft.Bcl.Build.targets" Condition="Exists('..\..\Weave.Windows8\Weave\packages\Microsoft.Bcl.Build.1.0.21\build\Microsoft.Bcl.Build.targets')" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>
       <ErrorText>This project references NuGet package(s) that are missing on this computer. Enable NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
     </PropertyGroup>
-    <Error Condition="!Exists('..\..\Weave.Windows8\Weave\packages\Microsoft.Bcl.Build.1.0.21\build\Microsoft.Bcl.Build.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\..\Weave.Windows8\Weave\packages\Microsoft.Bcl.Build.1.0.21\build\Microsoft.Bcl.Build.targets'))" />
+    <Error Condition="!Exists('$(SolutionDir)\.nuget\NuGet.targets')" Text="$([System.String]::Format('$(ErrorText)', '$(SolutionDir)\.nuget\NuGet.targets'))" />
   </Target>
   <Import Project="..\..\Weave\Windows Phone 8\packages\Microsoft.Bcl.Build.1.0.14\tools\Microsoft.Bcl.Build.targets" Condition="Exists('..\..\Weave\Windows Phone 8\packages\Microsoft.Bcl.Build.1.0.14\tools\Microsoft.Bcl.Build.targets')" />
   <Target Name="EnsureBclBuildImported" BeforeTargets="BeforeBuild" Condition="'$(BclBuildImported)' == ''">

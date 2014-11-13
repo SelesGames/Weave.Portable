@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
-using Weave.Identity.Service.Contracts;
-using DTOs = Weave.Identity.Service.DTOs;
+using Weave.Services.Identity.Contracts;
+using DTOs = Weave.Services.Identity.DTOs;
 
 namespace Weave.ViewModels.Identity
 {

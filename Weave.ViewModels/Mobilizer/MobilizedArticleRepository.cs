@@ -1,5 +1,5 @@
 ﻿using System.Threading.Tasks;
-using Weave.Mobilizer.Contracts;
+using Weave.Services.Mobilizer.Contracts;
 
 namespace Weave.ViewModels.Mobilizer
 {

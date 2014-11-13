@@ -3,12 +3,12 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading.Tasks;
-using Weave.Article.Service.Contracts;
-using Weave.User.Service.Contracts;
+using Weave.Services.Article.Contracts;
+using Weave.Services.User.Contracts;
 using Weave.ViewModels.Contracts.Client;
-using DTOs = Weave.User.Service.DTOs;
-using Incoming = Weave.User.Service.DTOs.ServerIncoming;
-using Outgoing = Weave.User.Service.DTOs.ServerOutgoing;
+using DTOs = Weave.Services.User.DTOs;
+using Incoming = Weave.Services.User.DTOs.ServerIncoming;
+using Outgoing = Weave.Services.User.DTOs.ServerOutgoing;
 
 namespace Weave.ViewModels.Repository
 {
@@ -38,13 +38,13 @@ namespace Weave.ViewModels.Repository
 
         public async Task<NewsList> GetNews(Guid userId, string category, EntryType entry = EntryType.Peek, Guid? cursorId = null, int take = 10, NewsItemType type = NewsItemType.Any, bool requireImage = false)
         {
-            var userNews = await userService.GetNews(userId, category, (Weave.User.Service.Contracts.EntryType)entry, cursorId, take, (DTOs.NewsItemType)type, requireImage);
+            var userNews = await userService.GetNews(userId, category, (Weave.Services.User.Contracts.EntryType)entry, cursorId, take, (DTOs.NewsItemType)type, requireImage);
             return Convert(userNews);
         }
 
         public async Task<NewsList> GetNews(Guid userId, Guid feedId, EntryType entry = EntryType.Peek, Guid? cursorId = null, int take = 10, NewsItemType type = NewsItemType.Any, bool requireImage = false)
         {
-            var userNews = await userService.GetNews(userId, feedId, (Weave.User.Service.Contracts.EntryType)entry, cursorId, take, (DTOs.NewsItemType)type, requireImage);
+            var userNews = await userService.GetNews(userId, feedId, (Weave.Services.User.Contracts.EntryType)entry, cursorId, take, (DTOs.NewsItemType)type, requireImage);
             return Convert(userNews);
         }
 
@@ -306,7 +306,7 @@ namespace Weave.ViewModels.Repository
                 Uri = o.Uri,
                 Name = o.Name,
                 Category = o.Category,
-                ArticleViewingType = (Weave.User.Service.DTOs.ArticleViewingType)o.ArticleViewingType,
+                ArticleViewingType = (Weave.Services.User.DTOs.ArticleViewingType)o.ArticleViewingType,
             };
         }
 
@@ -317,18 +317,18 @@ namespace Weave.ViewModels.Repository
                 Id = o.Id,
                 Name = o.Name,
                 Category = o.Category,
-                ArticleViewingType = (Weave.User.Service.DTOs.ArticleViewingType)o.ArticleViewingType, 
+                ArticleViewingType = (Weave.Services.User.DTOs.ArticleViewingType)o.ArticleViewingType, 
             };
         }
 
-        NewsItem ConvertToFavorite(Weave.Article.Service.DTOs.ServerOutgoing.SavedNewsItem o)
+        NewsItem ConvertToFavorite(Weave.Services.Article.DTOs.ServerOutgoing.SavedNewsItem o)
         {
             var newsItem = ConvertToRead(o);
             newsItem.IsFavorite = true;
             return newsItem;
         }
 
-        NewsItem ConvertToRead(Weave.Article.Service.DTOs.ServerOutgoing.SavedNewsItem o)
+        NewsItem ConvertToRead(Weave.Services.Article.DTOs.ServerOutgoing.SavedNewsItem o)
         {
             return new NewsItem
             {
@@ -345,9 +345,9 @@ namespace Weave.ViewModels.Repository
             };
         }
 
-        Weave.Article.Service.DTOs.ServerIncoming.SavedNewsItem Convert(NewsItem o)
+        Weave.Services.Article.DTOs.ServerIncoming.SavedNewsItem Convert(NewsItem o)
         {
-            return new Article.Service.DTOs.ServerIncoming.SavedNewsItem
+            return new Weave.Services.Article.DTOs.ServerIncoming.SavedNewsItem
             {
                 SourceName = o.OriginalSource,
                 Title = o.Title,
@@ -363,9 +363,9 @@ namespace Weave.ViewModels.Repository
             };
         }
 
-        Weave.Article.Service.DTOs.Image Convert(Image o)
+        Weave.Services.Article.DTOs.Image Convert(Image o)
         {
-            return new Weave.Article.Service.DTOs.Image
+            return new Weave.Services.Article.DTOs.Image
             {
                 BaseImageUrl = o.BaseImageUrl,
                 Width = o.Width,
