@@ -36,10 +36,6 @@
   </PropertyGroup>
   <ItemGroup>
     <!-- A reference to the entire .NET Framework is automatically included -->
-    <ProjectReference Include="..\SelesGames.HttpClient\SelesGames.HttpClient.csproj">
-      <Project>{e93c1441-a175-4d76-9e97-092e9c621e55}</Project>
-      <Name>SelesGames.HttpClient</Name>
-    </ProjectReference>
     <ProjectReference Include="..\Weave.ViewModels\Weave.ViewModels.csproj">
       <Project>{0f188fc9-d10c-48db-917a-ff1cb9c8e795}</Project>
       <Name>Weave.ViewModels</Name>
