@@ -48,6 +48,9 @@
     <Compile Include="Extensions\DateTimeDisplayFormattingExtensions.cs" />
     <Compile Include="Extensions\FeedExtensions.cs" />
     <Compile Include="Feed.cs" />
+    <Compile Include="FeedLibrary\BundledLibrary.cs" />
+    <Compile Include="FeedLibrary\ExpandedLibrary.cs" />
+    <Compile Include="Extensions\LinqToXmlExtensions.cs" />
     <Compile Include="FeedsInfoList.cs" />
     <Compile Include="Helpers\FeedEqualityComparer.cs" />
     <Compile Include="Helpers\ViewModelLocator.cs" />

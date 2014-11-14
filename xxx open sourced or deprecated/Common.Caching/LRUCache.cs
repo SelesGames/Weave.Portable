@@ -16,8 +16,6 @@ namespace Common.Caching
         readonly LinkedList<LRUCacheItem<TKey, TValue>> list;
         readonly Dictionary<TKey, LinkedListNode<LRUCacheItem<TKey, TValue>>> cache;
 
-        public event EventHandler<LRUEvictionEventArgs<TKey, TValue>> ItemEvicted;
-
         public LRUCache(int capacity)
         {
             if (capacity < 0) throw new ArgumentException("capacity");
@@ -27,50 +25,63 @@ namespace Common.Caching
             cache = new Dictionary<TKey, LinkedListNode<LRUCacheItem<TKey, TValue>>>(capacity + 1);
         }
 
-        TValue Get(TKey key)
+        /// <summary>
+        /// Gets the value associated with the specified key.  If no key is found, returns Option.None.
+        /// </summary>
+        /// <returns>An Option type that optionally contains the value associated with the key</returns>
+        public Option<TValue> Get(TKey key)
         {
             lock (sync)
             {
-                var node = cache[key];
+                LinkedListNode<LRUCacheItem<TKey, TValue>> node;
+
+                if (!cache.TryGetValue(key, out node))
+                    return Option.None<TValue>();
 
                 list.Remove(node);
                 list.AddLast(node);
 
-                return node.Value.Value;
+                return Option.Some(node.Value.Value);
             }
         }
 
-        void AddOrUpdate(TKey key, TValue value, bool checkPresenceOfKeyBeforeAdd)
+        /// <summary>
+        /// Adds an element with the provided key and value to the LRUCache<TKey,TValue>.  
+        /// If the number of elements is greater than capacity, returns the evicted item.
+        /// </summary>
+        /// <param name="value"></param>
+        /// <returns>The evicted LRU item, or null if nothing was evicted</returns>
+        public LRUCacheItem<TKey, TValue> AddOrUpdate(TKey key, TValue value)
         {
-            LRUCacheItem<TKey, TValue> evicted = null;
-
             lock (sync)
             {
-                // if the cache already contains an entry for the key, update it's value and move it to the front of the list
-                if (cache.ContainsKey(key))
-                {
-                    var node = cache[key];
+                LinkedListNode<LRUCacheItem<TKey, TValue>> node;
 
+                // if the cache already contains an entry for the key, update it's value and move it to the front of the list
+                if (cache.TryGetValue(key, out node))
+                {
                     list.Remove(node);
                     list.AddLast(node);
 
                     node.Value.Value = value;
+                    return null;
                 }
+
+                // cache does not contain a value for key, so add it now
                 else
                 {
                     var cacheItem = new LRUCacheItem<TKey, TValue>(key, value);
-                    var node = new LinkedListNode<LRUCacheItem<TKey, TValue>>(cacheItem);
+                    node = new LinkedListNode<LRUCacheItem<TKey, TValue>>(cacheItem);
 
                     cache.Add(key, node);
                     list.AddLast(node);
+
+                    LRUCacheItem<TKey, TValue> evicted = null;
+                    if (cache.Count > capacity)
+                        evicted = EvictLRU();
+                    return evicted;
                 }
-
-                if (cache.Count > capacity)
-                    evicted = EvictLRU();
             }
-
-            if (evicted != null)
-                OnEvicted(evicted);
         }
 
         /// <summary>
@@ -85,12 +96,6 @@ namespace Common.Caching
             list.Remove(lru);
 
             return lru.Value;
-        }
-
-        void OnEvicted(LRUCacheItem<TKey, TValue> evicted)
-        {
-            if (ItemEvicted != null)
-                ItemEvicted(this, new LRUEvictionEventArgs<TKey,TValue>(evicted.Key, evicted.Value));
         }
 
 
@@ -144,50 +149,6 @@ namespace Common.Caching
         public ICollection<TValue> Values
         {
             get { return cache.Values.Select(o => o.Value.Value).ToList(); }
-        }
-
-        /// <summary>
-        /// Gets or sets the value associated with the specified key.
-        /// </summary>
-        /// <param name="key">The key of the value to get or set.</param>
-        /// <returns>
-        /// The value associated with the specified key. If the specified key is not
-        /// found, a get operation throws a System.Collections.Generic.KeyNotFoundException,
-        /// and a set operation creates a new element with the specified key.
-        /// </returns>
-        /// <exception cref="System.ArgumentNullException">key is null.</exception>
-        /// <exception cref="System.Collections.Generic.KeyNotFoundException:">The property is retrieved and key does not exist in the collection.</exception>
-        public TValue this[TKey key]
-        {
-            get
-            {
-                return Get(key);
-            }
-            set
-            {
-                AddOrUpdate(key, value, true);
-            }
-        }
-
-        // Summary:
-        //     Adds an element with the provided key and value to the LRUCache<TKey,TValue>.
-        //
-        // Parameters:
-        //   key:
-        //     The object to use as the key of the element to add.
-        //
-        //   value:
-        //     The object to use as the value of the element to add.
-        //
-        // Exceptions:
-        //   System.ArgumentNullException:
-        //     key is null.
-        //
-        //   System.ArgumentException:
-        //     An element with the same key already exists in the System.Collections.Generic.IDictionary<TKey,TValue>.
-        public void Add(TKey key, TValue value)
-        {
-            AddOrUpdate(key, value, false);
         }
 
         // Summary:
