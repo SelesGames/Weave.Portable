@@ -1,5 +1,5 @@
-﻿using Common.Compression;
-using Common.Net.Http.Compression;
+﻿using Common.Net.Http.Compression;
+using Common.Net.Http.Compression.Settings;
 using SelesGames.HttpClient.RetryPolicies;
 using System;
 using System.Collections.Generic;
@@ -47,14 +47,14 @@ namespace SelesGames.HttpClient
             this.RetryPolicy = Retry.None;
             this.Timeout = DEFAULT_TIMEOUT;
 
-            if (Settings.CompressionHandlers == null)
+            if (GlobalCompressionSettings.CompressionHandlers == null)
             {
                 this.acceptEncodings = new List<string>();
                 System.Diagnostics.Debug.WriteLine("\r\n\r\nNO GLOBAL COMPRESSION HANDLERS have been set.  If you want to enable compression/decompression of HTTP requests, you have to set Common.Compression.Settings to a valid compression handler collection.\r\n******************************************\r\n");
             }
             else
             {
-                this.acceptEncodings = Settings.CompressionHandlers.GetSupportedEncodings().ToArray();
+                this.acceptEncodings = GlobalCompressionSettings.CompressionHandlers.GetSupportedEncodings().ToArray();
             }
         }
 
