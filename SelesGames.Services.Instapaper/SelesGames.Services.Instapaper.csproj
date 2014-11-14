@@ -5,18 +5,19 @@
     <MinimumVisualStudioVersion>11.0</MinimumVisualStudioVersion>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{8162E82C-C141-4A69-90EF-4A2593A374DF}</ProjectGuid>
+    <ProjectGuid>{9173BE67-67C1-4764-B665-393C76446BB1}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Common.Net.Http.Compression</RootNamespace>
-    <AssemblyName>Common.Net.Http.Compression</AssemblyName>
-    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
-    <TargetFrameworkProfile>Profile259</TargetFrameworkProfile>
+    <RootNamespace>SelesGames.Services.Instapaper</RootNamespace>
+    <AssemblyName>SelesGames.Services.Instapaper</AssemblyName>
+    <DefaultLanguage>en-US</DefaultLanguage>
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{786C830F-07A1-408B-BD7F-6EE04809D6DB};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
-    <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">..\..\Weave.Windows8\Weave\</SolutionDir>
+    <TargetFrameworkProfile>Profile259</TargetFrameworkProfile>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">..\..\Weave\Windows Phone 8\</SolutionDir>
     <RestorePackages>true</RestorePackages>
-    <NuGetPackageImportStamp>cefd9e57</NuGetPackageImportStamp>
+    <NuGetPackageImportStamp>894671b1</NuGetPackageImportStamp>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -36,21 +37,19 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="CompressedContent.cs" />
-    <Compile Include="DecompressedContent.cs" />
-    <Compile Include="WebApiCompressionHandler.cs" />
-    <Compile Include="HttpClientCompressionHandler.cs" />
-    <Compile Include="Extensions\HttpResponseMessageExtensions.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\Common.Compression\Common.Compression.csproj">
-      <Project>{00617b68-c1f0-4ad8-8307-25c0608d745d}</Project>
-      <Name>Common.Compression</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
+    <!-- A reference to the entire .NET Framework is automatically included -->
     <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="InstapaperAccount.cs" />
+    <Compile Include="InstapaperAccountExtensions.cs" />
+    <Compile Include="InstapaperAddRequest.cs" />
+    <Compile Include="InstapaperResult.cs" />
+    <Compile Include="InstapaperResultType.cs" />
+    <Compile Include="InstapaperVerifyRequest.cs" />
+    <Compile Include="InstapaperWrappers.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="WebRequestParameter.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="System.Net.Http">
@@ -69,7 +68,7 @@
     <PropertyGroup>
       <ErrorText>This project references NuGet package(s) that are missing on this computer. Enable NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
     </PropertyGroup>
-    <Error Condition="!Exists('..\..\Weave.Windows8\Weave\packages\Microsoft.Bcl.Build.1.0.21\build\Microsoft.Bcl.Build.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\..\Weave.Windows8\Weave\packages\Microsoft.Bcl.Build.1.0.21\build\Microsoft.Bcl.Build.targets'))" />
+    <Error Condition="!Exists('$(SolutionDir)\.nuget\NuGet.targets')" Text="$([System.String]::Format('$(ErrorText)', '$(SolutionDir)\.nuget\NuGet.targets'))" />
     <Error Condition="!Exists('..\..\Weave\Windows Phone 8\packages\Microsoft.Bcl.Build.1.0.21\build\Microsoft.Bcl.Build.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\..\Weave\Windows Phone 8\packages\Microsoft.Bcl.Build.1.0.21\build\Microsoft.Bcl.Build.targets'))" />
   </Target>
   <Import Project="..\..\Weave\Windows Phone 8\packages\Microsoft.Bcl.Build.1.0.21\build\Microsoft.Bcl.Build.targets" Condition="Exists('..\..\Weave\Windows Phone 8\packages\Microsoft.Bcl.Build.1.0.21\build\Microsoft.Bcl.Build.targets')" />

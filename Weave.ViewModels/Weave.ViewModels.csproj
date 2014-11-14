@@ -58,6 +58,8 @@
     <Compile Include="NewsItemType.cs" />
     <Compile Include="NewsList.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Repository\NewsItemComparer.cs" />
+    <Compile Include="Repository\StandardRepository.cs" />
     <Compile Include="UserInfo.cs" />
     <Compile Include="ViewModelBase.cs" />
   </ItemGroup>
